@@ -75,7 +75,7 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">No. Tel</label>
-                                    <input type="text" name="noTel" class="form-control" placeholder="Contoh: 0123456789" required>
+                                    <input type="text" name="noTel" class="form-control" placeholder="Contoh: 012-3456789" required>
                                 </div>
 
                                 <div class="col-md-6">

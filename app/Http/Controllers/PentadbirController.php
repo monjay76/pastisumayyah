@@ -126,6 +126,19 @@ class PentadbirController extends Controller
         return view('pentadbir.profilMurid', compact('classes', 'selectedClass', 'students', 'selectedStudent'));
     }
 
+    public function maklumatGuru(Request $request)
+    {
+        $gurus = \App\Models\Guru::all();
+        $selectedGuru = null;
+        $selectedGuruId = $request->query('guru');
+
+        if ($selectedGuruId) {
+            $selectedGuru = \App\Models\Guru::find($selectedGuruId);
+        }
+
+        return view('pentadbir.maklumatGuru', compact('gurus', 'selectedGuru'));
+    }
+
     public function maklumatIbuBapa(Request $request)
     {
         $parents = \App\Models\IbuBapa::all();

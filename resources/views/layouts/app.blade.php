@@ -11,18 +11,21 @@
     <!-- Vite Assets -->
     <style>
         /* Minimal inline fallback so layout looks like wireframe even without building assets */
-        body { margin:0; font-family: Arial, Helvetica, sans-serif; }
+        body { margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
         .dashboard { display:flex; min-height:100vh; }
-        .sidebar { width:220px; background:#d9d9d9; padding:20px 12px; box-sizing:border-box; }
-        .sidebar .logo { width:56px; height:56px; background:#bfbfbf; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; margin-bottom:18px }
-        .sidebar nav a { display:block; color:#111; padding:10px 6px; text-decoration:none; margin-bottom:8px }
-        .sidebar nav a:hover { background-color: rgba(0, 0, 0, 0.1); }
+        .sidebar { width:260px; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); padding:30px 20px; box-sizing:border-box; box-shadow: 2px 0 10px rgba(0,0,0,0.1); position: relative; }
+        .sidebar::after { content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); border-radius: 0 20px 20px 0; z-index: -1; }
+        .sidebar .logo { width:70px; height:70px; background: rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; margin-bottom:30px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .sidebar nav a { display:block; color:#fff; padding:15px 20px; text-decoration:none; margin-bottom:10px; border-radius:12px; transition: all 0.3s ease; font-weight:500; }
+        .sidebar nav a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .sidebar nav a.active { background: rgba(255,255,255,0.3); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .main { flex:1; display:flex; flex-direction:column; }
-        .topbar { display:flex; align-items:center; justify-content:space-between; background:#efefef; padding:14px 20px; }
-        .content { flex:1; padding:30px 50px; background:#fff; }
-        .placeholder { width:80%; height:320px; border:10px solid #e9e9e9; display:flex; align-items:center; justify-content:center; margin:30px auto; background:#f7f7f7 }
-        .footer { background:#d9d9d9; padding:12px 20px; text-align:center }
-        .logout-btn { background:#000; color:#fff; padding:8px 14px; text-decoration:none; border-radius:6px; }
+        .topbar { display:flex; align-items:center; justify-content:space-between; background: rgba(255,255,255,0.9); padding:20px 30px; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .content { flex:1; padding:40px 60px; background: #f8f9fa; }
+        .placeholder { width:80%; height:320px; border:10px solid #e9e9e9; display:flex; align-items:center; justify-content:center; margin:30px auto; background:#f7f7f7; border-radius:15px; }
+        .footer { background: #4CAF50; color: #fff; padding:15px 30px; text-align:center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
+        .logout-btn { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); color:#fff; padding:10px 20px; text-decoration:none; border-radius:25px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
         @media (max-width:768px){ .sidebar{display:none} .placeholder{width:100%} }
     </style>
 </head>
@@ -37,7 +40,7 @@
                 <a href="{{ route('pentadbir.senaraiMurid') }}">Senarai Murid</a>
                 <a href="{{ route('pentadbir.profilMurid') }}">Profil Murid</a>
                 <a href="{{ route('pentadbir.maklumatIbuBapa') }}">Maklumat Ibu Bapa</a>
-                <a href="#">Maklumat Guru</a>
+                <a href="{{ route('pentadbir.maklumatGuru') }}">Maklumat Guru</a>
                 <a href="#">Aktiviti Tahunan</a>
                 <a href="#">Laporan</a>
             </nav>
