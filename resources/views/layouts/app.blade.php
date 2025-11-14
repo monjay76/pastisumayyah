@@ -36,7 +36,7 @@
                 <a href="{{ route('pentadbir.createUser') }}">Pendaftaran Akaun</a>
                 <a href="{{ route('pentadbir.senaraiMurid') }}">Senarai Murid</a>
                 <a href="{{ route('pentadbir.profilMurid') }}">Profil Murid</a>
-                <a href="#">Maklumat Ibu Bapa</a>
+                <a href="{{ route('pentadbir.maklumatIbuBapa') }}">Maklumat Ibu Bapa</a>
                 <a href="#">Maklumat Guru</a>
                 <a href="#">Aktiviti Tahunan</a>
                 <a href="#">Laporan</a>

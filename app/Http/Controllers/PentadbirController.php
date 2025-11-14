@@ -52,18 +52,52 @@ class PentadbirController extends Controller
     public function storeUser(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'role' => 'required|in:guru,ibubapa',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:guru,ibubapa',
+            'noTel' => 'required|string|max:15',
         ]);
 
-        \App\Models\User::create([
-            'name' => $request->name,
+        if ($request->role === 'guru') {
+            $request->validate([
+                'namaGuru' => 'required|string|max:255',
+                'jawatan' => 'required|string|max:255',
+            ]);
+        } elseif ($request->role === 'ibubapa') {
+            $request->validate([
+                'namaParent' => 'required|string|max:255',
+                'maklumBalas' => 'nullable|string',
+            ]);
+        }
+
+        $user = \App\Models\User::create([
+            'name' => $request->role === 'guru' ? $request->namaGuru : $request->namaParent,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => $request->role,
         ]);
+
+        // Masukkan data ke jadual spesifik berdasarkan role
+        $adminId = \App\Models\Pentadbir::first()->ID_Admin ?? null;
+        if ($request->role === 'guru') {
+            \App\Models\Guru::create([
+                'namaGuru' => $request->namaGuru,
+                'emel' => $request->email,
+                'noTel' => $request->noTel,
+                'jawatan' => $request->jawatan,
+                'kataLaluan' => bcrypt($request->password),
+                'diciptaOleh' => $adminId,
+            ]);
+        } elseif ($request->role === 'ibubapa') {
+            \App\Models\IbuBapa::create([
+                'namaParent' => $request->namaParent,
+                'emel' => $request->email,
+                'noTel' => $request->noTel,
+                'kataLaluan' => bcrypt($request->password),
+                'maklumBalas' => $request->maklumBalas,
+                'diciptaOleh' => $adminId,
+            ]);
+        }
 
         return redirect()->route('pentadbir.createUser')->with('success', 'Akaun pengguna berjaya didaftarkan.');
     }
@@ -90,6 +124,19 @@ class PentadbirController extends Controller
         }
 
         return view('pentadbir.profilMurid', compact('classes', 'selectedClass', 'students', 'selectedStudent'));
+    }
+
+    public function maklumatIbuBapa(Request $request)
+    {
+        $parents = \App\Models\IbuBapa::all();
+        $selectedParent = null;
+        $selectedParentId = $request->query('parent');
+
+        if ($selectedParentId) {
+            $selectedParent = \App\Models\IbuBapa::with('murid')->find($selectedParentId);
+        }
+
+        return view('pentadbir.maklumatIbuBapa', compact('parents', 'selectedParent'));
     }
 
 }

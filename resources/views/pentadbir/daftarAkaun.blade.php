@@ -18,40 +18,79 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('pentadbir.storeUser') }}" method="POST">
-                        @csrf
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Penuh</label>
-                                <input type="text" name="name" class="form-control" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                    @if(!request('role'))
+                        <h5>Pilih Peranan</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ route('pentadbir.createUser', ['role' => 'guru']) }}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-person-badge me-2"></i> Guru
+                                </a>
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Emel</label>
-                                <input type="email" name="email" class="form-control" placeholder="Contoh: aisyah@gmail.com" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Kata Laluan</label>
-                                <input type="password" name="password" class="form-control" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Peranan</label>
-                                <select name="role" class="form-select" required>
-                                    <option value="">-- Pilih Peranan --</option>
-                                    <option value="guru">Guru</option>
-                                    <option value="ibubapa">Ibu Bapa</option>
-                                </select>
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ route('pentadbir.createUser', ['role' => 'ibubapa']) }}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-house-heart me-2"></i> Ibu Bapa
+                                </a>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="btn btn-success px-4">
-                                <i class="bi bi-save2 me-1"></i> Daftar Akaun
-                            </button>
+                        <div class="mt-3">
+                            <a href="{{ route('pentadbir.createUser') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Kembali
+                            </a>
                         </div>
-                    </form>
+                    @else
+                        <div class="mb-3">
+                            <a href="{{ route('pentadbir.createUser') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Pilih Peranan Lain
+                            </a>
+                        </div>
+
+                        <form action="{{ route('pentadbir.storeUser') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="role" value="{{ request('role') }}">
+                            <div class="row g-3">
+                                @if(request('role') === 'guru')
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nama Guru</label>
+                                        <input type="text" name="namaGuru" class="form-control" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Jawatan</label>
+                                        <input type="text" name="jawatan" class="form-control" placeholder="Contoh: Guru Bahasa Melayu" required>
+                                    </div>
+                                @elseif(request('role') === 'ibubapa')
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nama Ibu Bapa</label>
+                                        <input type="text" name="namaParent" class="form-control" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Maklum Balas (Opsional)</label>
+                                        <textarea name="maklumBalas" class="form-control" rows="2" placeholder="Sebarang maklum balas"></textarea>
+                                    </div>
+                                @endif
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Emel</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Contoh: aisyah@gmail.com" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">No. Tel</label>
+                                    <input type="text" name="noTel" class="form-control" placeholder="Contoh: 0123456789" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Kata Laluan</label>
+                                    <input type="password" name="password" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-success px-4">
+                                    <i class="bi bi-save2 me-1"></i> Daftar Akaun
+                                </button>
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </div>
 

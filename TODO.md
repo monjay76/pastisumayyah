@@ -1,0 +1,4 @@
+- [x] Tambah kaedah maklumatIbuBapa dalam PentadbirController
+- [x] Tambah laluan untuk maklumatIbuBapa dalam web.php
+- [x] Cipta kandungan untuk maklumatIbuBapa.blade.php
+- [x] Baiki ralat foreign key dalam storeUser

@@ -29,6 +29,9 @@ Route::get('/pentadbir/senarai-murid', [PentadbirController::class, 'senaraiMuri
 // Profil Murid (must be before {id} route)
 Route::get('/pentadbir/profil-murid', [PentadbirController::class, 'profilMurid'])->name('pentadbir.profilMurid');
 
+// Maklumat Ibu Bapa (must be before {id} route)
+Route::get('/pentadbir/maklumat-ibubapa', [PentadbirController::class, 'maklumatIbuBapa'])->name('pentadbir.maklumatIbuBapa');
+
 // Papar maklumat pentadbir individu
 Route::get('/pentadbir/{id}', [PentadbirController::class, 'show'])->name('pentadbir.show');
 
