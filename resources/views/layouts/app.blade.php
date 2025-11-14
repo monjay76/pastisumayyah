@@ -29,11 +29,13 @@
 <body>
     <div class="dashboard">
         <aside class="sidebar">
-            <div class="logo">Logo</div>
+            <div class="logo">
+                <img src="{{ asset('logo_pasti_sumayyah.jpg') }}" alt="Logo Pasti Sumayyah" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            </div>
             <nav>
                 <a href="{{ route('pentadbir.createUser') }}">Pendaftaran Akaun</a>
                 <a href="{{ route('pentadbir.senaraiMurid') }}">Senarai Murid</a>
-                <a href="#">Profil Murid</a>
+                <a href="{{ route('pentadbir.profilMurid') }}">Profil Murid</a>
                 <a href="#">Maklumat Ibu Bapa</a>
                 <a href="#">Maklumat Guru</a>
                 <a href="#">Aktiviti Tahunan</a>

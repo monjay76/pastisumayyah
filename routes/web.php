@@ -26,6 +26,9 @@ Route::post('/pentadbir/daftar-akaun', [PentadbirController::class, 'storeUser']
 // Senarai Murid (must be before {id} route)
 Route::get('/pentadbir/senarai-murid', [PentadbirController::class, 'senaraiMurid'])->name('pentadbir.senaraiMurid');
 
+// Profil Murid (must be before {id} route)
+Route::get('/pentadbir/profil-murid', [PentadbirController::class, 'profilMurid'])->name('pentadbir.profilMurid');
+
 // Papar maklumat pentadbir individu
 Route::get('/pentadbir/{id}', [PentadbirController::class, 'show'])->name('pentadbir.show');
 

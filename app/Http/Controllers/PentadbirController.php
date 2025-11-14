@@ -74,4 +74,22 @@ class PentadbirController extends Controller
         return view('pentadbir.senaraiMurid', compact('murids'));
     }
 
+    public function profilMurid(Request $request)
+    {
+        $classes = \App\Models\Murid::distinct('kelas')->pluck('kelas');
+        $selectedClass = $request->query('kelas');
+        $students = null;
+        $selectedStudent = null;
+
+        if ($selectedClass) {
+            $students = \App\Models\Murid::where('kelas', $selectedClass)->get();
+            $selectedStudentId = $request->query('murid');
+            if ($selectedStudentId) {
+                $selectedStudent = \App\Models\Murid::find($selectedStudentId);
+            }
+        }
+
+        return view('pentadbir.profilMurid', compact('classes', 'selectedClass', 'students', 'selectedStudent'));
+    }
+
 }
