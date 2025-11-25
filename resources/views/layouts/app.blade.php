@@ -13,7 +13,7 @@
         /* Minimal inline fallback so layout looks like wireframe even without building assets */
         body { margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
         .dashboard { display:flex; min-height:100vh; }
-        .sidebar { width:260px; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); padding:30px 20px; box-sizing:border-box; box-shadow: 2px 0 10px rgba(0,0,0,0.1); position: relative; }
+        .sidebar { width:260px; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); padding:30px 20px; box-sizing:border-box; box-shadow: 2px 0 10px rgba(0,0,0,0.1); position: relative; display:flex; flex-direction:column; align-items:left; }
         .sidebar::after { content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); border-radius: 0 20px 20px 0; z-index: -1; }
         .sidebar .logo { width:70px; height:70px; background: rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; margin-bottom:30px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .sidebar nav a { display:block; color:#fff; padding:15px 20px; text-decoration:none; margin-bottom:10px; border-radius:12px; transition: all 0.3s ease; font-weight:500; }
@@ -36,13 +36,31 @@
                 <img src="{{ asset('logo_pasti_sumayyah.jpg') }}" alt="Logo Pasti Sumayyah" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
             </div>
             <nav>
-                <a href="{{ route('pentadbir.createUser') }}">Pendaftaran Akaun</a>
-                <a href="{{ route('pentadbir.senaraiMurid') }}">Senarai Murid</a>
-                <a href="{{ route('pentadbir.profilMurid') }}">Profil Murid</a>
-                <a href="{{ route('pentadbir.maklumatIbuBapa') }}">Maklumat Ibu Bapa</a>
-                <a href="{{ route('pentadbir.maklumatGuru') }}">Maklumat Guru</a>
-                <a href="#">Aktiviti Tahunan</a>
-                <a href="#">Laporan</a>
+                @if(request()->is('pentadbir*') || request()->is('pentadbir'))
+                    <!-- Sidebar for Pentadbir pages (use URL paths to avoid missing route names) -->
+                    <a href="{{ url('/pentadbir/daftar-akaun') }}">Pendaftaran Akaun</a>
+                    <a href="{{ url('/pentadbir/senarai-murid') }}">Senarai Murid</a>
+                    <a href="{{ url('/pentadbir/profil-murid') }}">Profil Murid</a>
+                    <a href="{{ url('/pentadbir/maklumat-ibubapa') }}">Maklumat Ibu Bapa</a>
+                    <a href="{{ url('/pentadbir/maklumat-guru') }}">Maklumat Guru</a>
+                    <a href="{{ url('/pentadbir/aktiviti-tahunan') }}">Aktiviti Tahunan</a>
+                    <a href="{{ url('/pentadbir/laporan') }}">Laporan</a>
+
+                @elseif(request()->is('guru*') || request()->is('guru'))
+                    <!-- Sidebar for Guru pages (use named routes where available) -->
+                    <a href="{{ route('guru.senaraiMurid') }}">Senarai Murid</a>
+                    <a href="{{ route('guru.profilMurid') }}">Profil Murid</a>
+                    <a href="{{ route('guru.senaraiKehadiran') }}">Senarai Kehadiran</a>
+                    <a href="{{ route('guru.aktivitiTahunan') }}">Aktiviti Tahunan</a>
+                    <a href="{{ route('guru.prestasiMurid') }}">Prestasi Murid</a>
+                    <a href="{{ route('guru.laporan') }}">Laporan</a>
+
+                @else
+                    <!-- Default / fallback sidebar (link to root) -->
+                    <a href="{{ url('/') }}">Utama</a>
+                    <a href="{{ route('guru.senaraiMurid') }}">Senarai Murid (Guru)</a>
+                    <a href="{{ url('/pentadbir/daftar-akaun') }}">Pendaftaran (Pentadbir)</a>
+                @endif
             </nav>
         </aside>
 

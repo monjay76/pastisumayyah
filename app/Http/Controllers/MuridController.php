@@ -7,32 +7,55 @@ use Illuminate\Http\Request;
 
 class MuridController extends Controller
 {
-    public function index()
+    // Papar senarai murid
+    public function index(\Illuminate\Http\Request $request)
     {
-        return response()->json(Murid::with(['ibubapa', 'prestasi', 'kehadiran'])->get());
+        $murid = Murid::orderBy('namaMurid')->get();
+        $editMurid = null;
+        if ($request->query('edit')) {
+            $editMurid = Murid::find($request->query('edit'));
+        }
+        return view('guru.senaraiMurid', compact('murid', 'editMurid'));
     }
 
-    public function store(Request $request)
-    {
-        $murid = Murid::create($request->all());
-        return response()->json(['message' => 'Murid berjaya ditambah', 'data' => $murid]);
-    }
-
+    // Papar murid tertentu
     public function show($id)
     {
-        return response()->json(Murid::with(['prestasi', 'kehadiran'])->findOrFail($id));
+        $murid = Murid::with('ibubapa')->find($id);
+        if (! $murid) {
+            abort(404, 'Murid tidak ditemui');
+        }
+        return view('guru.profilMurid', compact('murid'));
     }
 
+    // Papar borang edit
+    public function edit($id)
+    {
+        $murid = Murid::find($id);
+        if (! $murid) abort(404);
+        return view('guru.editMurid', compact('murid'));
+    }
+
+    // Kemas kini data
     public function update(Request $request, $id)
     {
         $murid = Murid::findOrFail($id);
-        $murid->update($request->all());
-        return response()->json(['message' => 'Maklumat murid dikemas kini']);
+        $data = $request->validate([
+            'namaMurid' => 'required|string|max:255',
+            'kelas' => 'nullable|string|max:100',
+            'tarikhLahir' => 'nullable|date',
+            'alamat' => 'nullable|string',
+        ]);
+        $murid->update($data);
+        return redirect()->route('guru.profilMurid', $murid->id)->with('success', 'Maklumat murid dikemaskini');
     }
 
+    // Padam murid
     public function destroy($id)
     {
-        Murid::destroy($id);
-        return response()->json(['message' => 'Rekod murid dipadam']);
+        $murid = Murid::find($id);
+        if (! $murid) abort(404);
+        $murid->delete();
+        return redirect()->route('guru.senaraiMurid')->with('success', 'Murid dipadam');
     }
 }
