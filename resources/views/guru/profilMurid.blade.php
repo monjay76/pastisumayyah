@@ -25,7 +25,7 @@
                     @else
                         <div class="mb-3">
                             <a href="{{ route('guru.profilMurid') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Kembali ke Pilihan Kelas
+                                <i class="bi bi-arrow-left"></i> Kembali 
                             </a>
                         </div>
                         @if(!isset($selectedStudent) || !$selectedStudent)

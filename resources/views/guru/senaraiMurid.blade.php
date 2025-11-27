@@ -42,8 +42,8 @@
                             </table>
                             <div class="mt-3">
                                 <a href="{{ route('guru.addMurid') }}" class="btn btn-primary">Tambah Murid</a>
-                                <button type="submit" name="action" value="edit" class="btn btn-warning">Edit Terpilih</button>
-                                <button type="submit" name="action" value="delete" class="btn btn-danger">Padam Terpilih</button>
+                                <button type="submit" name="action" value="edit" class="btn btn-warning">Edit </button>
+                                <button type="submit" name="action" value="delete" class="btn btn-danger">Padam </button>
                             </div>
                         @else
                             <p class="text-muted mb-0">Tiada murid didaftarkan lagi.</p>

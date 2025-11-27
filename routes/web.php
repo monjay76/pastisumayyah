@@ -50,7 +50,12 @@ Route::delete('/pentadbir/{id}', [PentadbirController::class, 'destroy'])->name(
 Route::get('/guru/senarai-murid', [GuruPageController::class, 'senaraiMurid'])->name('guru.senaraiMurid');
 Route::get('/guru/profil-murid/{id?}', [GuruPageController::class, 'profilMurid'])->name('guru.profilMurid');
 Route::get('/guru/senarai-kehadiran', [GuruPageController::class, 'senaraiKehadiran'])->name('guru.senaraiKehadiran');
+Route::post('/guru/kehadiran', [GuruPageController::class, 'storeKehadiran'])->name('guru.storeKehadiran');
+Route::get('/guru/edit-kehadiran', [GuruPageController::class, 'editKehadiran'])->name('guru.editKehadiran');
 Route::get('/guru/aktiviti-tahunan', [GuruPageController::class, 'aktivitiTahunan'])->name('guru.aktivitiTahunan');
+Route::get('/guru/aktiviti-tahunan/{month}', [GuruPageController::class, 'aktivitiTahunanMonth'])->name('guru.aktivitiTahunanMonth');
+Route::post('/guru/aktiviti-tahunan/store-image', [GuruPageController::class, 'storeAktivitiImage'])->name('guru.storeAktivitiImage');
+Route::delete('/guru/aktiviti-tahunan/delete-image/{id}', [GuruPageController::class, 'deleteAktivitiImage'])->name('guru.deleteAktivitiImage');
 Route::get('/guru/prestasi-murid', [GuruPageController::class, 'prestasiMurid'])->name('guru.prestasiMurid');
 Route::get('/guru/laporan', [GuruPageController::class, 'laporan'])->name('guru.laporan');
 Route::post('/guru/bulk-action', [GuruPageController::class, 'bulkAction'])->name('guru.bulkAction');

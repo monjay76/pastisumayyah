@@ -41,13 +41,14 @@ class MuridController extends Controller
     {
         $murid = Murid::findOrFail($id);
         $data = $request->validate([
+            'MyKidID' => 'required|string|unique:murid,MyKidID,' . $id . ',MyKidID',
             'namaMurid' => 'required|string|max:255',
             'kelas' => 'nullable|string|max:100',
             'tarikhLahir' => 'nullable|date',
             'alamat' => 'nullable|string',
         ]);
         $murid->update($data);
-        return redirect()->route('guru.profilMurid', $murid->id)->with('success', 'Maklumat murid dikemaskini');
+        return redirect()->route('guru.senaraiMurid')->with('success', 'Maklumat murid dikemaskini');
     }
 
     // Padam murid
