@@ -12,21 +12,36 @@
                 </div>
                 <div class="card-body">
                     @if(!$selectedGuru)
-                        <h5>Pilih Guru</h5>
+                        <h5>Senarai Guru</h5>
                         @if($gurus->count())
-                            <div class="row">
-                                @foreach($gurus as $guru)
-                                    <div class="col-md-4 mb-3">
-                                        <a href="{{ route('pentadbir.maklumatGuru', ['guru' => $guru->ID_Guru]) }}" class="card text-decoration-none">
-                                            <div class="card-body">
-                                                <h6 class="card-title">{{ $guru->namaGuru }}</h6>
-                                                <p class="card-text">Emel: {{ $guru->emel }}</p>
-                                                <p class="card-text">No. Tel: {{ $guru->noTel }}</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endforeach
-                            </div>
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID Guru</th>
+                                        <th>Nama Guru</th>
+                                        <th>Emel</th>
+                                        <th>No. Tel</th>
+                                        <th>Jawatan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($gurus as $index => $guru)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $guru->ID_Guru }}</td>
+                                            <td>
+                                                <a href="{{ route('pentadbir.maklumatGuru', ['guru' => $guru->ID_Guru]) }}">
+                                                    {{ $guru->namaGuru }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $guru->emel }}</td>
+                                            <td>{{ $guru->noTel }}</td>
+                                            <td>{{ $guru->jawatan }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         @else
                             <p class="text-muted mb-0">Tiada guru didaftarkan lagi.</p>
                         @endif

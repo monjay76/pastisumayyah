@@ -57,6 +57,23 @@ Route::post('/guru/bulk-action', [GuruPageController::class, 'bulkAction'])->nam
 Route::get('/guru/add-murid', [GuruPageController::class, 'addMurid'])->name('guru.addMurid');
 Route::post('/guru/add-murid', [GuruPageController::class, 'storeMurid'])->name('guru.storeMurid');
 
+// Ibu Bapa pages (simple view routes)
+Route::get('/ibubapa/profil-murid', function () {
+    return view('ibubapa.profilMurid');
+})->name('ibubapa.profilMurid');
+
+Route::get('/ibubapa/maklumbalas', function () {
+    return view('ibubapa.maklumbalas');
+})->name('ibubapa.maklumbalas');
+
+Route::get('/ibubapa/aktiviti-tahunan', function () {
+    return view('ibubapa.aktivitiTahunan');
+})->name('ibubapa.aktivitiTahunan');
+
+Route::get('/ibubapa/laporan', function () {
+    return view('ibubapa.laporan');
+})->name('ibubapa.laporan');
+
 // Murid CRUD for guru: edit / update / destroy / show
 use App\Http\Controllers\MuridController;
 

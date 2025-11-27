@@ -8,7 +8,11 @@ class Guru extends Model
 {
     protected $table = 'guru';
     protected $primaryKey = 'ID_Guru';
-    protected $fillable = ['namaGuru', 'emel', 'noTel', 'jawatan', 'kataLaluan', 'diciptaOleh'];
+    // Primary key will be a string (non auto-incrementing)
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    protected $fillable = ['ID_Guru', 'namaGuru', 'emel', 'noTel', 'jawatan', 'kataLaluan', 'diciptaOleh'];
 
     // Hubungan: Guru direkod oleh Pentadbir
     public function pentadbir()

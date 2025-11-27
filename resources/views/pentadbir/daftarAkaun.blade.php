@@ -46,16 +46,39 @@
 
                         <form action="{{ route('pentadbir.storeUser') }}" method="POST">
                             @csrf
+                            @if($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                             <input type="hidden" name="role" value="{{ request('role') }}">
                             <div class="row g-3">
                                 @if(request('role') === 'guru')
                                     <div class="col-md-6">
+                                        <label class="form-label">ID Guru</label>
+                                        <input type="text" name="ID_Guru" class="form-control" value="{{ old('ID_Guru') }}" placeholder="Contoh: GURU001" required>
+                                        @error('ID_Guru')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <label class="form-label">Nama Guru</label>
-                                        <input type="text" name="namaGuru" class="form-control" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                                        <input type="text" name="namaGuru" class="form-control" value="{{ old('namaGuru') }}" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                                        @error('namaGuru')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Jawatan</label>
-                                        <input type="text" name="jawatan" class="form-control" placeholder="Contoh: Guru Bahasa Melayu" required>
+                                        <input type="text" name="jawatan" class="form-control" value="{{ old('jawatan') }}" placeholder="Contoh: Guru Bahasa Melayu" required>
+                                        @error('jawatan')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 @elseif(request('role') === 'ibubapa')
                                     <div class="col-md-6">
@@ -70,17 +93,26 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">Emel</label>
-                                    <input type="email" name="email" class="form-control" placeholder="Contoh: aisyah@gmail.com" required>
+                                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="Contoh: aisyah@gmail.com" required>
+                                    @error('email')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">No. Tel</label>
-                                    <input type="text" name="noTel" class="form-control" placeholder="Contoh: 012-3456789" required>
+                                    <input type="text" name="noTel" class="form-control" value="{{ old('noTel') }}" placeholder="Contoh: 012-3456789" required>
+                                    @error('noTel')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Kata Laluan</label>
                                     <input type="password" name="password" class="form-control" required>
+                                    @error('password')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 

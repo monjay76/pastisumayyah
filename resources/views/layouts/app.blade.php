@@ -55,6 +55,13 @@
                     <a href="{{ route('guru.prestasiMurid') }}">Prestasi Murid</a>
                     <a href="{{ route('guru.laporan') }}">Laporan</a>
 
+                @elseif(request()->is('ibubapa*') || request()->is('ibubapa'))
+                    <!-- Sidebar for Ibu Bapa pages -->
+                    <a href="{{ url('/ibubapa/profil-murid') }}">Profil Murid</a>
+                    <a href="{{ url('/ibubapa/maklumbalas') }}">Maklum Balas</a>
+                    <a href="{{ url('/ibubapa/aktiviti-tahunan') }}">Aktiviti Tahunan</a>
+                    <a href="{{ url('/ibubapa/laporan') }}">Laporan</a>
+
                 @else
                     <!-- Default / fallback sidebar (link to root) -->
                     <a href="{{ url('/') }}">Utama</a>

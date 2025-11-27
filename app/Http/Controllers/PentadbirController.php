@@ -46,6 +46,7 @@ class PentadbirController extends Controller
     public function createUser()
     {
         $users = \App\Models\User::whereIn('role', ['guru', 'ibubapa'])->latest()->get();
+        
         return view('pentadbir.daftarAkaun', compact('users'));
     }
 
@@ -60,6 +61,7 @@ class PentadbirController extends Controller
 
         if ($request->role === 'guru') {
             $request->validate([
+                'ID_Guru' => 'required|string|max:255|unique:guru,ID_Guru',
                 'namaGuru' => 'required|string|max:255',
                 'jawatan' => 'required|string|max:255',
             ]);
@@ -81,6 +83,7 @@ class PentadbirController extends Controller
         $adminId = \App\Models\Pentadbir::first()->ID_Admin ?? null;
         if ($request->role === 'guru') {
             \App\Models\Guru::create([
+                'ID_Guru' => $request->ID_Guru,
                 'namaGuru' => $request->namaGuru,
                 'emel' => $request->email,
                 'noTel' => $request->noTel,

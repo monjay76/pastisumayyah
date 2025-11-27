@@ -12,21 +12,34 @@
                 </div>
                 <div class="card-body">
                     @if(!$selectedParent)
-                        <h5>Pilih Ibu Bapa</h5>
+                        <h5>Senarai Ibu Bapa</h5>
                         @if($parents->count())
-                            <div class="row">
-                                @foreach($parents as $parent)
-                                    <div class="col-md-4 mb-3">
-                                        <a href="{{ route('pentadbir.maklumatIbuBapa', ['parent' => $parent->ID_Parent]) }}" class="card text-decoration-none">
-                                            <div class="card-body">
-                                                <h6 class="card-title">{{ $parent->namaParent }}</h6>
-                                                <p class="card-text">Emel: {{ $parent->emel }}</p>
-                                                <p class="card-text">No. Tel: {{ $parent->noTel }}</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endforeach
-                            </div>
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID Parent</th>
+                                        <th>Nama</th>
+                                        <th>Emel</th>
+                                        <th>No. Tel</th>
+                                        <th>Maklum Balas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($parents as $index => $parent)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $parent->ID_Parent }}</td>
+                                            <td>
+                                                <a href="{{ route('pentadbir.maklumatIbuBapa', ['parent' => $parent->ID_Parent]) }}">{{ $parent->namaParent }}</a>
+                                            </td>
+                                            <td>{{ $parent->emel }}</td>
+                                            <td>{{ $parent->noTel }}</td>
+                                            <td>{{ $parent->maklumBalas ?: '-' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         @else
                             <p class="text-muted mb-0">Tiada ibu bapa didaftarkan lagi.</p>
                         @endif

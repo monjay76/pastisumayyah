@@ -29,7 +29,7 @@
                             </a>
                         </div>
                         @if(!$selectedStudent)
-                            <h5>Pilih Murid dari Kelas {{ $selectedClass }}</h5>
+                            <h5>Senarai Murid</h5>
                             <div class="row">
                                 @foreach($students as $student)
                                     <div class="col-md-4 mb-3">
