@@ -7,6 +7,8 @@ use App\Models\Murid;
 use App\Models\Kehadiran;
 use App\Models\Prestasi;
 use App\Models\Laporan;
+use App\Models\Aktiviti;
+use Illuminate\Support\Facades\Storage;
 
 class GuruPageController extends Controller
 {
@@ -28,16 +30,16 @@ class GuruPageController extends Controller
      */
     public function profilMurid(Request $request)
     {
-        $classes = Murid::distinct()->pluck('kelas')->filter()->sort();
+            $classes = Murid::distinct()->pluck('kelas')->filter()->sort();
         $selectedClass = $request->query('kelas');
         $selectedStudent = null;
         $students = collect();
 
         if ($selectedClass) {
-            $students = Murid::where('kelas', $selectedClass)->get();
-            $muridId = $request->query('murid');
-            if ($muridId) {
-                $selectedStudent = Murid::find($muridId);
+                $students = Murid::where('kelas', $selectedClass)->get();
+                $muridId = $request->query('murid');
+                if ($muridId) {
+                    $selectedStudent = Murid::find($muridId);
             }
         }
 
@@ -46,7 +48,11 @@ class GuruPageController extends Controller
 
     public function senaraiKehadiran(Request $request)
     {
-        $classes = Murid::distinct()->pluck('kelas')->filter()->sort();
+        try {
+            $classes = Murid::distinct()->pluck('kelas')->filter()->sort();
+        } catch (\Throwable $e) {
+            $classes = collect();
+        }
         $kelas = $request->query('kelas');
         $tarikh = $request->query('tarikh');
 
@@ -85,8 +91,12 @@ class GuruPageController extends Controller
         ];
         $monthName = $monthNames[$month] ?? 'Bulan Tidak Sah';
 
-        // Placeholder for images; replace with actual model query when Aktiviti model is added
-        $images = collect(); // For now, empty collection
+        // Fetch images for the month
+        try {
+            $images = Aktiviti::where('month', $month)->orderBy('tarikh', 'desc')->get();
+        } catch (\Throwable $e) {
+            $images = collect();
+        }
 
         return view('guru.aktivitiTahunanMonth', compact('month', 'monthName', 'images'));
     }
@@ -99,15 +109,38 @@ class GuruPageController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Placeholder for storing image; implement when Aktiviti model is added
-        // For now, just redirect back
-        return redirect()->back()->with('success', 'Gambar berjaya ditambah.');
+        try {
+            // Store the image in storage/app/public/aktiviti
+            $path = $request->file('image')->store('aktiviti', 'public');
+
+            // Create record in database
+            Aktiviti::create([
+                'month' => $request->month,
+                'tarikh' => $request->tarikh,
+                'path' => $path,
+            ]);
+
+            return redirect()->back()->with('success', 'Gambar berjaya ditambah.');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal menambah gambar. Sila cuba lagi.');
+        }
     }
 
     public function deleteAktivitiImage($id)
     {
-        // Placeholder for deleting image; implement when Aktiviti model is added
-        return redirect()->back()->with('success', 'Gambar berjaya dipadam.');
+        try {
+            $aktiviti = Aktiviti::findOrFail($id);
+
+            // Delete the file from storage
+            Storage::disk('public')->delete($aktiviti->path);
+
+            // Delete from database
+            $aktiviti->delete();
+
+            return redirect()->back()->with('success', 'Gambar berjaya dipadam.');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal memadam gambar. Sila cuba lagi.');
+        }
     }
 
     public function prestasiMurid()

@@ -71,8 +71,27 @@
 <script>
 function deleteImage(id) {
     if (confirm('Adakah anda pasti mahu padam gambar ini?')) {
-        // Placeholder for delete functionality; implement when Aktiviti model is added
-        alert('Fungsi padam belum dilaksanakan. Sila tambah model Aktiviti.');
+        // Create a form to submit DELETE request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("guru.deleteAktivitiImage", ":id") }}'.replace(':id', id);
+
+        // Add CSRF token
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+
+        // Add method spoofing for DELETE
+        const methodField = document.createElement('input');
+        methodField.type = 'hidden';
+        methodField.name = '_method';
+        methodField.value = 'DELETE';
+        form.appendChild(methodField);
+
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 </script>
