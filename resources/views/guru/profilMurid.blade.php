@@ -30,18 +30,34 @@
                         </div>
                         @if(!isset($selectedStudent) || !$selectedStudent)
                             <h5>Pilih Murid dari Kelas {{ $selectedClass }}</h5>
-                            <div class="row">
-                                @foreach($students as $student)
-                                    <div class="col-md-4 mb-3">
-                                        <a href="{{ route('guru.profilMurid', ['kelas' => $selectedClass, 'murid' => $student->MyKidID]) }}" class="card text-decoration-none">
-                                            <div class="card-body">
-                                                <h6 class="card-title">{{ $student->namaMurid }}</h6>
-                                                <p class="card-text">MyKid ID: {{ $student->MyKidID }}</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endforeach
-                            </div>
+                            @if($students->count())
+                                <table class="table table-striped align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>MyKid ID</th>
+                                            <th>Nama Murid</th>
+                                            <th>Kelas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($students as $index => $student)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $student->MyKidID }}</td>
+                                                <td>
+                                                    <a href="{{ route('guru.profilMurid', ['kelas' => $selectedClass, 'murid' => $student->MyKidID]) }}">
+                                                        {{ $student->namaMurid }}
+                                                    </a>
+                                                </td>
+                                                <td>{{ $student->kelas }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <p class="text-muted mb-0">Tiada murid didaftarkan lagi.</p>
+                            @endif
                         @else
                             <h5>Maklumat Peribadi Murid</h5>
                             <div class="row">

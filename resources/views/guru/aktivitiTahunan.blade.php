@@ -11,32 +11,39 @@
                     <i class="bi bi-calendar-event me-2"></i> Aktiviti Tahunan
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        @php
-                            $months = [
-                                'Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun',
-                                'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'
-                            ];
-                        @endphp
-                        @foreach($months as $index => $month)
-                            <div class="col-md-4 col-sm-6 mb-4">
-                                <a href="{{ route('guru.aktivitiTahunanMonth', ['month' => $index + 1]) }}" class="card h-100 text-decoration-none">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">{{ $month }}</h5>
-                                        <div class="image-placeholder" style="height: 200px; background-color: #f8f9fa; border: 2px dashed #dee2e6; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                                            <div class="text-muted">
-                                                <i class="bi bi-image fs-1"></i>
-                                                <p class="mb-0">Klik untuk lihat gambar {{ $month }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
+                    <h5>Pilih Bulan</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="month" class="form-label">Bulan</label>
+                            <select class="form-select" id="month" required>
+                                <option value="">Pilih Bulan</option>
+                                @php
+                                    $months = [
+                                        'Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun',
+                                        'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'
+                                    ];
+                                @endphp
+                                @foreach($months as $index => $month)
+                                    <option value="{{ $index + 1 }}">{{ $month }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
+                    <button type="button" class="btn btn-primary" onclick="selectMonth()">Pilih Bulan</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function selectMonth() {
+    const month = document.getElementById('month').value;
+    if (month) {
+        window.location.href = '{{ url("guru/aktiviti-tahunan") }}/' + month;
+    } else {
+        alert('Sila pilih bulan terlebih dahulu.');
+    }
+}
+</script>
 @endsection

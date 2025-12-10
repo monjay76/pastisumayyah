@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PentadbirController;
 use App\Http\Controllers\GuruPageController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\LoginController::class, 'index'])->name('login');
+Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])->name('login.post');
+Route::post('/logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
 // Papar senarai pentadbir (paparan view)
 Route::get('/pentadbir', function () {
@@ -67,9 +67,8 @@ Route::get('/ibubapa/profil-murid', function () {
     return view('ibubapa.profilMurid');
 })->name('ibubapa.profilMurid');
 
-Route::get('/ibubapa/maklumbalas', function () {
-    return view('ibubapa.maklumbalas');
-})->name('ibubapa.maklumbalas');
+Route::get('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::class, 'maklumBalas'])->name('ibubapa.maklumbalas');
+Route::post('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::class, 'storeMaklumBalas'])->name('ibubapa.storeMaklumBalas');
 
 Route::get('/ibubapa/aktiviti-tahunan', function () {
     return view('ibubapa.aktivitiTahunan');

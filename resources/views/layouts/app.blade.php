@@ -24,8 +24,9 @@
         .content { flex:1; padding:40px 60px; background: #f8f9fa; }
         .placeholder { width:80%; height:320px; border:10px solid #e9e9e9; display:flex; align-items:center; justify-content:center; margin:30px auto; background:#f7f7f7; border-radius:15px; }
         .footer { background: #4CAF50; color: #fff; padding:15px 30px; text-align:center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
-        .logout-btn { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); color:#fff; padding:10px 20px; text-decoration:none; border-radius:25px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+        .logout-btn { background: rgba(76, 175, 80, 0.1); color:#2E7D32; padding:8px 16px; text-decoration:none; border-radius:20px; transition: all 0.3s ease; border: 2px solid transparent; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+        .logout-btn:hover { background: rgba(76, 175, 80, 0.2); border-color: #4CAF50; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2); }
+        .logout-btn i { font-size: 1.1em; }
         @media (max-width:768px){ .sidebar{display:none} .placeholder{width:100%} }
     </style>
 </head>
@@ -77,7 +78,13 @@
                     <h5 style="margin:0">Sistem SMART Pasti Sumayyah</h5>
                 </div>
                 <div>
-                    <a href="#" class="logout-btn">Log Keluar</a>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="logout-btn">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Log Keluar
+                        </button>
+                    </form>
                 </div>
             </header>
 
