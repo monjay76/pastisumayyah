@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('aktiviti', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_aktiviti');
             $table->integer('month');
             $table->date('tarikh');
-            $table->string('path');
+            $table->string('path')->nullable();
             $table->timestamps();
         });
     }

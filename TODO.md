@@ -21,3 +21,4 @@
 - Role is automatically determined by checking username against each table in order
 - Interface is in Malay to match the application language
 - Logout button clears session and redirects to login page for all user types
+- Admin ID updated to 'P012' to resolve foreign key constraint issues when creating guru accounts

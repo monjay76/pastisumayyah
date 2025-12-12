@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="MyKidID" class="form-label">MyKid ID</label>
-                                <input type="text" class="form-control" id="MyKidID" name="MyKidID" value="{{ $murid->MyKidID }}" readonly>
+                                <input type="text" class="form-control" id="MyKidID" name="MyKidID" value="{{ $murid->MyKidID }}" required>
                                 @error('MyKidID')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

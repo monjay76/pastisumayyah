@@ -36,6 +36,10 @@ Route::get('/pentadbir/maklumat-guru', [PentadbirController::class, 'maklumatGur
 // Maklumat Ibu Bapa (must be before {id} route)
 Route::get('/pentadbir/maklumat-ibubapa', [PentadbirController::class, 'maklumatIbuBapa'])->name('pentadbir.maklumatIbuBapa');
 
+// Aktiviti Tahunan (Pentadbir)
+Route::get('/pentadbir/aktiviti-tahunan', [PentadbirController::class, 'aktivitiTahunan'])->name('pentadbir.aktivitiTahunan');
+Route::get('/pentadbir/aktiviti-tahunan/{month}', [PentadbirController::class, 'aktivitiTahunanMonth'])->name('pentadbir.aktivitiTahunanMonth');
+
 // Papar maklumat pentadbir individu
 Route::get('/pentadbir/{id}', [PentadbirController::class, 'show'])->name('pentadbir.show');
 
@@ -55,7 +59,7 @@ Route::get('/guru/edit-kehadiran', [GuruPageController::class, 'editKehadiran'])
 Route::get('/guru/aktiviti-tahunan', [GuruPageController::class, 'aktivitiTahunan'])->name('guru.aktivitiTahunan');
 Route::get('/guru/aktiviti-tahunan/{month}', [GuruPageController::class, 'aktivitiTahunanMonth'])->name('guru.aktivitiTahunanMonth');
 Route::post('/guru/aktiviti-tahunan/store-image', [GuruPageController::class, 'storeAktivitiImage'])->name('guru.storeAktivitiImage');
-Route::delete('/guru/aktiviti-tahunan/delete-image/{id}', [GuruPageController::class, 'deleteAktivitiImage'])->name('guru.deleteAktivitiImage');
+Route::post('/guru/aktiviti-tahunan/delete-image/{id}', [GuruPageController::class, 'deleteAktivitiImage'])->name('guru.deleteAktivitiImage');
 Route::get('/guru/prestasi-murid', [GuruPageController::class, 'prestasiMurid'])->name('guru.prestasiMurid');
 Route::get('/guru/laporan', [GuruPageController::class, 'laporan'])->name('guru.laporan');
 Route::post('/guru/bulk-action', [GuruPageController::class, 'bulkAction'])->name('guru.bulkAction');
@@ -70,9 +74,8 @@ Route::get('/ibubapa/profil-murid', function () {
 Route::get('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::class, 'maklumBalas'])->name('ibubapa.maklumbalas');
 Route::post('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::class, 'storeMaklumBalas'])->name('ibubapa.storeMaklumBalas');
 
-Route::get('/ibubapa/aktiviti-tahunan', function () {
-    return view('ibubapa.aktivitiTahunan');
-})->name('ibubapa.aktivitiTahunan');
+Route::get('/ibubapa/aktiviti-tahunan', [App\Http\Controllers\IbuBapaController::class, 'aktivitiTahunan'])->name('ibubapa.aktivitiTahunan');
+Route::get('/ibubapa/aktiviti-tahunan/{month}', [App\Http\Controllers\IbuBapaController::class, 'aktivitiTahunanMonth'])->name('ibubapa.aktivitiTahunanMonth');
 
 Route::get('/ibubapa/laporan', function () {
     return view('ibubapa.laporan');
@@ -90,4 +93,3 @@ Route::delete('/guru/murid/{id}', [MuridController::class, 'destroy'])->name('gu
 Route::get('/guru', function () {
     return redirect()->route('guru.senaraiMurid');
 })->name('guru.index');
-

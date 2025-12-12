@@ -82,12 +82,18 @@
                                     </div>
                                 @elseif(request('role') === 'ibubapa')
                                     <div class="col-md-6">
-                                        <label class="form-label">Nama Ibu Bapa</label>
-                                        <input type="text" name="namaParent" class="form-control" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                                        <label class="form-label">No. Kad Pengenalan</label>
+                                        <input type="text" name="ID_Parent" class="form-control" value="{{ old('ID_Parent') }}" placeholder="Tanpa simbol '-' " required>
+                                        @error('ID_Parent')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Maklum Balas (Opsional)</label>
-                                        <textarea name="maklumBalas" class="form-control" rows="2" placeholder="Sebarang maklum balas"></textarea>
+                                        <label class="form-label">Nama Ibu Bapa</label>
+                                        <input type="text" name="namaParent" class="form-control" value="{{ old('namaParent') }}" placeholder="Contoh: Nur Aisyah Binti Ali" required>
+                                        @error('namaParent')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 @endif
 

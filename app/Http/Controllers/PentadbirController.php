@@ -67,8 +67,8 @@ class PentadbirController extends Controller
             ]);
         } elseif ($request->role === 'ibubapa') {
             $request->validate([
+                'ID_Parent' => 'required|string|max:255|unique:ibubapa,ID_Parent',
                 'namaParent' => 'required|string|max:255',
-                'maklumBalas' => 'nullable|string',
             ]);
         }
 
@@ -79,8 +79,16 @@ class PentadbirController extends Controller
             'role' => $request->role,
         ]);
 
-        // Masukkan data ke jadual spesifik berdasarkan role
-        $adminId = \App\Models\Pentadbir::first()->ID_Admin ?? null;
+        // Get the current logged-in admin's ID from session
+        $adminId = session('user')->ID_Admin ?? null;
+
+        // Debug: Check if adminId is null and handle it
+        if (!$adminId) {
+            // If no admin is logged in, try to get the first admin as fallback
+            $firstAdmin = \App\Models\Pentadbir::first();
+            $adminId = $firstAdmin ? $firstAdmin->ID_Admin : null;
+        }
+
         if ($request->role === 'guru') {
             \App\Models\Guru::create([
                 'ID_Guru' => $request->ID_Guru,
@@ -93,11 +101,11 @@ class PentadbirController extends Controller
             ]);
         } elseif ($request->role === 'ibubapa') {
             \App\Models\IbuBapa::create([
+                'ID_Parent' => $request->ID_Parent,
                 'namaParent' => $request->namaParent,
                 'emel' => $request->email,
                 'noTel' => $request->noTel,
                 'kataLaluan' => bcrypt($request->password),
-                'maklumBalas' => $request->maklumBalas,
                 'diciptaOleh' => $adminId,
             ]);
         }
@@ -154,5 +162,31 @@ class PentadbirController extends Controller
 
         return view('pentadbir.maklumatIbuBapa', compact('parents', 'selectedParent'));
     }
+
+    public function aktivitiTahunan()
+    {
+        return view('pentadbir.aktivitiTahunan');
+    }
+
+    public function aktivitiTahunanMonth($month)
+    {
+        $monthNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Mac', 4 => 'April', 5 => 'Mei', 6 => 'Jun',
+            7 => 'Julai', 8 => 'Ogos', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Disember'
+        ];
+        $monthName = $monthNames[$month] ?? 'Bulan Tidak Sah';
+
+        // Fetch images for the month
+        try {
+            $images = \App\Models\Aktiviti::where('month', $month)->orderBy('tarikh', 'desc')->get();
+        } catch (\Throwable $e) {
+            $images = collect();
+        }
+
+        $selectedMonth = $month;
+        return view('pentadbir.aktivitiTahunan', compact('month', 'monthName', 'images', 'selectedMonth'));
+    }
+
+
 
 }

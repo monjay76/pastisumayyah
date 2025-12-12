@@ -11,6 +11,12 @@
                     <i class="bi bi-people-fill me-2"></i> Senarai Murid
                 </div>
                 <div class="card-body">
+                    <div class="mb-3">
+                        <a href="{{ route('guru.addMurid') }}" class="btn btn-primary">
+                            <i class="bi bi-person-plus me-1"></i>Tambah Murid
+                        </a>
+                    </div>
+
                     <form method="POST" action="{{ route('guru.bulkAction') }}">
                         @csrf
                         @if($murid->count())
@@ -41,12 +47,15 @@
                                 </tbody>
                             </table>
                             <div class="mt-3">
-                                <a href="{{ route('guru.addMurid') }}" class="btn btn-primary">Tambah Murid</a>
                                 <button type="submit" name="action" value="edit" class="btn btn-warning">Edit </button>
                                 <button type="submit" name="action" value="delete" class="btn btn-danger">Padam </button>
                             </div>
                         @else
-                            <p class="text-muted mb-0">Tiada murid didaftarkan lagi.</p>
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Tiada murid didaftarkan lagi.</strong><br>
+                                Klik butang "Tambah Murid" di atas untuk mula mendaftarkan murid baru.
+                            </div>
                         @endif
                     </form>
                 </div>

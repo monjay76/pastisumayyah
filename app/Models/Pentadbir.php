@@ -8,7 +8,9 @@ class Pentadbir extends Model
 {
     protected $table = 'pentadbir';
     protected $primaryKey = 'ID_Admin';
-    protected $fillable = ['namaAdmin', 'emel', 'kataLaluan', 'noTel'];
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $fillable = ['ID_Admin', 'namaAdmin', 'emel', 'kataLaluan', 'noTel'];
 
     // Hubungan: Pentadbir boleh cipta ramai Guru
     public function guru()

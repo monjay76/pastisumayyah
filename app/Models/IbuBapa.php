@@ -8,7 +8,7 @@ class IbuBapa extends Model
 {
     protected $table = 'ibubapa';
     protected $primaryKey = 'ID_Parent';
-    protected $fillable = ['namaParent', 'emel', 'noTel', 'kataLaluan', 'diciptaOleh', 'maklumBalas'];
+    protected $fillable = ['ID_Parent', 'namaParent', 'emel', 'noTel', 'kataLaluan', 'diciptaOleh'];
 
     // Hubungan: Ibu bapa dicipta oleh pentadbir
     public function pentadbir()
@@ -22,4 +22,3 @@ class IbuBapa extends Model
         return $this->belongsToMany(Murid::class, 'parent_murid', 'ID_Parent', 'MyKidID');
     }
 }
-

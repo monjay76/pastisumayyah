@@ -11,6 +11,12 @@
                     <i class="bi bi-calendar-event me-2"></i> Aktiviti Tahunan - {{ $monthName }}
                 </div>
                 <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
                     <div class="mb-3">
                         <a href="{{ route('guru.aktivitiTahunan') }}" class="btn btn-secondary">Kembali ke Aktiviti Tahunan</a>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addImageModal">Tambah Gambar</button>
@@ -23,7 +29,7 @@
                                         <img src="{{ asset('storage/' . $image->path) }}" class="card-img-top" alt="Aktiviti {{ $monthName }}">
                                         <div class="card-body">
                                             <p class="card-text">Tarikh: {{ date('d/m/Y', strtotime($image->tarikh)) }}</p>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteImage({{ $image->id }})">Padam</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteImage({{ $image->id_aktiviti }})">Padam</button>
                                         </div>
                                     </div>
                                 </div>
@@ -71,7 +77,7 @@
 <script>
 function deleteImage(id) {
     if (confirm('Adakah anda pasti mahu padam gambar ini?')) {
-        // Create a form to submit DELETE request
+        // Create a form to submit POST request
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '{{ route("guru.deleteAktivitiImage", ":id") }}'.replace(':id', id);
@@ -80,15 +86,8 @@ function deleteImage(id) {
         const csrfToken = document.createElement('input');
         csrfToken.type = 'hidden';
         csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
+        csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         form.appendChild(csrfToken);
-
-        // Add method spoofing for DELETE
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'DELETE';
-        form.appendChild(methodField);
 
         document.body.appendChild(form);
         form.submit();

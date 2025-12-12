@@ -14,10 +14,16 @@
 					@endif
 				</div>
 				<div class="card-body">
+					@if(session('success'))
+						<div class="alert alert-success">{{ session('success') }}</div>
+					@endif
+					@if(session('error'))
+						<div class="alert alert-danger">{{ session('error') }}</div>
+					@endif
 					@if(isset($selectedMonth))
 						<!-- Month specific content -->
 						<div class="mb-3">
-							<a href="{{ route('ibubapa.aktivitiTahunan') }}" class="btn btn-secondary">Kembali ke Aktiviti Tahunan</a>
+							<a href="{{ route('pentadbir.aktivitiTahunan') }}" class="btn btn-secondary">Kembali ke Aktiviti Tahunan</a>
 						</div>
 						@if($images->count())
 							<div class="row">
@@ -67,7 +73,7 @@
 function selectMonth() {
 	const month = document.getElementById('month').value;
 	if (month) {
-		window.location.href = '{{ url("ibubapa/aktiviti-tahunan") }}/' + month;
+		window.location.href = '{{ url("pentadbir/aktiviti-tahunan") }}/' + month;
 	} else {
 		alert('Sila pilih bulan terlebih dahulu.');
 	}

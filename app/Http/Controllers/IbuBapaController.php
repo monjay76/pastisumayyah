@@ -64,4 +64,28 @@ class IbuBapaController extends Controller
 
         return redirect()->back()->with('success', 'Maklum balas berjaya dihantar.');
     }
+
+    public function aktivitiTahunan()
+    {
+        return view('ibubapa.aktivitiTahunan');
+    }
+
+    public function aktivitiTahunanMonth($month)
+    {
+        $monthNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Mac', 4 => 'April', 5 => 'Mei', 6 => 'Jun',
+            7 => 'Julai', 8 => 'Ogos', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Disember'
+        ];
+        $monthName = $monthNames[$month] ?? 'Bulan Tidak Sah';
+
+        // Fetch images for the month
+        try {
+            $images = \App\Models\Aktiviti::where('month', $month)->orderBy('tarikh', 'desc')->get();
+        } catch (\Throwable $e) {
+            $images = collect();
+        }
+
+        $selectedMonth = $month;
+        return view('ibubapa.aktivitiTahunan', compact('month', 'monthName', 'images', 'selectedMonth'));
+    }
 }
