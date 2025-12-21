@@ -1,24 +1,20 @@
-# Login Page Implementation
+# TODO: Add Profile Picture Upload for Students in Guru ProfilMurid Page
 
-## Completed Tasks
-- [x] Create LoginController with index and login methods
-- [x] Update routes to use LoginController for root and POST login
-- [x] Create login.blade.php with form for role selection, username (ID), and password
-- [x] Implement authentication logic to check against respective tables (pentadbir, guru, ibubapa)
-- [x] Redirect users to their respective dashboards based on role
-- [x] Update login form to have only username and password inputs (removed role dropdown)
-- [x] Make login form centered and in the middle of the page with modern styling
-- [x] Update controller to automatically determine role based on username
-- [x] Update login page layout to match the vibe of app.blade.php (green gradient background, same font, logo, colors, and Malay language)
-- [x] Implement logout functionality for all user types (pentadbir, guru, ibubapa) to redirect to login page
+## Steps to Complete:
 
-## Notes
-- Username is the ID (ID_Admin for pentadbir, ID_Guru for guru, ID_Parent for ibubapa)
-- Password is checked against 'kataLaluan' field in each table
-- Uses session to store user and role
-- Redirects to appropriate routes: pentadbir.index, guru.index, ibubapa.profilMurid
-- Login form now has the same green gradient background and styling as the main app layout
-- Role is automatically determined by checking username against each table in order
-- Interface is in Malay to match the application language
-- Logout button clears session and redirects to login page for all user types
-- Admin ID updated to 'P012' to resolve foreign key constraint issues when creating guru accounts
+1. **Create Migration**: Generate and edit a new migration to add 'gambar_profil' column to 'murid' table.
+2. **Update Murid Model**: Add 'gambar_profil' to the $fillable array in Murid.php.
+3. **Modify profilMurid.blade.php**: Add display for current profile picture and upload form.
+4. **Update GuruPageController**: Add updateProfilePicture method to handle file upload.
+5. **Update Routes**: Add POST route for profile picture update in web.php.
+6. **Run Migration**: Execute the migration to update the database.
+7. **Test Functionality**: Verify image upload and display works correctly.
+
+## Progress:
+- [x] Step 1: Create Migration
+- [x] Step 2: Update Murid Model
+- [x] Step 3: Modify View
+- [x] Step 4: Update Controller
+- [x] Step 5: Update Routes
+- [x] Step 6: Run Migration
+- [x] Step 7: Test Functionality (Storage link confirmed)

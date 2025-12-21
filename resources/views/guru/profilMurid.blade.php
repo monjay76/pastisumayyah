@@ -61,7 +61,26 @@
                         @else
                             <h5>Maklumat Peribadi Murid</h5>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <h6>Gambar Profil</h6>
+                                        @if($selectedStudent->gambar_profil)
+                                            <img src="{{ asset('storage/' . $selectedStudent->gambar_profil) }}" alt="Gambar Profil" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                        @else
+                                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                                                <i class="bi bi-person-fill text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        @endif
+                                        <form action="{{ route('guru.updateProfilePicture', $selectedStudent->MyKidID) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <input type="file" name="gambar_profil" class="form-control" accept="image/*" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Kemas Kini Gambar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
                                     <table class="table table-borderless">
                                         <tr>
                                             <th>MyKid ID:</th>

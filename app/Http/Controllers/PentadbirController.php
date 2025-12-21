@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Murid;
+use App\Models\Subjek;
+use App\Models\Prestasi;
 use App\Models\Pentadbir;
 use Illuminate\Http\Request;
 
@@ -187,6 +190,154 @@ class PentadbirController extends Controller
         return view('pentadbir.aktivitiTahunan', compact('month', 'monthName', 'images', 'selectedMonth'));
     }
 
+    public function prestasiMurid(Request $request)
+    {
+        try {
+            $classes = Murid::distinct()->pluck('kelas')->filter()->sort();
+        } catch (\Throwable $e) {
+            $classes = collect();
+        }
+        $selectedClass = $request->query('kelas');
+        $selectedStudent = null;
+        $students = collect();
+        try {
+            $subjekList = Subjek::pluck('nama_subjek')->toArray();
+        } catch (\Throwable $e) {
+            $subjekList = [];
+        }
+        $subjekList = is_array($subjekList) ? $subjekList : [];
+        $selectedSubjek = null;
+        $ayatList = [];
+        $prestasi = collect();
+        try {
+            $subjek = Subjek::all(); // For subject management tab
+        } catch (\Throwable $e) {
+            $subjek = collect();
+        }
+        $subjek = $subjek instanceof \Illuminate\Database\Eloquent\Collection ? $subjek : collect();
 
+        if ($selectedClass) {
+            try {
+                $students = Murid::where('kelas', $selectedClass)->orderBy('namaMurid')->get();
+            } catch (\Throwable $e) {
+                $students = collect();
+            }
+            $muridId = $request->query('murid');
+            if ($muridId) {
+                try {
+                    $selectedStudent = Murid::find($muridId);
+                } catch (\Throwable $e) {
+                    $selectedStudent = null;
+                }
+                $selectedSubjek = $request->query('subjek');
+                if ($selectedSubjek) {
+                    try {
+                        $prestasi = Prestasi::where('MyKidID', $muridId)
+                            ->where('subjek', $selectedSubjek)
+                            ->get()
+                            ->keyBy(function ($item) {
+                                return $item->ayat . '_' . $item->penggal;
+                            });
+                    } catch (\Throwable $e) {
+                        $prestasi = collect();
+                    }
+                    $ayatList = $this->getAyatList($selectedSubjek);
+                }
+            }
+        }
 
+        return view('pentadbir.prestasiMurid', compact('classes', 'selectedClass', 'students', 'selectedStudent', 'subjekList', 'selectedSubjek', 'ayatList', 'prestasi', 'subjek'));
+    }
+
+    public function storePrestasi(Request $request)
+    {
+        $request->validate([
+            'MyKidID' => 'required|exists:murid,MyKidID',
+            'subjek' => 'required|string',
+            'penggal' => 'required|in:Penggal 1,Penggal 2',
+            'assessments' => 'required|array',
+        ]);
+
+        $myKidID = $request->MyKidID;
+        $subjek = $request->subjek;
+        $penggal = $request->penggal;
+
+        foreach ($request->assessments as $ayat => $tahapPencapaian) {
+            Prestasi::updateOrCreate(
+                [
+                    'MyKidID' => $myKidID,
+                    'subjek' => $subjek,
+                    'ayat' => $ayat,
+                    'penggal' => $penggal,
+                ],
+                [
+                    'tahapPencapaian' => $tahapPencapaian,
+                    'markah' => $this->getMarkahFromTahap($tahapPencapaian),
+                ]
+            );
+        }
+
+        return redirect()->back()->with('success', 'Penilaian prestasi berjaya disimpan.');
+    }
+
+    public function senaraiSubjek()
+    {
+        $subjek = Subjek::all();
+        return view('pentadbir.senaraiSubjek', compact('subjek'));
+    }
+
+    public function storeSubjek(Request $request)
+    {
+        $request->validate([
+            'nama_subjek' => 'required|string|max:255|unique:subjek,nama_subjek',
+        ]);
+
+        Subjek::create($request->all());
+
+        return redirect()->back()->with('success', 'Subjek berjaya ditambah.');
+    }
+
+    public function updateSubjek(Request $request, $id)
+    {
+        $request->validate([
+            'nama_subjek' => 'required|string|max:255|unique:subjek,nama_subjek,' . $id,
+        ]);
+
+        $subjek = Subjek::findOrFail($id);
+        $subjek->update($request->all());
+
+        return redirect()->back()->with('success', 'Subjek berjaya dikemas kini.');
+    }
+
+    public function destroySubjek($id)
+    {
+        Subjek::destroy($id);
+
+        return redirect()->back()->with('success', 'Subjek berjaya dipadam.');
+    }
+
+    private function getAyatList($subjek)
+    {
+        // For demo purposes, limit to first 15 ayat
+        $ayatLists = [
+            'Surah Al-Mulk' => range(1, 30),
+            'Surah Al-Kahf' => range(1, 110),
+            'Surah Yasin' => range(1, 83),
+            'Surah Ar-Rahman' => range(1, 78),
+        ];
+
+        $ayat = $ayatLists[$subjek] ?? range(1, 15);
+        return array_slice($ayat, 0, 15);
+    }
+
+    private function getMarkahFromTahap($tahap)
+    {
+        $markahMap = [
+            'AM' => 1,
+            'M' => 2,
+            'SM' => 3,
+        ];
+
+        return $markahMap[$tahap] ?? 0;
+    }
 }

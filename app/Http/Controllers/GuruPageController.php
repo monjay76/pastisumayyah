@@ -46,6 +46,28 @@ class GuruPageController extends Controller
         return view('guru.profilMurid', compact('classes', 'selectedClass', 'students', 'selectedStudent'));
     }
 
+    public function updateProfilePicture(Request $request, $id)
+    {
+        $request->validate([
+            'gambar_profil' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $murid = Murid::findOrFail($id);
+
+        // Delete old image if exists
+        if ($murid->gambar_profil && Storage::disk('public')->exists($murid->gambar_profil)) {
+            Storage::disk('public')->delete($murid->gambar_profil);
+        }
+
+        // Store new image
+        $path = $request->file('gambar_profil')->store('gambar_profil', 'public');
+
+        // Update database
+        $murid->update(['gambar_profil' => $path]);
+
+        return redirect()->back()->with('success', 'Gambar profil berjaya dikemas kini.');
+    }
+
     public function senaraiKehadiran(Request $request)
     {
         try {

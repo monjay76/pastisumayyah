@@ -10,7 +10,7 @@ class Murid extends Model
     protected $primaryKey = 'MyKidID';
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['MyKidID', 'namaMurid', 'kelas', 'tarikhLahir', 'alamat'];
+    protected $fillable = ['MyKidID', 'namaMurid', 'kelas', 'tarikhLahir', 'alamat', 'gambar_profil'];
     protected $dates = ['tarikhLahir'];
 
     // Hubungan: Murid boleh ada ramai ibu bapa

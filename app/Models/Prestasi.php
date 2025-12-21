@@ -8,7 +8,17 @@ class Prestasi extends Model
 {
     protected $table = 'prestasi';
     protected $primaryKey = 'ID_Prestasi';
-    protected $fillable = ['ID_Guru', 'MyKidID', 'subjek', 'markah', 'gred', 'tarikhRekod'];
+    protected $fillable = [
+        'ID_Guru', 
+        'MyKidID', 
+        'subjek', 
+        'markah', 
+        'gred', 
+        'tarikhRekod',
+        'ayat',
+        'penggal',
+        'tahapPencapaian'
+    ];
 
     public function guru()
     {
