@@ -86,27 +86,184 @@
                                             <i class="bi bi-info-circle me-2"></i>
                                             <strong>Dipilih:</strong> Kelas {{ $selectedClass }} | {{ $selectedStudent->namaMurid }} | {{ $selectedSubjek }}
                                         </div>
-@endif
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Assessment Form Section -->
+                            @if($selectedClass && $selectedStudent && $selectedSubjek && count($ayatList) > 0)
+                                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                                    <div class="card-header bg-success text-white fw-semibold">
+                                        <i class="bi bi-pencil-square me-2"></i> Penilaian Prestasi Hafazan - {{ $selectedSubjek }}
+                                    </div>
+                                    <div class="card-body">
+                                        @if(session('success'))
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+                                        @endif
+
+                                        @if(session('error'))
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+                                        @endif
+
+                                        <form method="POST" action="{{ route('pentadbir.storePrestasi') }}">
+                                            @csrf
+                                            <input type="hidden" name="MyKidID" value="{{ $selectedStudent->MyKidID }}">
+                                            <input type="hidden" name="subjek" value="{{ $selectedSubjek }}">
+
+                                            <!-- Select Penggal -->
+                                            <div class="mb-4">
+                                                <label for="penggal" class="form-label fw-bold">Pilih Penggal</label>
+                                                <select name="penggal" id="penggal" class="form-select w-auto" required>
+                                                    <option value="">-- Pilih Penggal --</option>
+                                                    <option value="Penggal 1">Penggal 1</option>
+                                                    <option value="Penggal 2">Penggal 2</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Assessment Table -->
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover align-middle">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th class="text-center" style="width: 10%;">No.</th>
+                                                            <th class="text-center" style="width: 25%;">Ayat</th>
+                                                            <th class="text-center" style="width: 65%;">Tahap Pencapaian</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if(is_array($ayatList) || $ayatList instanceof \Illuminate\Support\Collection)
+                                                        @foreach($ayatList as $index => $ayatNum)
+                                                            @php
+                                                                $ayatLabel = "Ayat " . $ayatNum;
+                                                                $penggal1Key = $ayatLabel . '_Penggal 1';
+                                                                $penggal2Key = $ayatLabel . '_Penggal 2';
+                                                                $penggal1 = $prestasi->has($penggal1Key) ? $prestasi->get($penggal1Key)->first() : null;
+                                                                $penggal2 = $prestasi->has($penggal2Key) ? $prestasi->get($penggal2Key)->first() : null;
+                                                            @endphp
+                                                            <tr>
+                                                                <td class="text-center fw-semibold">{{ $index + 1 }}</td>
+                                                                <td class="fw-semibold">{{ $ayatLabel }}</td>
+                                                                <td>
+                                                                    <div class="d-flex justify-content-center gap-3">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                   name="assessments[{{ $ayatLabel }}]"
+                                                                                   value="AM"
+                                                                                   id="ayat{{ $ayatNum }}_AM">
+                                                                            <label class="form-check-label" for="ayat{{ $ayatNum }}_AM">
+                                                                                <span class="badge bg-warning text-dark">AM</span> Ansur Maju
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                   name="assessments[{{ $ayatLabel }}]"
+                                                                                   value="M"
+                                                                                   id="ayat{{ $ayatNum }}_M">
+                                                                            <label class="form-check-label" for="ayat{{ $ayatNum }}_M">
+                                                                                <span class="badge bg-info text-dark">M</span> Maju
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                   name="assessments[{{ $ayatLabel }}]"
+                                                                                   value="SM"
+                                                                                   id="ayat{{ $ayatNum }}_SM">
+                                                                            <label class="form-check-label" for="ayat{{ $ayatNum }}_SM">
+                                                                                <span class="badge bg-success">SM</span> Sangat Maju
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    @if($penggal1 || $penggal2)
+                                                                        <div class="mt-2 small text-muted">
+                                                                            @if($penggal1)
+                                                                                <span class="me-3"><strong>P1:</strong>
+                                                                                    @if($penggal1->tahapPencapaian == 'AM')
+                                                                                        <span class="badge bg-warning text-dark">AM</span>
+                                                                                    @elseif($penggal1->tahapPencapaian == 'M')
+                                                                                        <span class="badge bg-info text-dark">M</span>
+                                                                                    @else
+                                                                                        <span class="badge bg-success">SM</span>
+                                                                                    @endif
+                                                                                </span>
+                                                                            @endif
+                                                                            @if($penggal2)
+                                                                                <span><strong>P2:</strong>
+                                                                                    @if($penggal2->tahapPencapaian == 'AM')
+                                                                                        <span class="badge bg-warning text-dark">AM</span>
+                                                                                    @elseif($penggal2->tahapPencapaian == 'M')
+                                                                                        <span class="badge bg-info text-dark">M</span>
+                                                                                    @else
+                                                                                        <span class="badge bg-success">SM</span>
+                                                                                    @endif
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                            @endforeach
+                                                        @endif
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- Submit Button -->
+                                            <div class="d-flex justify-content-end mt-4">
+                                                <button type="submit" class="btn btn-primary btn-lg">
+                                                    <i class="bi bi-save me-2"></i>Simpan Penilaian
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            @elseif($selectedClass && $selectedStudent && $selectedSubjek)
+                                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                                    <div class="card-body text-center text-muted py-5">
+                                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+                                        <p class="mt-3">Tiada senarai ayat untuk subjek ini.</p>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Information Box -->
+                            @if(!$selectedClass)
+                                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                                    <div class="card-body text-center text-muted py-5">
+                                        <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
+                                        <p class="mt-3">Sila pilih kelas, murid dan subjek untuk mula menilai prestasi.</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
                         <!-- Subjects Tab -->
                         <div class="tab-pane fade" id="subjects" role="tabpanel" aria-labelledby="subjects-tab">
-                            <div class="card-body">
-                                @if(session('success'))
-                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                        <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                @endif
+                            @if(session('success'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            @endif
 
-                                @if(session('error'))
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                @endif
+                            @if(session('error'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            @endif
 
-                                <!-- Add New Subject Form -->
-                                <div class="mb-4">
-                                    <h5 class="mb-3">Tambah Subjek Baru</h5>
+                            <!-- Add New Subject Form -->
+                            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                                <div class="card-header bg-success text-white fw-semibold">
+                                    <i class="bi bi-plus-circle me-2"></i>Tambah Subjek Baru
+                                </div>
+                                <div class="card-body">
                                     <form method="POST" action="{{ route('pentadbir.storeSubjek') }}" class="row g-3">
                                         @csrf
                                         <div class="col-md-8">
@@ -119,232 +276,88 @@
                                         </div>
                                     </form>
                                 </div>
+                            </div>
 
-                                <!-- Subjects List -->
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover align-middle">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th class="text-center" style="width: 10%;">No.</th>
-                                                <th style="width: 60%;">Nama Subjek</th>
-                                                <th class="text-center" style="width: 30%;">Tindakan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if($subjek instanceof \Illuminate\Database\Eloquent\Collection || is_array($subjek))
-                                                @foreach($subjek as $index => $item)
+                            <!-- Subjects List -->
+                            <div class="card shadow-sm border-0 rounded-4">
+                                <div class="card-header bg-info text-white fw-semibold">
+                                    <i class="bi bi-list-ul me-2"></i>Senarai Subjek
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover align-middle">
+                                            <thead class="table-primary">
                                                 <tr>
-                                                    <td class="text-center fw-semibold">{{ $index + 1 }}</td>
-                                                    <td>
-                                                        <span class="fw-semibold">{{ $item->nama_subjek }}</span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <!-- Edit Button -->
-                                                        <button type="button" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
-                                                            <i class="bi bi-pencil-square"></i> Edit
-                                                        </button>
-                                                        <!-- Delete Button -->
-                                                        <form method="POST" action="{{ route('pentadbir.destroySubjek', $item->id) }}" class="d-inline" onsubmit="return confirm('Adakah anda pasti mahu memadam subjek ini?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                                <i class="bi bi-trash"></i> Padam
-                                                            </button>
-                                                        </form>
-                                                    </td>
+                                                    <th class="text-center" style="width: 10%;">No.</th>
+                                                    <th style="width: 60%;">Nama Subjek</th>
+                                                    <th class="text-center" style="width: 30%;">Tindakan</th>
                                                 </tr>
-
-                                                <!-- Edit Modal -->
-                                                <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="editModalLabel{{ $item->id }}">Edit Subjek</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <form method="POST" action="{{ route('pentadbir.updateSubjek', $item->id) }}">
+                                            </thead>
+                                            <tbody>
+                                                @if($subjek instanceof \Illuminate\Database\Eloquent\Collection || is_array($subjek))
+                                                    @foreach($subjek as $index => $item)
+                                                    <tr>
+                                                        <td class="text-center fw-semibold">{{ $index + 1 }}</td>
+                                                        <td>
+                                                            <span class="fw-semibold">{{ $item->nama_subjek }}</span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <!-- Edit Button -->
+                                                            <button type="button" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
+                                                                <i class="bi bi-pencil-square"></i> Edit
+                                                            </button>
+                                                            <!-- Delete Button -->
+                                                            <form method="POST" action="{{ route('pentadbir.destroySubjek', $item->id) }}" class="d-inline" onsubmit="return confirm('Adakah anda pasti mahu memadam subjek ini?')">
                                                                 @csrf
-                                                                @method('PUT')
-                                                                <div class="modal-body">
-                                                                    <div class="mb-3">
-                                                                        <label for="nama_subjek{{ $item->id }}" class="form-label">Nama Subjek</label>
-                                                                        <input type="text" name="nama_subjek" id="nama_subjek{{ $item->id }}" class="form-control" value="{{ $item->nama_subjek }}" required>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                                                </div>
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                                    <i class="bi bi-trash"></i> Padam
+                                                                </button>
                                                             </form>
+                                                        </td>
+                                                    </tr>
+
+                                                    <!-- Edit Modal -->
+                                                    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="editModalLabel{{ $item->id }}">Edit Subjek</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <form method="POST" action="{{ route('pentadbir.updateSubjek', $item->id) }}">
+                                                                    @csrf
+                                                                    @method('PUT')
+                                                                    <div class="modal-body">
+                                                                        <div class="mb-3">
+                                                                            <label for="nama_subjek{{ $item->id }}" class="form-label">Nama Subjek</label>
+                                                                            <input type="text" name="nama_subjek" id="nama_subjek{{ $item->id }}" class="form-control" value="{{ $item->nama_subjek }}" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                @endforeach
-                                            @else
-                                                <tr>
-                                                    <td colspan="3" class="text-center text-muted py-4">
-                                                        <i class="bi bi-info-circle" style="font-size: 2rem;"></i>
-                                                        <p class="mt-2">Tiada subjek direkodkan.</p>
-                                                    </td>
-                                                </tr>
-                                            @endif
-                                        </tbody>
-                                    </table>
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted py-4">
+                                                            <i class="bi bi-info-circle" style="font-size: 2rem;"></i>
+                                                            <p class="mt-2">Tiada subjek direkodkan.</p>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-            <!-- Assessment Form Section -->
-            @if($selectedClass && $selectedStudent && $selectedSubjek && count($ayatList) > 0)
-                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                    <div class="card-header bg-success text-white fw-semibold">
-                        <i class="bi bi-pencil-square me-2"></i> Penilaian Prestasi Hafazan - {{ $selectedSubjek }}
-                    </div>
-                    <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
-                        @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
-                        <form method="POST" action="{{ route('pentadbir.storePrestasi') }}">
-                            @csrf
-                            <input type="hidden" name="MyKidID" value="{{ $selectedStudent->MyKidID }}">
-                            <input type="hidden" name="subjek" value="{{ $selectedSubjek }}">
-
-                            <!-- Select Penggal -->
-                            <div class="mb-4">
-                                <label for="penggal" class="form-label fw-bold">Pilih Penggal</label>
-                                <select name="penggal" id="penggal" class="form-select w-auto" required>
-                                    <option value="">-- Pilih Penggal --</option>
-                                    <option value="Penggal 1">Penggal 1</option>
-                                    <option value="Penggal 2">Penggal 2</option>
-                                </select>
-                            </div>
-
-                            <!-- Assessment Table -->
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover align-middle">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th class="text-center" style="width: 10%;">No.</th>
-                                            <th class="text-center" style="width: 25%;">Ayat</th>
-                                            <th class="text-center" style="width: 65%;">Tahap Pencapaian</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(is_array($ayatList) || $ayatList instanceof \Illuminate\Support\Collection)
-                                        @foreach($ayatList as $index => $ayatNum)
-                                            @php
-                                                $ayatLabel = "Ayat " . $ayatNum;
-                                                $penggal1Key = $ayatLabel . '_Penggal 1';
-                                                $penggal2Key = $ayatLabel . '_Penggal 2';
-                                                $penggal1 = $prestasi->has($penggal1Key) ? $prestasi->get($penggal1Key)->first() : null;
-                                                $penggal2 = $prestasi->has($penggal2Key) ? $prestasi->get($penggal2Key)->first() : null;
-                                            @endphp
-                                            <tr>
-                                                <td class="text-center fw-semibold">{{ $index + 1 }}</td>
-                                                <td class="fw-semibold">{{ $ayatLabel }}</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center gap-3">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                   name="assessments[{{ $ayatLabel }}]"
-                                                                   value="AM"
-                                                                   id="ayat{{ $ayatNum }}_AM">
-                                                            <label class="form-check-label" for="ayat{{ $ayatNum }}_AM">
-                                                                <span class="badge bg-warning text-dark">AM</span> Ansur Maju
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                   name="assessments[{{ $ayatLabel }}]"
-                                                                   value="M"
-                                                                   id="ayat{{ $ayatNum }}_M">
-                                                            <label class="form-check-label" for="ayat{{ $ayatNum }}_M">
-                                                                <span class="badge bg-info text-dark">M</span> Maju
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                   name="assessments[{{ $ayatLabel }}]"
-                                                                   value="SM"
-                                                                   id="ayat{{ $ayatNum }}_SM">
-                                                            <label class="form-check-label" for="ayat{{ $ayatNum }}_SM">
-                                                                <span class="badge bg-success">SM</span> Sangat Maju
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    @if($penggal1 || $penggal2)
-                                                        <div class="mt-2 small text-muted">
-                                                            @if($penggal1)
-                                                                <span class="me-3"><strong>P1:</strong>
-                                                                    @if($penggal1->tahapPencapaian == 'AM')
-                                                                        <span class="badge bg-warning text-dark">AM</span>
-                                                                    @elseif($penggal1->tahapPencapaian == 'M')
-                                                                        <span class="badge bg-info text-dark">M</span>
-                                                                    @else
-                                                                        <span class="badge bg-success">SM</span>
-                                                                    @endif
-                                                                </span>
-                                                            @endif
-                                                            @if($penggal2)
-                                                                <span><strong>P2:</strong>
-                                                                    @if($penggal2->tahapPencapaian == 'AM')
-                                                                        <span class="badge bg-warning text-dark">AM</span>
-                                                                    @elseif($penggal2->tahapPencapaian == 'M')
-                                                                        <span class="badge bg-info text-dark">M</span>
-                                                                    @else
-                                                                        <span class="badge bg-success">SM</span>
-                                                                    @endif
-                                                                </span>
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-save me-2"></i>Simpan Penilaian
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            @elseif($selectedClass && $selectedStudent && $selectedSubjek)
-                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                    <div class="card-body text-center text-muted py-5">
-                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
-                        <p class="mt-3">Tiada senarai ayat untuk subjek ini.</p>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Information Box -->
-            @if(!$selectedClass)
-                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                    <div class="card-body text-center text-muted py-5">
-                        <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
-                        <p class="mt-3">Sila pilih kelas, murid dan subjek untuk mula menilai prestasi.</p>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 </div>
@@ -363,5 +376,21 @@
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
     }
+
+    /* Fix tab text readability */
+    .nav-tabs .nav-link.active {
+        color: #000 !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border-color: #dee2e6 #dee2e6 #fff !important;
+    }
+
+    .nav-tabs .nav-link {
+        color: #fff !important;
+    }
+
+    .nav-tabs .nav-link:hover {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
 </style>
 @endsection
+
