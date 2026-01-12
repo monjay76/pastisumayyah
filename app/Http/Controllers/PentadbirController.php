@@ -318,6 +318,17 @@ class PentadbirController extends Controller
 
     private function getAyatList($subjek)
     {
+        // Senarai surah untuk Pratahfiz (Surah Lazim)
+        $subjekLower = strtolower($subjek);
+        if ($subjekLower == 'pra tahfiz' || $subjekLower == 'pratahfiz') {
+            return [
+                'Al-Fatihah', 'An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Masad',
+                'An-Nasr', 'Al-Kafirun', 'Al-Kawthar', 'Al-Ma\'un', 'Quraysh',
+                'Al-Fil', 'Al-Humazah', 'Al-\'Asr', 'At-Takathur', 'Al-Qari\'ah',
+                'Al-\'Adiyat', 'Al-Zalzalah', 'Al-Bayyinah', 'Al-Qadr'
+            ];
+        }
+
         // For demo purposes, limit to first 15 ayat
         $ayatLists = [
             'Surah Al-Mulk' => range(1, 30),
