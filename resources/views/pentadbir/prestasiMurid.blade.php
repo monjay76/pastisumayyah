@@ -95,6 +95,10 @@
                                 @php
                                     $isPratahfiz = strtolower($selectedSubjek) == 'pra tahfiz' || strtolower($selectedSubjek) == 'pratahfiz';
                                     $isNurulQuran = strtolower($selectedSubjek) == 'nurul quran';
+                                    $isGeneralSubject = in_array(strtolower($selectedSubjek), [
+                                        'bahasa malaysia', 'bahasa inggeris', 'matematik',
+                                        'sains', 'jawi', 'peribadi muslim', 'arab'
+                                    ]);
                                 @endphp
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
                                     <div class="card-header bg-success text-white fw-semibold">
@@ -138,7 +142,15 @@
                                                         <tr>
                                                             <th class="text-center" style="width: 10%;">No.</th>
                                                             <th class="text-center" style="width: 25%;">
-                                                                {{ $isPratahfiz ? 'Pratahfiz Surah Lazim' : ($isNurulQuran ? 'Bacaan Wajib Nurul Quran' : 'Ayat') }}
+                                                                @if($isPratahfiz)
+                                                                    Pratahfiz Surah Lazim
+                                                                @elseif($isNurulQuran)
+                                                                    Bacaan Wajib Nurul Quran
+                                                                @elseif($isGeneralSubject)
+                                                                    Kriteria Penilaian
+                                                                @else
+                                                                    Ayat
+                                                                @endif
                                                             </th>
                                                             <th class="text-center" style="width: 65%;">Tahap Pencapaian</th>
                                                         </tr>
@@ -170,6 +182,88 @@
                                                                     </td>
                                                                     @endif
                                                                     <td class="fw-semibold">{{ $unitLabel }}</td>
+                                                                    <td>
+                                                                        <div class="d-flex justify-content-center gap-3">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="radio"
+                                                                                       name="assessments[{{ $itemLabel }}]"
+                                                                                       value="AM"
+                                                                                       id="item{{ $itemId }}_AM">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_AM">
+                                                                                    <span class="badge bg-warning text-dark">AM</span> Ansur Maju
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="radio"
+                                                                                       name="assessments[{{ $itemLabel }}]"
+                                                                                       value="M"
+                                                                                       id="item{{ $itemId }}_M">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_M">
+                                                                                    <span class="badge bg-info text-dark">M</span> Maju
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input" type="radio"
+                                                                                       name="assessments[{{ $itemLabel }}]"
+                                                                                       value="SM"
+                                                                                       id="item{{ $itemId }}_SM">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_SM">
+                                                                                    <span class="badge bg-success">SM</span> Sangat Maju
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                        @if($penggal1 || $penggal2)
+                                                                            <div class="mt-2 small text-muted">
+                                                                                @if($penggal1)
+                                                                                    <span class="me-3"><strong>P1:</strong>
+                                                                                        @if($penggal1->tahapPencapaian == 'AM')
+                                                                                            <span class="badge bg-warning text-dark">AM</span>
+                                                                                        @elseif($penggal1->tahapPencapaian == 'M')
+                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @else
+                                                                                            <span class="badge bg-success">SM</span>
+                                                                                        @endif
+                                                                                    </span>
+                                                                                @endif
+                                                                                @if($penggal2)
+                                                                                    <span><strong>P2:</strong>
+                                                                                        @if($penggal2->tahapPencapaian == 'AM')
+                                                                                            <span class="badge bg-warning text-dark">AM</span>
+                                                                                        @elseif($penggal2->tahapPencapaian == 'M')
+                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @else
+                                                                                            <span class="badge bg-success">SM</span>
+                                                                                        @endif
+                                                                                    </span>
+                                                                                @endif
+                                                                            </div>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @elseif($isGeneralSubject)
+                                                            {{-- Standardized table structure for general subjects --}}
+                                                            @php
+                                                                $generalCriteria = [
+                                                                    'Pengecaman & Kenal Huruf/Nombor',
+                                                                    'Sebutan & Bunyi',
+                                                                    'Kemahiran Membaca',
+                                                                    'Kemahiran Menulis',
+                                                                    'Kefahaman & Aplikasi'
+                                                                ];
+                                                            @endphp
+                                                            @foreach($generalCriteria as $index => $criteria)
+                                                                @php
+                                                                    $itemLabel = $criteria;
+                                                                    $itemId = str_replace([' ', '&'], '_', $criteria);
+                                                                    $penggal1Key = $itemLabel . '_Penggal 1';
+                                                                    $penggal2Key = $itemLabel . '_Penggal 2';
+                                                                    $penggal1 = $prestasi->has($penggal1Key) ? $prestasi->get($penggal1Key)->first() : null;
+                                                                    $penggal2 = $prestasi->has($penggal2Key) ? $prestasi->get($penggal2Key)->first() : null;
+                                                                @endphp
+                                                                <tr>
+                                                                    <td class="text-center fw-semibold">{{ $index + 1 }}</td>
+                                                                    <td class="fw-semibold">{{ $itemLabel }}</td>
                                                                     <td>
                                                                         <div class="d-flex justify-content-center gap-3">
                                                                             <div class="form-check">
@@ -489,4 +583,3 @@
     }
 </style>
 @endsection
-
