@@ -9,24 +9,28 @@ class Prestasi extends Model
     protected $table = 'prestasi';
     protected $primaryKey = 'ID_Prestasi';
     protected $fillable = [
-        'ID_Guru', 
-        'MyKidID', 
-        'subjek', 
-        'markah', 
-        'gred', 
+        'subject_id',
+        'murid_id',
+        'guru_id',
+        'subjek',
         'tarikhRekod',
-        'ayat',
+        'kriteria_nama',
         'penggal',
-        'tahapPencapaian'
+        'tahap_pencapaian'
     ];
 
     public function guru()
     {
-        return $this->belongsTo(Guru::class, 'ID_Guru', 'ID_Guru');
+        return $this->belongsTo(Guru::class, 'guru_id', 'ID_Guru');
     }
 
     public function murid()
     {
-        return $this->belongsTo(Murid::class, 'MyKidID', 'MyKidID');
+        return $this->belongsTo(Murid::class, 'murid_id', 'MyKidID');
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subjek::class, 'subject_id', 'id');
     }
 }

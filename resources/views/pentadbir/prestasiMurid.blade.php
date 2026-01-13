@@ -122,16 +122,17 @@
 
                                         <form method="POST" action="{{ route('pentadbir.storePrestasi') }}">
                                             @csrf
-                                            <input type="hidden" name="MyKidID" value="{{ $selectedStudent->MyKidID }}">
-                                            <input type="hidden" name="subjek" value="{{ $selectedSubjek }}">
+                                            <input type="hidden" name="murid_id" value="{{ $selectedStudent->MyKidID }}">
+                                            <input type="hidden" name="subject_id" id="subject_id" value="">
+                                            <input type="hidden" name="penggal" id="penggalInput" value="">
 
                                             <!-- Select Penggal -->
                                             <div class="mb-4">
                                                 <label for="penggal" class="form-label fw-bold">Pilih Penggal</label>
-                                                <select name="penggal" id="penggal" class="form-select w-auto" required>
+                                                <select name="penggal_display" id="penggal" class="form-select w-auto" required onchange="updatePenggalValue()">
                                                     <option value="">-- Pilih Penggal --</option>
-                                                    <option value="Penggal 1">Penggal 1</option>
-                                                    <option value="Penggal 2">Penggal 2</option>
+                                                    <option value="1">Penggal 1</option>
+                                                    <option value="2">Penggal 2</option>
                                                 </select>
                                             </div>
 
@@ -551,6 +552,38 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Update hidden penggal field when dropdown changes
+    function updatePenggalValue() {
+        const penggalSelect = document.getElementById('penggal');
+        const penggalInput = document.getElementById('penggalInput');
+        if (penggalSelect && penggalInput) {
+            penggalInput.value = penggalSelect.value;
+        }
+    }
+
+    // Set subject ID when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get subject ID from subject name
+        const subjectSelect = document.getElementById('subjek');
+        const subjectIdInput = document.getElementById('subject_id');
+
+        if (subjectSelect && subjectIdInput && '{{ $selectedSubjek }}') {
+            // Fetch subject ID via AJAX
+            fetch('/api/get-subject-id?nama_subjek={{ urlencode($selectedSubjek) }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.subject_id) {
+                        subjectIdInput.value = data.subject_id;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching subject ID:', error);
+                });
+        }
+    });
+</script>
 
 <style>
     .form-check-input:checked {

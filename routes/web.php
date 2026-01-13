@@ -40,9 +40,54 @@ Route::get('/pentadbir/maklumat-ibubapa', [PentadbirController::class, 'maklumat
 Route::get('/pentadbir/aktiviti-tahunan', [PentadbirController::class, 'aktivitiTahunan'])->name('pentadbir.aktivitiTahunan');
 Route::get('/pentadbir/aktiviti-tahunan/{month}', [PentadbirController::class, 'aktivitiTahunanMonth'])->name('pentadbir.aktivitiTahunanMonth');
 
+// API endpoint for subject ID lookup
+Route::get('/api/get-subject-id', function () {
+    $namaSubjek = request('nama_subjek');
+    if (!$namaSubjek) {
+        return response()->json(['success' => false, 'error' => 'Nama subjek diperlukan']);
+    }
+
+    $subject = \App\Models\Subjek::where('nama_subjek', $namaSubjek)->first();
+
+    if (!$subject) {
+        return response()->json(['success' => false, 'error' => 'Subjek tidak dijumpai']);
+    }
+
+    return response()->json(['success' => true, 'subject_id' => $subject->id]);
+});
+
+// Fallback API endpoint for subject lookup by name
+Route::get('/api/subjects-by-name', function () {
+    $namaSubjek = request('nama_subjek');
+    if (!$namaSubjek) {
+        return response()->json(['success' => false, 'error' => 'Nama subjek diperlukan']);
+    }
+
+    $subjects = \App\Models\Subjek::where('nama_subjek', 'like', '%' . $namaSubjek . '%')
+        ->orderBy('nama_subjek')
+        ->get();
+
+    if ($subjects->isEmpty()) {
+        return response()->json(['success' => false, 'error' => 'Tiada subjek dijumpai']);
+    }
+
+    return response()->json([
+        'success' => true,
+        'subjects' => $subjects->map(function ($subject) {
+            return [
+                'id' => $subject->id,
+                'nama_subjek' => $subject->nama_subjek,
+                'created_at' => $subject->created_at,
+                'updated_at' => $subject->updated_at
+            ];
+        })
+    ]);
+});
+
 // Prestasi Murid (Pentadbir)
-Route::get('/pentadbir/prestasi-murid', [PentadbirController::class, 'prestasiMurid'])->name('pentadbir.prestasiMurid');
-Route::post('/pentadbir/prestasi-murid', [PentadbirController::class, 'storePrestasi'])->name('pentadbir.storePrestasi');
+Route::get('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'index'])->name('pentadbir.prestasiMurid');
+Route::get('/pentadbir/prestasi-murid/get-performance', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'getPerformance'])->name('pentadbir.getPerformance');
+Route::post('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'storeOrUpdate'])->name('pentadbir.storePrestasi');
 
 // Senarai Subjek (Pentadbir)
 Route::get('/pentadbir/senarai-subjek', [PentadbirController::class, 'senaraiSubjek'])->name('pentadbir.senaraiSubjek');
@@ -71,8 +116,9 @@ Route::get('/guru/aktiviti-tahunan', [GuruPageController::class, 'aktivitiTahuna
 Route::get('/guru/aktiviti-tahunan/{month}', [GuruPageController::class, 'aktivitiTahunanMonth'])->name('guru.aktivitiTahunanMonth');
 Route::post('/guru/aktiviti-tahunan/store-image', [GuruPageController::class, 'storeAktivitiImage'])->name('guru.storeAktivitiImage');
 Route::post('/guru/aktiviti-tahunan/delete-image/{id}', [GuruPageController::class, 'deleteAktivitiImage'])->name('guru.deleteAktivitiImage');
-Route::get('/guru/prestasi-murid', [App\Http\Controllers\PrestasiController::class, 'index'])->name('guru.prestasiMurid');
-Route::post('/guru/prestasi-murid', [App\Http\Controllers\PrestasiController::class, 'store'])->name('guru.prestasiMurid.store');
+Route::get('/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'index'])->name('guru.prestasiMurid');
+Route::get('/guru/prestasi-murid/get-performance', [\App\Http\Controllers\Guru\PrestasiController::class, 'getPerformance'])->name('guru.getPerformance');
+Route::post('/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'storeOrUpdate'])->name('guru.prestasiMurid.store');
 Route::get('/guru/laporan', [GuruPageController::class, 'laporan'])->name('guru.laporan');
 Route::post('/guru/bulk-action', [GuruPageController::class, 'bulkAction'])->name('guru.bulkAction');
 Route::get('/guru/add-murid', [GuruPageController::class, 'addMurid'])->name('guru.addMurid');

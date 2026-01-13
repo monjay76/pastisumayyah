@@ -117,16 +117,17 @@
 
                                         <form method="POST" action="{{ route('guru.prestasiMurid.store') }}">
                                             @csrf
-                                            <input type="hidden" name="MyKidID" value="{{ $selectedStudent->MyKidID }}">
-                                            <input type="hidden" name="subjek" value="{{ $selectedSubjek }}">
+                                            <input type="hidden" name="murid_id" value="{{ $selectedStudent->MyKidID }}">
+                                            <input type="hidden" name="subject_id" id="subject_id" value="">
+                                            <input type="hidden" name="penggal" id="penggalInput" value="">
 
                                             <!-- Select Penggal -->
                                             <div class="mb-4">
                                                 <label for="penggal" class="form-label fw-bold">Pilih Penggal</label>
-                                                <select name="penggal" id="penggal" class="form-select w-auto" required>
+                                                <select name="penggal_display" id="penggal" class="form-select w-auto" required onchange="updatePenggalValue()">
                                                     <option value="">-- Pilih Penggal --</option>
-                                                    <option value="Penggal 1">Penggal 1</option>
-                                                    <option value="Penggal 2">Penggal 2</option>
+                                                    <option value="1">Penggal 1</option>
+                                                    <option value="2">Penggal 2</option>
                                                 </select>
                                             </div>
 
@@ -432,6 +433,164 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Update hidden penggal field when dropdown changes
+    function updatePenggalValue() {
+        const penggalSelect = document.getElementById('penggal');
+        const penggalInput = document.getElementById('penggalInput');
+        if (penggalSelect && penggalInput) {
+            const selectedValue = penggalSelect.value;
+            penggalInput.value = selectedValue;
+            // Add visual feedback
+            if (selectedValue) {
+                penggalSelect.classList.remove('is-invalid');
+                penggalSelect.classList.add('is-valid');
+            } else {
+                penggalSelect.classList.remove('is-valid');
+                penggalSelect.classList.add('is-invalid');
+            }
+        }
+    }
+
+    // Enhanced subject ID lookup with fallback
+    function fetchSubjectIdWithFallback() {
+        return new Promise((resolve, reject) => {
+            const subjectIdInput = document.getElementById('subject_id');
+            const selectedSubjek = '{{ $selectedSubjek }}';
+
+            if (!selectedSubjek) {
+                reject('No subject selected');
+                return;
+            }
+
+            // Try AJAX first
+            fetch('/api/get-subject-id?nama_subjek=' + encodeURIComponent('{{ $selectedSubjek }}'))
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.subject_id) {
+                        subjectIdInput.value = data.subject_id;
+                        console.log('Subject ID successfully retrieved via API:', data.subject_id);
+                        resolve(data.subject_id);
+                    } else {
+                        console.error('Subject ID lookup failed:', data.error || 'Unknown error');
+                        throw new Error(data.error || 'Subject not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching subject ID via primary API:', error);
+
+                    // Fallback 1: try to get from existing prestasi records
+                    @if($prestasi->isNotEmpty() && $prestasi->first()->subject_id)
+                        const fallbackId = '{{ $prestasi->first()->subject_id }}';
+                        subjectIdInput.value = fallbackId;
+                        console.log('Using fallback subject ID from prestasi records:', fallbackId);
+                        resolve(fallbackId);
+                    @elseif($prestasi->isNotEmpty() && $prestasi->first()->subjek_id)
+                        // Additional fallback for older records
+                        const fallbackId = '{{ $prestasi->first()->subjek_id }}';
+                        subjectIdInput.value = fallbackId;
+                        console.log('Using fallback subject ID from subjek_id:', fallbackId);
+                        resolve(fallbackId);
+                    @else
+                        // Fallback 2: try to find subject by name directly
+                        fetch('/api/subjects-by-name?nama_subjek=' + encodeURIComponent(selectedSubjek))
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success && data.subjects && data.subjects.length > 0) {
+                                    subjectIdInput.value = data.subjects[0].id;
+                                    console.log('Using fallback subject ID from subjects-by-name API:', data.subjects[0].id);
+                                    resolve(data.subjects[0].id);
+                                } else {
+                                    // Fallback 3: try to get subject ID from subjek table directly
+                                    console.error('All API fallbacks failed, attempting direct subject lookup');
+                                    reject('Could not determine subject ID after multiple attempts');
+                                }
+                            })
+                            .catch(fallbackError => {
+                                console.error('All subject ID lookup methods failed:', fallbackError);
+                                reject('Could not determine subject ID');
+                            });
+                    @endif
+                });
+        });
+    }
+
+    // Set subject ID when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const subjectIdInput = document.getElementById('subject_id');
+        const selectedSubjek = '{{ $selectedSubjek }}';
+
+        if (subjectIdInput && selectedSubjek) {
+            fetchSubjectIdWithFallback()
+                .then(subjectId => {
+                    console.log('Subject ID successfully set to:', subjectId);
+                })
+                .catch(error => {
+                    console.error('Failed to set subject ID:', error);
+                    // Show warning to user
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-warning mt-3';
+                    alertDiv.innerHTML = `
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Amaran:</strong> Subject ID tidak dapat dijumpai untuk "${selectedSubjek}".
+                        Penilaian mungkin tidak dapat disimpan. Sila muat semula halaman atau pilih subjek semula.
+                    `;
+                    // Insert after the subject select
+                    const subjectSelect = document.getElementById('subjek');
+                    if (subjectSelect) {
+                        subjectSelect.parentNode.insertBefore(alertDiv, subjectSelect.nextSibling);
+                    }
+                });
+        }
+    });
+
+    // Add form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action="{{ route("guru.prestasiMurid.store") }}"]');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const subjectIdInput = document.getElementById('subject_id');
+                const penggalInput = document.getElementById('penggalInput');
+                const penggalSelect = document.getElementById('penggal');
+
+                // Validate subject ID
+                if (!subjectIdInput || !subjectIdInput.value) {
+                    e.preventDefault();
+                    alert('Subject ID tidak dijumpai. Sila muat semula halaman atau pilih subjek semula.');
+                    if (penggalSelect) penggalSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+
+                // Validate penggal
+                if (!penggalInput || !penggalInput.value) {
+                    e.preventDefault();
+                    alert('Sila pilih Penggal sebelum menyimpan.');
+                    if (penggalSelect) {
+                        penggalSelect.focus();
+                        penggalSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        penggalSelect.classList.add('is-invalid');
+                    }
+                    return false;
+                }
+
+                // Check if any assessments are selected
+                const assessments = form.querySelectorAll('input[name^="assessments"]:checked');
+                if (assessments.length === 0) {
+                    if (!confirm('Tiada penilaian dipilih. Adakah anda pasti ingin menyimpan penilaian kosong?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+    });
+</script>
 
 <style>
     .form-check-input:checked {
