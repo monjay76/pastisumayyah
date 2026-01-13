@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Prestasi;
 use App\Models\Murid;
+use App\Models\Subjek;
 use Illuminate\Http\Request;
 
 class PrestasiController extends Controller
@@ -18,51 +19,50 @@ class PrestasiController extends Controller
         } catch (\Throwable $e) {
             $classes = collect();
         }
-
         $selectedClass = $request->query('kelas');
         $selectedStudent = null;
-        $selectedSubjek = null;
         $students = collect();
-        $subjekList = ['Surah Al-Mulk', 'Surah Al-Kahf', 'Surah Yasin', 'Surah Ar-Rahman'];
+        try {
+            $subjekList = Subjek::pluck('nama_subjek')->toArray();
+        } catch (\Throwable $e) {
+            $subjekList = [];
+        }
+        $subjekList = is_array($subjekList) ? $subjekList : [];
+        $selectedSubjek = null;
         $ayatList = [];
         $prestasi = collect();
 
-        // If class is selected, get students
         if ($selectedClass) {
-            $students = Murid::where('kelas', $selectedClass)->orderBy('namaMurid')->get();
-            
-            // If student is selected
+            try {
+                $students = Murid::where('kelas', $selectedClass)->orderBy('namaMurid')->get();
+            } catch (\Throwable $e) {
+                $students = collect();
+            }
             $muridId = $request->query('murid');
             if ($muridId) {
-                $selectedStudent = Murid::find($muridId);
-                
-                // If subject is selected
+                try {
+                    $selectedStudent = Murid::find($muridId);
+                } catch (\Throwable $e) {
+                    $selectedStudent = null;
+                }
                 $selectedSubjek = $request->query('subjek');
                 if ($selectedSubjek) {
-                    // Generate ayat list based on subject
+                    try {
+                        $prestasi = Prestasi::where('MyKidID', $muridId)
+                            ->where('subjek', $selectedSubjek)
+                            ->get()
+                            ->keyBy(function ($item) {
+                                return $item->ayat . '_' . $item->penggal;
+                            });
+                    } catch (\Throwable $e) {
+                        $prestasi = collect();
+                    }
                     $ayatList = $this->getAyatList($selectedSubjek);
-                    
-                    // Get existing prestasi for this student and subject
-                    $prestasi = Prestasi::where('MyKidID', $muridId)
-                        ->where('subjek', $selectedSubjek)
-                        ->get()
-                        ->groupBy(function($item) {
-                            return $item->ayat . '_' . $item->penggal;
-                        });
                 }
             }
         }
 
-        return view('guru.prestasiMurid', compact(
-            'classes', 
-            'selectedClass', 
-            'students', 
-            'selectedStudent',
-            'subjekList',
-            'selectedSubjek',
-            'ayatList',
-            'prestasi'
-        ));
+        return view('guru.prestasiMurid', compact('classes', 'selectedClass', 'students', 'selectedStudent', 'subjekList', 'selectedSubjek', 'ayatList', 'prestasi'));
     }
 
     /**
@@ -70,6 +70,18 @@ class PrestasiController extends Controller
      */
     private function getAyatList($subjek)
     {
+        // Senarai surah untuk Pratahfiz (Surah Lazim)
+        $subjekLower = strtolower($subjek);
+        if ($subjekLower == 'pra tahfiz' || $subjekLower == 'pratahfiz') {
+            return [
+                'Al-Fatihah', 'An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Masad',
+                'An-Nasr', 'Al-Kafirun', 'Al-Kawthar', 'Al-Ma\'un', 'Quraysh',
+                'Al-Fil', 'Al-Humazah', 'Al-\'Asr', 'At-Takathur', 'Al-Qari\'ah',
+                'Al-\'Adiyat', 'Al-Zalzalah', 'Al-Bayyinah', 'Al-Qadr'
+            ];
+        }
+
+        // For demo purposes, limit to first 15 ayat
         $ayatLists = [
             'Surah Al-Mulk' => range(1, 30),
             'Surah Al-Kahf' => range(1, 110),
@@ -77,7 +89,6 @@ class PrestasiController extends Controller
             'Surah Ar-Rahman' => range(1, 78),
         ];
 
-        // For demo purposes, limit to first 15 ayat
         $ayat = $ayatLists[$subjek] ?? range(1, 15);
         return array_slice($ayat, 0, 15);
     }
@@ -94,34 +105,27 @@ class PrestasiController extends Controller
             'assessments' => 'required|array',
         ]);
 
-        try {
-            $myKidID = $request->MyKidID;
-            $subjek = $request->subjek;
-            $penggal = $request->penggal;
-            $assessments = $request->assessments;
+        $myKidID = $request->MyKidID;
+        $subjek = $request->subjek;
+        $penggal = $request->penggal;
 
-            foreach ($assessments as $ayat => $tahapPencapaian) {
-                if ($tahapPencapaian) {
-                    Prestasi::updateOrCreate(
-                        [
-                            'MyKidID' => $myKidID,
-                            'subjek' => $subjek,
-                            'ayat' => $ayat,
-                            'penggal' => $penggal,
-                        ],
-                        [
-                            'ID_Guru' => auth()->user()->ID_Guru ?? 1, // Assuming logged in guru
-                            'tahapPencapaian' => $tahapPencapaian,
-                            'tarikhRekod' => now(),
-                        ]
-                    );
-                }
-            }
-
-            return redirect()->back()->with('success', 'Penilaian prestasi berjaya disimpan.');
-        } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Gagal menyimpan penilaian. Sila cuba lagi.');
+        foreach ($request->assessments as $ayat => $tahapPencapaian) {
+            Prestasi::updateOrCreate(
+                [
+                    'MyKidID' => $myKidID,
+                    'subjek' => $subjek,
+                    'ayat' => $ayat,
+                    'penggal' => $penggal,
+                ],
+                [
+                    'ID_Guru' => auth()->user()->ID_Guru ?? 1, // Assuming logged in guru
+                    'tahapPencapaian' => $tahapPencapaian,
+                    'tarikhRekod' => now(),
+                ]
+            );
         }
+
+        return redirect()->back()->with('success', 'Penilaian prestasi berjaya disimpan.');
     }
 
     public function show($id)
