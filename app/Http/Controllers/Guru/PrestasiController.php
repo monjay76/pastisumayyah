@@ -193,7 +193,7 @@ class PrestasiController extends Controller
             ]);
 
             if ($successCount > 0) {
-                return redirect()->back()->with('success', 'Penilaian prestasi berjaya disimpan. ' . $successCount . ' rekod dikemas kini.');
+                return redirect()->back()->with('success', 'Data berjaya masukkan');
             } else {
                 return redirect()->back()->with('warning', 'Tiada penilaian yang disimpan. Semua medan penilaian kosong.');
             }

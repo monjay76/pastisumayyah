@@ -52,6 +52,26 @@
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <!-- Parent/Guardian Information Section -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3">Maklumat Penjaga/Ibu Bapa</h6>
+                            <div class="mb-3">
+                                <label for="parentSearch" class="form-label">Carian Ibu Bapa</label>
+                                <input type="text" class="form-control" id="parentSearch" placeholder="Cari berdasarkan nama atau ID ibu bapa...">
+                                <small class="text-muted">Mulakan taip untuk mencari ibu bapa yang berdaftar</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="parentIds" class="form-label">Ibu Bapa Terpilih</label>
+                                <select name="parent_ids[]" id="parentIds" class="form-select" multiple>
+                                    <option value="" disabled>Tiada ibu bapa dipilih</option>
+                                </select>
+                                <small class="text-muted">Pilih satu atau lebih ibu bapa untuk murid ini</small>
+                                @error('parent_ids')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('guru.senaraiMurid') }}" class="btn btn-secondary">Kembali</a>
                             <button type="submit" class="btn btn-primary">Tambah Murid</button>
@@ -63,3 +83,56 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const parentSearch = document.getElementById('parentSearch');
+    const parentSelect = document.getElementById('parentIds');
+    let parentData = [];
+
+    // Fetch parent data when page loads
+    fetch('/api/search-parents?q=')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.parents) {
+                parentData = data.parents;
+            }
+        });
+
+    // Search functionality
+    parentSearch.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm.length >= 2) {
+            fetch(`/api/search-parents?q=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.parents) {
+                        showParentSuggestions(data.parents);
+                    } else {
+                        showParentSuggestions([]);
+                    }
+                });
+        } else {
+            showParentSuggestions([]);
+        }
+    });
+
+    function showParentSuggestions(parents) {
+        // Clear previous suggestions
+        const existingOptions = parentSelect.querySelectorAll('option:not([disabled])');
+        existingOptions.forEach(option => option.remove());
+
+        if (parents.length > 0) {
+            parents.forEach(parent => {
+                const option = document.createElement('option');
+                option.value = parent.ID_Parent;
+                option.textContent = `${parent.namaParent} (${parent.ID_Parent}) - ${parent.emel}`;
+                parentSelect.appendChild(option);
+            });
+        }
+    }
+});
+</script>
+@endpush

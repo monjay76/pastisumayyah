@@ -84,6 +84,40 @@ Route::get('/api/subjects-by-name', function () {
     ]);
 });
 
+// API endpoint for parent search
+Route::get('/api/search-parents', function () {
+    $query = request('q', '');
+
+    if (strlen($query) < 2 && !empty($query)) {
+        return response()->json([
+            'success' => false,
+            'error' => 'Minimum 2 karakter diperlukan untuk carian'
+        ]);
+    }
+
+    $parents = \App\Models\IbuBapa::query()
+        ->where(function($q) use ($query) {
+            $q->where('namaParent', 'like', '%' . $query . '%')
+              ->orWhere('ID_Parent', 'like', '%' . $query . '%')
+              ->orWhere('emel', 'like', '%' . $query . '%');
+        })
+        ->orderBy('namaParent')
+        ->limit(20)
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'parents' => $parents->map(function ($parent) {
+            return [
+                'ID_Parent' => $parent->ID_Parent,
+                'namaParent' => $parent->namaParent,
+                'emel' => $parent->emel,
+                'noTel' => $parent->noTel
+            ];
+        })
+    ]);
+});
+
 // Prestasi Murid (Pentadbir)
 Route::get('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'index'])->name('pentadbir.prestasiMurid');
 Route::get('/pentadbir/prestasi-murid/get-performance', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'getPerformance'])->name('pentadbir.getPerformance');
@@ -125,9 +159,7 @@ Route::get('/guru/add-murid', [GuruPageController::class, 'addMurid'])->name('gu
 Route::post('/guru/add-murid', [GuruPageController::class, 'storeMurid'])->name('guru.storeMurid');
 
 // Ibu Bapa pages (simple view routes)
-Route::get('/ibubapa/profil-murid', function () {
-    return view('ibubapa.profilMurid');
-})->name('ibubapa.profilMurid');
+Route::get('/ibubapa/profil-murid', [App\Http\Controllers\IbuBapaController::class, 'profilMurid'])->name('ibubapa.profilMurid');
 
 Route::get('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::class, 'maklumBalas'])->name('ibubapa.maklumbalas');
 Route::post('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::class, 'storeMaklumBalas'])->name('ibubapa.storeMaklumBalas');

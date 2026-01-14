@@ -223,9 +223,23 @@ class GuruPageController extends Controller
             'kelas' => 'nullable|string|max:100',
             'tarikhLahir' => 'nullable|date',
             'alamat' => 'nullable|string',
+            'parent_ids' => 'nullable|array',
+            'parent_ids.*' => 'nullable|exists:ibubapa,ID_Parent',
         ]);
 
-        Murid::create($request->all());
+        // Create the student record
+        $murid = Murid::create($request->all());
+
+        // Attach parent relationships if any parents are selected
+        if ($request->has('parent_ids') && is_array($request->parent_ids)) {
+            $validParentIds = array_filter($request->parent_ids, function($id) {
+                return !empty($id);
+            });
+
+            if (!empty($validParentIds)) {
+                $murid->ibubapa()->attach($validParentIds);
+            }
+        }
 
         return redirect()->route('guru.senaraiMurid')->with('success', 'Murid berjaya ditambah.');
     }

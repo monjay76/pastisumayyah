@@ -88,4 +88,25 @@ class IbuBapaController extends Controller
         $selectedMonth = $month;
         return view('ibubapa.aktivitiTahunan', compact('month', 'monthName', 'images', 'selectedMonth'));
     }
+
+    /**
+     * Display the profile of children for the logged-in parent
+     */
+    public function profilMurid()
+    {
+        // Get the logged-in parent from session
+        $parent = session('user');
+
+        if (!$parent) {
+            return redirect()->route('login')->with('error', 'Sila log masuk terlebih dahulu.');
+        }
+
+        // Fetch all children associated with this parent
+        $children = $parent->murid()->with('kehadiran', 'prestasi', 'laporan')->get();
+
+        return view('ibubapa.profilMurid', [
+            'parent' => $parent,
+            'children' => $children
+        ]);
+    }
 }

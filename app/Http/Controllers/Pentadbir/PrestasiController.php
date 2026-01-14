@@ -99,36 +99,157 @@ class PrestasiController extends Controller
      */
     public function storeOrUpdate(Request $request)
     {
-        $request->validate([
-            'murid_id' => 'required|exists:murid,MyKidID',
-            'subject_id' => 'required|exists:subjek,id',
-            'penggal' => 'required|in:1,2',
-            'assessments' => 'required|array',
-        ]);
+        try {
+            $validated = $request->validate([
+                'murid_id' => 'required|exists:murid,MyKidID',
+                'subject_id' => 'required|exists:subjek,id',
+                'penggal' => 'required|in:1,2',
+                'assessments' => 'required|array',
+            ], [
+                'murid_id.required' => 'ID Murid diperlukan',
+                'murid_id.exists' => 'ID Murid tidak sah',
+                'subject_id.required' => 'ID Subjek diperlukan',
+                'subject_id.exists' => 'ID Subjek tidak sah atau tidak wujud dalam sistem',
+                'penggal.required' => 'Penggal diperlukan',
+                'penggal.in' => 'Penggal mestilah 1 atau 2',
+                'assessments.required' => 'Sekurang-kurangnya satu penilaian diperlukan',
+                'assessments.array' => 'Data penilaian tidak sah',
+            ]);
 
-        $muridId = $request->murid_id;
-        $subjectId = $request->subject_id;
-        $penggal = $request->penggal;
-        $guruId = auth()->user()->ID_Guru ?? 1;
+            $muridId = $validated['murid_id'];
+            $subjectId = $validated['subject_id'];
+            $penggal = $validated['penggal'];
 
-        foreach ($request->assessments as $kriteria => $tahapPencapaian) {
-            Prestasi::updateOrCreate(
-                [
-                    'murid_id' => $muridId,
-                    'subject_id' => $subjectId,
-                    'kriteria_nama' => $kriteria,
-                    'penggal' => $penggal,
-                ],
-                [
-                    'guru_id' => $guruId,
-                    'subjek' => Subjek::find($subjectId)->nama_subjek,
-                    'tahap_pencapaian' => $tahapPencapaian,
-                    'tarikhRekod' => now(),
-                ]
-            );
+            // Get user from session (since LoginController uses session-based auth)
+            $user = session('user');
+            if (!$user) {
+                \Log::error('Authentication error: User session not found', [
+                    'request_input' => $request->all()
+                ]);
+                return redirect()->back()
+                    ->with('error', 'Sesi pengguna tidak sah. Sila log keluar dan log masuk semula.')
+                    ->withInput();
+            }
+
+            // For administrators (Pentadbir), set guru_id to null
+            $guruId = null;
+
+            // Get subject name for logging/debugging
+            $subject = Subjek::find($subjectId);
+            $subjectName = $subject ? $subject->nama_subjek : 'Unknown';
+
+            // Log the assessment data for debugging
+            \Log::info('Saving prestasi assessment (Pentadbir)', [
+                'murid_id' => $muridId,
+                'subject_id' => $subjectId,
+                'subject_name' => $subjectName,
+                'penggal' => $penggal,
+                'guru_id' => $guruId,
+                'assessment_count' => count($validated['assessments'])
+            ]);
+
+            $successCount = 0;
+            $skipCount = 0;
+
+            foreach ($validated['assessments'] as $kriteria => $tahapPencapaian) {
+                // Skip empty assessments
+                if (empty($tahapPencapaian)) {
+                    $skipCount++;
+                    continue;
+                }
+
+                try {
+                    $result = Prestasi::updateOrCreate(
+                        [
+                            'murid_id' => $muridId,
+                            'subject_id' => $subjectId,
+                            'kriteria_nama' => $kriteria,
+                            'penggal' => $penggal,
+                        ],
+                        [
+                            'guru_id' => $guruId,
+                            'subjek' => $subjectName,
+                            'tahap_pencapaian' => $tahapPencapaian,
+                            'tarikhRekod' => now(),
+                        ]
+                    );
+
+                    if ($result) {
+                        $successCount++;
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Failed to save individual assessment', [
+                        'murid_id' => $muridId,
+                        'subject_id' => $subjectId,
+                        'kriteria' => $kriteria,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Log summary
+            \Log::info('Prestasi assessment completed (Pentadbir)', [
+                'success_count' => $successCount,
+                'skip_count' => $skipCount,
+                'total_attempted' => count($validated['assessments'])
+            ]);
+
+            if ($successCount > 0) {
+                return redirect()->back()->with('success', 'Data berjaya masukkan');
+            } else {
+                return redirect()->back()->with('warning', 'Tiada penilaian yang disimpan. Semua medan penilaian kosong.');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::warning('Prestasi validation failed', [
+                'errors' => $e->errors(),
+                'input' => $request->all()
+            ]);
+
+            // Build more specific error message based on validation errors
+            $errorMessages = $e->errors();
+            $customMessage = 'Gagal menyimpan penilaian: ';
+
+            if (isset($errorMessages['subject_id'])) {
+                $customMessage .= 'ID Subjek tidak sah. ';
+                if (strpos($errorMessages['subject_id'][0], 'exists') !== false) {
+                    $customMessage .= 'Subjek yang dipilih mungkin tidak wujud dalam sistem atau ID subjek tidak dapat dijumpai. ';
+                    $customMessage .= 'Sila muat semula halaman atau pilih subjek semula.';
+                }
+            } elseif (isset($errorMessages['murid_id'])) {
+                $customMessage .= 'ID Murid tidak sah. ';
+            } elseif (isset($errorMessages['penggal'])) {
+                $customMessage .= 'Penggal tidak sah. ';
+            } else {
+                $customMessage .= $e->getMessage();
+            }
+
+            return redirect()->back()
+                ->with('error', $customMessage)
+                ->withInput();
+
+        } catch (\Exception $e) {
+            \Log::error('Prestasi save error: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'input' => $request->all()
+            ]);
+
+            // Provide more specific error messages for common issues
+            $errorMessage = 'Berlaku ralat ketika menyimpan penilaian. ';
+
+            if (strpos($e->getMessage(), 'subject_id') !== false ||
+                strpos($e->getMessage(), 'subjek') !== false) {
+                $errorMessage .= 'Masalah dengan ID Subjek. ';
+            }
+
+            $errorMessage .= 'Sila cuba semula atau hubungi pentadbir jika masalah berterusan.';
+
+            return redirect()->back()
+                ->with('error', $errorMessage)
+                ->withInput();
         }
-
-        return redirect()->back()->with('success', 'Penilaian prestasi berjaya disimpan.');
     }
 
     /**
