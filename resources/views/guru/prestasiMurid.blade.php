@@ -108,6 +108,7 @@
                                             </div>
                                         @endif
 
+<<<<<<< HEAD
                                         @if(session('success'))
                                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                                 <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
@@ -115,6 +116,8 @@
                                             </div>
                                         @endif
 
+=======
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                                         @if(session('error'))
                                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                 <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
@@ -555,6 +558,7 @@
         }
     });
 
+<<<<<<< HEAD
     // Add form validation and AJAX submission
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form[action="{{ route("guru.prestasiMurid.store") }}"]');
@@ -562,10 +566,18 @@
             form.addEventListener('submit', async function(e) {
                 e.preventDefault(); // Prevent default form submission
 
+=======
+    // Add form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[action="{{ route("guru.prestasiMurid.store") }}"]');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                 const subjectIdInput = document.getElementById('subject_id');
                 const penggalInput = document.getElementById('penggalInput');
                 const penggalSelect = document.getElementById('penggal');
 
+<<<<<<< HEAD
                 // Ensure subject ID is set
                 if (!subjectIdInput.value) {
                     try {
@@ -578,6 +590,11 @@
 
                 // Validate subject ID
                 if (!subjectIdInput || !subjectIdInput.value) {
+=======
+                // Validate subject ID
+                if (!subjectIdInput || !subjectIdInput.value) {
+                    e.preventDefault();
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                     alert('Subject ID tidak dijumpai. Sila muat semula halaman atau pilih subjek semula.');
                     if (penggalSelect) penggalSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return false;
@@ -585,6 +602,10 @@
 
                 // Validate penggal
                 if (!penggalInput || !penggalInput.value) {
+<<<<<<< HEAD
+=======
+                    e.preventDefault();
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                     alert('Sila pilih Penggal sebelum menyimpan.');
                     if (penggalSelect) {
                         penggalSelect.focus();
@@ -598,10 +619,15 @@
                 const assessments = form.querySelectorAll('input[name^="assessments"]:checked');
                 if (assessments.length === 0) {
                     if (!confirm('Tiada penilaian dipilih. Adakah anda pasti ingin menyimpan penilaian kosong?')) {
+<<<<<<< HEAD
+=======
+                        e.preventDefault();
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                         return false;
                     }
                 }
 
+<<<<<<< HEAD
                 // Collect form data
                 const formData = new FormData(form);
 
@@ -631,11 +657,15 @@
                 });
 
                 return false;
+=======
+                return true;
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
             });
         }
     });
 </script>
 
+<<<<<<< HEAD
 <!-- Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -667,6 +697,8 @@
     @endif
 </script>
 
+=======
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
 <style>
     .form-check-input:checked {
         background-color: #0d6efd;

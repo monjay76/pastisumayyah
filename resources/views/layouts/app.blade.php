@@ -6,7 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Sistem SMART Pasti Sumayyah')</title>
     <!-- Bootstrap CSS -->
+<<<<<<< HEAD
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+=======
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Vite Assets -->
@@ -99,6 +103,10 @@
     </div>
 
     <!-- Bootstrap JS -->
+<<<<<<< HEAD
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+=======
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
 </body>
 </html>

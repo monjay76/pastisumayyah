@@ -165,8 +165,11 @@ class PrestasiController extends Controller
                             'penggal' => $penggal,
                         ],
                         [
+<<<<<<< HEAD
                             'ID_Guru' => $guruId,
                             'MyKidID' => $muridId,
+=======
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                             'guru_id' => $guruId,
                             'subjek' => $subjectName,
                             'tahap_pencapaian' => $tahapPencapaian,
@@ -195,6 +198,7 @@ class PrestasiController extends Controller
             ]);
 
             if ($successCount > 0) {
+<<<<<<< HEAD
                 $message = 'Data berjaya masukkan';
                 if ($request->header('X-Requested-With') === 'XMLHttpRequest') {
                     return response()->json(['success' => true, 'message' => $message]);
@@ -206,6 +210,11 @@ class PrestasiController extends Controller
                     return response()->json(['success' => false, 'message' => $message]);
                 }
                 return redirect()->back()->with('warning', $message);
+=======
+                return redirect()->back()->with('success', 'Data berjaya masukkan');
+            } else {
+                return redirect()->back()->with('warning', 'Tiada penilaian yang disimpan. Semua medan penilaian kosong.');
+>>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
             }
 
         } catch (\Illuminate\Validation\ValidationException $e) {
