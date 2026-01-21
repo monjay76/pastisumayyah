@@ -123,6 +123,9 @@ Route::get('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\Prestas
 Route::get('/pentadbir/prestasi-murid/get-performance', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'getPerformance'])->name('pentadbir.getPerformance');
 Route::post('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'storeOrUpdate'])->name('pentadbir.storePrestasi');
 
+// Laporan Prestasi (Pentadbir)
+Route::get('/pentadbir/laporan', [PentadbirController::class, 'laporan'])->name('pentadbir.laporan');
+
 // Senarai Subjek (Pentadbir)
 Route::get('/pentadbir/senarai-subjek', [PentadbirController::class, 'senaraiSubjek'])->name('pentadbir.senaraiSubjek');
 Route::post('/pentadbir/senarai-subjek', [PentadbirController::class, 'storeSubjek'])->name('pentadbir.storeSubjek');

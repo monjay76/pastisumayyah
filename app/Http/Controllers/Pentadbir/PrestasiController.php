@@ -131,8 +131,10 @@ class PrestasiController extends Controller
                     ->withInput();
             }
 
-            // For administrators (Pentadbir), set guru_id to null
+            // For administrators (Pentadbir), set guru_id to null and get admin_id from session
             $guruId = null;
+            $user = session('user');
+            $adminId = $user ? $user->ID_Admin : null;
 
             // Get subject name for logging/debugging
             $subject = Subjek::find($subjectId);
@@ -178,6 +180,7 @@ class PrestasiController extends Controller
                         ],
                         [
                             'guru_id' => $guruId,
+                            'admin_id' => $adminId,
                             'subjek' => $subjectName,
                             'tahap_pencapaian' => $tahapPencapaian,
                             'markah' => $markah,

@@ -12,6 +12,7 @@ class Prestasi extends Model
         'subject_id',
         'murid_id',
         'guru_id',
+        'admin_id',
         'subjek',
         'tarikhRekod',
         'kriteria_nama',

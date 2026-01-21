@@ -351,4 +351,31 @@ class PentadbirController extends Controller
 
         return $markahMap[$tahap] ?? 0;
     }
+
+    public function laporan()
+    {
+        try {
+            // Get all prestasi records with relationships
+            $prestasi = Prestasi::with(['murid', 'subject', 'guru'])
+                ->orderBy('tarikhRekod', 'desc')
+                ->get();
+
+            // Group prestasi by student for better organization
+            $prestasiByStudent = $prestasi->groupBy('murid_id');
+
+            // Get summary statistics
+            $totalRecords = $prestasi->count();
+            $uniqueStudents = $prestasi->pluck('murid_id')->unique()->count();
+            $subjects = $prestasi->pluck('subjek')->unique();
+
+        } catch (\Throwable $e) {
+            $prestasi = collect();
+            $prestasiByStudent = collect();
+            $totalRecords = 0;
+            $uniqueStudents = 0;
+            $subjects = collect();
+        }
+
+        return view('pentadbir.laporan', compact('prestasi', 'prestasiByStudent', 'totalRecords', 'uniqueStudents', 'subjects'));
+    }
 }
