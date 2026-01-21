@@ -42,12 +42,12 @@ Route::get('/pentadbir/aktiviti-tahunan/{month}', [PentadbirController::class, '
 
 // API endpoint for subject ID lookup
 Route::get('/api/get-subject-id', function () {
-    $namaSubjek = request('nama_subjek');
+    $namaSubjek = trim(request('nama_subjek'));
     if (!$namaSubjek) {
         return response()->json(['success' => false, 'error' => 'Nama subjek diperlukan']);
     }
 
-    $subject = \App\Models\Subjek::where('nama_subjek', $namaSubjek)->first();
+    $subject = \App\Models\Subjek::whereRaw('LOWER(nama_subjek) = LOWER(?)', [$namaSubjek])->first();
 
     if (!$subject) {
         return response()->json(['success' => false, 'error' => 'Subjek tidak dijumpai']);
@@ -150,8 +150,8 @@ Route::get('/guru/aktiviti-tahunan', [GuruPageController::class, 'aktivitiTahuna
 Route::get('/guru/aktiviti-tahunan/{month}', [GuruPageController::class, 'aktivitiTahunanMonth'])->name('guru.aktivitiTahunanMonth');
 Route::post('/guru/aktiviti-tahunan/store-image', [GuruPageController::class, 'storeAktivitiImage'])->name('guru.storeAktivitiImage');
 Route::post('/guru/aktiviti-tahunan/delete-image/{id}', [GuruPageController::class, 'deleteAktivitiImage'])->name('guru.deleteAktivitiImage');
-Route::get('/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'index'])->name('guru.prestasiMurid');
-Route::get('/guru/prestasi-murid/get-performance', [\App\Http\Controllers\Guru\PrestasiController::class, 'getPerformance'])->name('guru.getPerformance');
+Route::match(['GET'], '/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'index'])->name('guru.prestasiMurid');
+Route::match(['GET'], '/guru/prestasi-murid/get-performance', [\App\Http\Controllers\Guru\PrestasiController::class, 'getPerformance'])->name('guru.getPerformance');
 Route::post('/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'storeOrUpdate'])->name('guru.prestasiMurid.store');
 Route::get('/guru/laporan', [GuruPageController::class, 'laporan'])->name('guru.laporan');
 Route::post('/guru/bulk-action', [GuruPageController::class, 'bulkAction'])->name('guru.bulkAction');

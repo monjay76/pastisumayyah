@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pentadbir;
 use App\Models\Guru;
 use App\Models\IbuBapa;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -45,7 +46,7 @@ class LoginController extends Controller
             }
         }
 
-        if ($user && $user->kataLaluan === $password) {
+        if ($user && (\Hash::check($password, $user->kataLaluan) || $user->kataLaluan === $password)) {
             // Store user in session
             session(['user' => $user, 'role' => $role]);
 

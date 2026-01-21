@@ -86,7 +86,7 @@
                             </div>
 
                             <!-- Assessment Form Section -->
-                            @if($selectedClass && $selectedStudent && $selectedSubjek && (count($ayatList) > 0 || strtolower($selectedSubjek) == 'nurul quran'))
+                            @if($selectedClass && $selectedStudent && $selectedSubjek)
                                 @php
                                     $isPratahfiz = strtolower($selectedSubjek) == 'pra tahfiz' || strtolower($selectedSubjek) == 'pratahfiz';
                                     $isNurulQuran = strtolower($selectedSubjek) == 'nurul quran';
@@ -108,16 +108,6 @@
                                             </div>
                                         @endif
 
-<<<<<<< HEAD
-                                        @if(session('success'))
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                            </div>
-                                        @endif
-
-=======
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                                         @if(session('error'))
                                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                 <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
@@ -193,28 +183,28 @@
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="AM"
-                                                                                       id="item{{ $itemId }}_AM">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_AM">
-                                                                                    <span class="badge bg-warning text-dark">AM</span> Ansur Maju
+                                                                                       value="1"
+                                                                                       id="item{{ $itemId }}_1">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_1">
+                                                                                    <span class="badge bg-warning text-dark">1</span> Ansur Maju
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="M"
-                                                                                       id="item{{ $itemId }}_M">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_M">
-                                                                                    <span class="badge bg-info text-dark">M</span> Maju
+                                                                                       value="2"
+                                                                                       id="item{{ $itemId }}_2">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_2">
+                                                                                    <span class="badge bg-info text-dark">2</span> Maju
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="SM"
-                                                                                       id="item{{ $itemId }}_SM">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_SM">
-                                                                                    <span class="badge bg-success">SM</span> Sangat Maju
+                                                                                       value="3"
+                                                                                       id="item{{ $itemId }}_3">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_3">
+                                                                                    <span class="badge bg-success">3</span> Sangat Maju
                                                                                 </label>
                                                                             </div>
                                                                         </div>
@@ -222,20 +212,20 @@
                                                                             <div class="mt-2 small text-muted">
                                                                                 @if($penggal1)
                                                                                     <span class="me-3"><strong>P1:</strong>
-                                                                                        @if($penggal1->tahapPencapaian == 'AM')
-                                                                                            <span class="badge bg-warning text-dark">AM</span>
-                                                                                        @elseif($penggal1->tahapPencapaian == 'M')
-                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @if($penggal1->markah == 1)
+                                                                                            <span class="badge bg-warning text-dark">1</span>
+                                                                                        @elseif($penggal1->markah == 2)
+                                                                                            <span class="badge bg-info text-dark">2</span>
                                                                                         @else
-                                                                                            <span class="badge bg-success">SM</span>
+                                                                                            <span class="badge bg-success">3</span>
                                                                                         @endif
                                                                                     </span>
                                                                                 @endif
                                                                                 @if($penggal2)
                                                                                     <span><strong>P2:</strong>
-                                                                                        @if($penggal2->tahapPencapaian == 'AM')
-                                                                                            <span class="badge bg-warning text-dark">AM</span>
-                                                                                        @elseif($penggal2->tahapPencapaian == 'M')
+                                                                                        @if($penggal2->markah == '1')
+                                                                                            <span class="badge bg-warning text-dark">1</span>
+                                                                                        @elseif($penggal2->markah == '2')
                                                                                             <span class="badge bg-info text-dark">M</span>
                                                                                         @else
                                                                                             <span class="badge bg-success">SM</span>
@@ -275,28 +265,28 @@
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="AM"
-                                                                                       id="item{{ $itemId }}_AM">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_AM">
-                                                                                    <span class="badge bg-warning text-dark">AM</span> Ansur Maju
+                                                                                       value="1"
+                                                                                       id="item{{ $itemId }}_1">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_1">
+                                                                                    <span class="badge bg-warning text-dark">1</span> Ansur Maju
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="M"
-                                                                                       id="item{{ $itemId }}_M">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_M">
-                                                                                    <span class="badge bg-info text-dark">M</span> Maju
+                                                                                       value="2"
+                                                                                       id="item{{ $itemId }}_2">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_2">
+                                                                                    <span class="badge bg-info text-dark">2</span> Maju
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="SM"
-                                                                                       id="item{{ $itemId }}_SM">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_SM">
-                                                                                    <span class="badge bg-success">SM</span> Sangat Maju
+                                                                                       value="3"
+                                                                                       id="item{{ $itemId }}_3">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_3">
+                                                                                    <span class="badge bg-success">3</span> Sangat Maju
                                                                                 </label>
                                                                             </div>
                                                                         </div>
@@ -304,23 +294,23 @@
                                                                             <div class="mt-2 small text-muted">
                                                                                 @if($penggal1)
                                                                                     <span class="me-3"><strong>P1:</strong>
-                                                                                        @if($penggal1->tahapPencapaian == 'AM')
-                                                                                            <span class="badge bg-warning text-dark">AM</span>
-                                                                                        @elseif($penggal1->tahapPencapaian == 'M')
-                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @if($penggal1->markah == '1')
+                                                                                            <span class="badge bg-warning text-dark">1</span>
+                                                                                        @elseif($penggal1->markah == '2')
+                                                                                            <span class="badge bg-info text-dark">2</span>
                                                                                         @else
-                                                                                            <span class="badge bg-success">SM</span>
+                                                                                            <span class="badge bg-success">3</span>
                                                                                         @endif
                                                                                     </span>
                                                                                 @endif
                                                                                 @if($penggal2)
                                                                                     <span><strong>P2:</strong>
-                                                                                        @if($penggal2->tahapPencapaian == 'AM')
-                                                                                            <span class="badge bg-warning text-dark">AM</span>
-                                                                                        @elseif($penggal2->tahapPencapaian == 'M')
-                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @if($penggal2->markah == '1')
+                                                                                            <span class="badge bg-warning text-dark">1</span>
+                                                                                        @elseif($penggal2->markah == '2')
+                                                                                            <span class="badge bg-info text-dark">2</span>
                                                                                         @else
-                                                                                            <span class="badge bg-success">SM</span>
+                                                                                            <span class="badge bg-success">3</span>
                                                                                         @endif
                                                                                     </span>
                                                                                 @endif
@@ -329,14 +319,20 @@
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
-                                                        @elseif(is_array($ayatList) || $ayatList instanceof \Illuminate\Support\Collection)
-                                                            {{-- Original table structure for other subjects --}}
-                                                            @foreach($ayatList as $index => $ayatNum)
+                                                        @elseif($isPratahfiz)
+                                                            {{-- Table structure for Pratahfiz --}}
+                                                            @php
+                                                                $pratahfizCriteria = [
+                                                                    'Al-Fatihah', 'An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Masad',
+                                                                    'An-Nasr', 'Al-Kafirun', 'Al-Kawthar', 'Al-Ma\'un', 'Quraysh',
+                                                                    'Al-Fil', 'Al-Humazah', 'Al-\'Asr', 'At-Takathur', 'Al-Qari\'ah',
+                                                                    'Al-\'Adiyat', 'Al-Zalzalah', 'Al-Bayyinah', 'Al-Qadr'
+                                                                ];
+                                                            @endphp
+                                                            @foreach($pratahfizCriteria as $index => $criteria)
                                                                 @php
-                                                                    // Untuk Pratahfiz, gunakan nama surah secara langsung
-                                                                    // Untuk subjek lain, tambah prefix "Ayat "
-                                                                    $itemLabel = $isPratahfiz ? $ayatNum : "Ayat " . $ayatNum;
-                                                                    $itemId = $isPratahfiz ? str_replace(['\'', ' ', '-'], '_', $ayatNum) : $ayatNum;
+                                                                    $itemLabel = $criteria;
+                                                                    $itemId = str_replace(['\'', ' ', '-'], '_', $criteria);
                                                                     $penggal1Key = $itemLabel . '_Penggal 1';
                                                                     $penggal2Key = $itemLabel . '_Penggal 2';
                                                                     $penggal1 = $prestasi->has($penggal1Key) ? $prestasi->get($penggal1Key)->first() : null;
@@ -350,28 +346,28 @@
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="AM"
-                                                                                       id="item{{ $itemId }}_AM">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_AM">
-                                                                                    <span class="badge bg-warning text-dark">AM</span> Ansur Maju
+                                                                                       value="1"
+                                                                                       id="item{{ $itemId }}_1">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_1">
+                                                                                    <span class="badge bg-warning text-dark">1</span> Ansur Maju
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="M"
-                                                                                       id="item{{ $itemId }}_M">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_M">
-                                                                                    <span class="badge bg-info text-dark">M</span> Maju
+                                                                                       value="2"
+                                                                                       id="item{{ $itemId }}_2">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_2">
+                                                                                    <span class="badge bg-info text-dark">2</span> Maju
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio"
                                                                                        name="assessments[{{ $itemLabel }}]"
-                                                                                       value="SM"
-                                                                                       id="item{{ $itemId }}_SM">
-                                                                                <label class="form-check-label" for="item{{ $itemId }}_SM">
-                                                                                    <span class="badge bg-success">SM</span> Sangat Maju
+                                                                                       value="3"
+                                                                                       id="item{{ $itemId }}_3">
+                                                                                <label class="form-check-label" for="item{{ $itemId }}_3">
+                                                                                    <span class="badge bg-success">3</span> Sangat Maju
                                                                                 </label>
                                                                             </div>
                                                                         </div>
@@ -379,23 +375,23 @@
                                                                             <div class="mt-2 small text-muted">
                                                                                 @if($penggal1)
                                                                                     <span class="me-3"><strong>P1:</strong>
-                                                                                        @if($penggal1->tahapPencapaian == 'AM')
-                                                                                            <span class="badge bg-warning text-dark">AM</span>
-                                                                                        @elseif($penggal1->tahapPencapaian == 'M')
-                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @if($penggal1->markah == '1')
+                                                                                            <span class="badge bg-warning text-dark">1</span>
+                                                                                        @elseif($penggal1->markah == '2')
+                                                                                            <span class="badge bg-info text-dark">2</span>
                                                                                         @else
-                                                                                            <span class="badge bg-success">SM</span>
+                                                                                            <span class="badge bg-success">3</span>
                                                                                         @endif
                                                                                     </span>
                                                                                 @endif
                                                                                 @if($penggal2)
                                                                                     <span><strong>P2:</strong>
-                                                                                        @if($penggal2->tahapPencapaian == 'AM')
-                                                                                            <span class="badge bg-warning text-dark">AM</span>
-                                                                                        @elseif($penggal2->tahapPencapaian == 'M')
-                                                                                            <span class="badge bg-info text-dark">M</span>
+                                                                                        @if($penggal2->markah == '1')
+                                                                                            <span class="badge bg-warning text-dark">1</span>
+                                                                                        @elseif($penggal2->markah == '2')
+                                                                                            <span class="badge bg-info text-dark">2</span>
                                                                                         @else
-                                                                                            <span class="badge bg-success">SM</span>
+                                                                                            <span class="badge bg-success">3</span>
                                                                                         @endif
                                                                                     </span>
                                                                                 @endif
@@ -558,26 +554,16 @@
         }
     });
 
-<<<<<<< HEAD
     // Add form validation and AJAX submission
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form[action="{{ route("guru.prestasiMurid.store") }}"]');
         if (form) {
             form.addEventListener('submit', async function(e) {
                 e.preventDefault(); // Prevent default form submission
-
-=======
-    // Add form validation
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form[action="{{ route("guru.prestasiMurid.store") }}"]');
-        if (form) {
-            form.addEventListener('submit', function(e) {
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                 const subjectIdInput = document.getElementById('subject_id');
                 const penggalInput = document.getElementById('penggalInput');
                 const penggalSelect = document.getElementById('penggal');
 
-<<<<<<< HEAD
                 // Ensure subject ID is set
                 if (!subjectIdInput.value) {
                     try {
@@ -590,11 +576,6 @@
 
                 // Validate subject ID
                 if (!subjectIdInput || !subjectIdInput.value) {
-=======
-                // Validate subject ID
-                if (!subjectIdInput || !subjectIdInput.value) {
-                    e.preventDefault();
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                     alert('Subject ID tidak dijumpai. Sila muat semula halaman atau pilih subjek semula.');
                     if (penggalSelect) penggalSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return false;
@@ -602,10 +583,6 @@
 
                 // Validate penggal
                 if (!penggalInput || !penggalInput.value) {
-<<<<<<< HEAD
-=======
-                    e.preventDefault();
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                     alert('Sila pilih Penggal sebelum menyimpan.');
                     if (penggalSelect) {
                         penggalSelect.focus();
@@ -619,15 +596,10 @@
                 const assessments = form.querySelectorAll('input[name^="assessments"]:checked');
                 if (assessments.length === 0) {
                     if (!confirm('Tiada penilaian dipilih. Adakah anda pasti ingin menyimpan penilaian kosong?')) {
-<<<<<<< HEAD
-=======
-                        e.preventDefault();
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
                         return false;
                     }
                 }
 
-<<<<<<< HEAD
                 // Collect form data
                 const formData = new FormData(form);
 
@@ -657,15 +629,11 @@
                 });
 
                 return false;
-=======
-                return true;
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
             });
         }
     });
 </script>
 
-<<<<<<< HEAD
 <!-- Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -696,9 +664,6 @@
         });
     @endif
 </script>
-
-=======
->>>>>>> 9a34c33310aad5c5ec3c0ea159a0f1e6cd8e06fd
 <style>
     .form-check-input:checked {
         background-color: #0d6efd;
