@@ -158,6 +158,16 @@ class PrestasiController extends Controller
                     continue;
                 }
 
+                // Convert text values to numeric values for markah
+                $markah = $tahapPencapaian;
+                if ($tahapPencapaian === 'AM') {
+                    $markah = 1;
+                } elseif ($tahapPencapaian === 'M') {
+                    $markah = 2;
+                } elseif ($tahapPencapaian === 'SM') {
+                    $markah = 3;
+                }
+
                 try {
                     $result = Prestasi::updateOrCreate(
                         [
@@ -170,6 +180,7 @@ class PrestasiController extends Controller
                             'guru_id' => $guruId,
                             'subjek' => $subjectName,
                             'tahap_pencapaian' => $tahapPencapaian,
+                            'markah' => $markah,
                             'tarikhRekod' => now(),
                         ]
                     );
