@@ -20,7 +20,11 @@ class PentadbirController extends Controller
     // Tambah pentadbir baru
     public function store(Request $request)
     {
-        $pentadbir = Pentadbir::create($request->all());
+        $data = $request->all();
+        if (isset($data['kataLaluan'])) {
+            $data['kataLaluan'] = bcrypt($data['kataLaluan']);
+        }
+        $pentadbir = Pentadbir::create($data);
         return response()->json(['message' => 'Pentadbir berjaya ditambah', 'data' => $pentadbir]);
     }
 
@@ -35,7 +39,11 @@ class PentadbirController extends Controller
     public function update(Request $request, $id)
     {
         $pentadbir = Pentadbir::findOrFail($id);
-        $pentadbir->update($request->all());
+        $data = $request->all();
+        if (isset($data['kataLaluan'])) {
+            $data['kataLaluan'] = bcrypt($data['kataLaluan']);
+        }
+        $pentadbir->update($data);
         return response()->json(['message' => 'Maklumat pentadbir dikemas kini']);
     }
 
@@ -232,11 +240,11 @@ class PentadbirController extends Controller
                 $selectedSubjek = $request->query('subjek');
                 if ($selectedSubjek) {
                     try {
-                        $prestasi = Prestasi::where('MyKidID', $muridId)
+                        $prestasi = Prestasi::where('murid_id', $muridId)
                             ->where('subjek', $selectedSubjek)
                             ->get()
                             ->keyBy(function ($item) {
-                                return $item->ayat . '_' . $item->penggal;
+                                return $item->kriteria_nama . '_' . $item->penggal;
                             });
                     } catch (\Throwable $e) {
                         $prestasi = collect();
@@ -251,33 +259,131 @@ class PentadbirController extends Controller
 
     public function storePrestasi(Request $request)
     {
-        $request->validate([
-            'MyKidID' => 'required|exists:murid,MyKidID',
-            'subjek' => 'required|string',
-            'penggal' => 'required|in:Penggal 1,Penggal 2',
-            'assessments' => 'required|array',
-        ]);
+        try {
+            $request->validate([
+                'murid_id' => 'required|exists:murid,MyKidID',
+                'subject_id' => 'required|exists:subjek,id',
+                'penggal' => 'required|in:1,2',
+                'assessments' => 'required|array',
+            ], [
+                'murid_id.required' => 'ID Murid diperlukan',
+                'murid_id.exists' => 'ID Murid tidak sah',
+                'subject_id.required' => 'ID Subjek diperlukan',
+                'subject_id.exists' => 'ID Subjek tidak sah',
+                'penggal.required' => 'Penggal diperlukan',
+                'penggal.in' => 'Penggal mestilah 1 atau 2',
+                'assessments.required' => 'Sekurang-kurangnya satu penilaian diperlukan',
+                'assessments.array' => 'Data penilaian tidak sah',
+            ]);
 
-        $myKidID = $request->MyKidID;
-        $subjek = $request->subjek;
-        $penggal = $request->penggal;
+            $muridId = $request->murid_id;
+            $subjectId = $request->subject_id;
+            $penggal = $request->penggal;
 
-        foreach ($request->assessments as $ayat => $tahapPencapaian) {
-            Prestasi::updateOrCreate(
-                [
-                    'MyKidID' => $myKidID,
-                    'subjek' => $subjek,
-                    'ayat' => $ayat,
-                    'penggal' => $penggal,
-                ],
-                [
-                    'tahapPencapaian' => $tahapPencapaian,
-                    'markah' => $this->getMarkahFromTahap($tahapPencapaian),
-                ]
-            );
+            // Get subject name for logging/debugging
+            $subject = Subjek::find($subjectId);
+            $subjectName = $subject ? $subject->nama_subjek : 'Unknown';
+
+            // Get admin ID from session
+            $adminId = session('user') ? session('user')->ID_Admin : null;
+
+            $successCount = 0;
+            $skipCount = 0;
+
+            foreach ($request->assessments as $kriteria => $tahapPencapaian) {
+                // Skip empty assessments
+                if (empty($tahapPencapaian)) {
+                    $skipCount++;
+                    continue;
+                }
+
+                // Convert text values to numeric values for markah
+                $markah = $tahapPencapaian;
+                if ($tahapPencapaian === 'AM') {
+                    $markah = 1;
+                } elseif ($tahapPencapaian === 'M') {
+                    $markah = 2;
+                } elseif ($tahapPencapaian === 'SM') {
+                    $markah = 3;
+                }
+
+                try {
+                    $result = Prestasi::updateOrCreate(
+                        [
+                            'murid_id' => $muridId,
+                            'subject_id' => $subjectId,
+                            'kriteria_nama' => $kriteria,
+                            'penggal' => $penggal,
+                        ],
+                        [
+                            'admin_id' => $adminId,
+                            'subjek' => $subjectName,
+                            'tahap_pencapaian' => $tahapPencapaian,
+                            'markah' => $markah,
+                            'tarikhRekod' => now(),
+                        ]
+                    );
+
+                    if ($result) {
+                        $successCount++;
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Failed to save individual assessment', [
+                        'murid_id' => $muridId,
+                        'subject_id' => $subjectId,
+                        'kriteria' => $kriteria,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Penilaian prestasi berjaya disimpan.',
+                    'data' => [
+                        'success_count' => $successCount,
+                        'skip_count' => $skipCount,
+                        'total_processed' => count($request->assessments)
+                    ]
+                ]);
+            }
+
+            if ($successCount > 0) {
+                return redirect()->back()->with('success', 'Data berjaya disimpan');
+            } else {
+                return redirect()->back()->with('warning', 'Tiada penilaian yang disimpan. Semua medan penilaian kosong.');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
+        } catch (\Exception $e) {
+            \Log::error('Prestasi save error: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'input' => $request->all()
+            ]);
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Berlaku ralat ketika menyimpan penilaian.'
+                ], 500);
+            }
+
+            return redirect()->back()
+                ->with('error', 'Berlaku ralat ketika menyimpan penilaian.')
+                ->withInput();
         }
-
-        return redirect()->back()->with('success', 'Penilaian prestasi berjaya disimpan.');
     }
 
     public function senaraiSubjek()

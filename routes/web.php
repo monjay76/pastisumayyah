@@ -122,6 +122,7 @@ Route::get('/api/search-parents', function () {
 Route::get('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'index'])->name('pentadbir.prestasiMurid');
 Route::get('/pentadbir/prestasi-murid/get-performance', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'getPerformance'])->name('pentadbir.getPerformance');
 Route::post('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'storeOrUpdate'])->name('pentadbir.storePrestasi');
+Route::get('/pentadbir/laporan-individu', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'laporanIndividu'])->name('pentadbir.laporanIndividu');
 
 // Laporan Prestasi (Pentadbir)
 Route::get('/pentadbir/laporan', [PentadbirController::class, 'laporan'])->name('pentadbir.laporan');
@@ -156,6 +157,7 @@ Route::post('/guru/aktiviti-tahunan/delete-image/{id}', [GuruPageController::cla
 Route::match(['GET'], '/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'index'])->name('guru.prestasiMurid');
 Route::match(['GET'], '/guru/prestasi-murid/get-performance', [\App\Http\Controllers\Guru\PrestasiController::class, 'getPerformance'])->name('guru.getPerformance');
 Route::post('/guru/prestasi-murid', [\App\Http\Controllers\Guru\PrestasiController::class, 'storeOrUpdate'])->name('guru.prestasiMurid.store');
+Route::get('/guru/laporan-individu', [\App\Http\Controllers\Guru\PrestasiController::class, 'laporanIndividu'])->name('guru.laporanIndividu');
 Route::get('/guru/laporan', [GuruPageController::class, 'laporan'])->name('guru.laporan');
 Route::post('/guru/bulk-action', [GuruPageController::class, 'bulkAction'])->name('guru.bulkAction');
 Route::get('/guru/add-murid', [GuruPageController::class, 'addMurid'])->name('guru.addMurid');

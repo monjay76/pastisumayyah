@@ -46,7 +46,7 @@ class LoginController extends Controller
             }
         }
 
-        if ($user && (\Hash::check($password, $user->kataLaluan) || $user->kataLaluan === $password)) {
+        if ($user && \Hash::check($password, $user->kataLaluan)) {
             // Store user in session
             session(['user' => $user, 'role' => $role]);
 

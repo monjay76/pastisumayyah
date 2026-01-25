@@ -20,6 +20,9 @@ class Prestasi extends Model
         'tahap_pencapaian',
         'markah'
     ];
+    protected $casts = [
+        'tarikhRekod' => 'datetime',
+    ];
 
     public function guru()
     {

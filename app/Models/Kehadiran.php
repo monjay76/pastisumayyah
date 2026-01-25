@@ -9,6 +9,9 @@ class Kehadiran extends Model
     protected $table = 'kehadiran';
     protected $primaryKey = 'ID_Kehadiran';
     protected $fillable = ['tarikh', 'status', 'MyKidID', 'direkodOleh'];
+    protected $casts = [
+        'tarikh' => 'datetime',
+    ];
 
     public function murid()
     {

@@ -6,18 +6,13 @@
 <div class="container-fluid px-4">
     <div class="row mt-4">
         <div class="col-12">
-            <!-- Navigation Tabs -->
+            <!-- Navigation Tabs - Pentadbir version (only Penilaian Prestasi) -->
             <div class="card shadow-sm border-0 rounded-4 mb-4">
                 <div class="card-header bg-primary text-white">
                     <ul class="nav nav-tabs card-header-tabs" id="mainTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active text-white" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button" role="tab" aria-controls="assessment" aria-selected="true">
                                 <i class="bi bi-pencil-square me-2"></i>Penilaian Prestasi
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link text-white" id="subjects-tab" data-bs-toggle="tab" data-bs-target="#subjects" type="button" role="tab" aria-controls="subjects" aria-selected="false">
-                                <i class="bi bi-list-ul me-2"></i>Pengurusan Subjek
                             </button>
                         </li>
                     </ul>
@@ -563,23 +558,97 @@
         }
     }
 
-    // Set subject ID when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get subject ID from subject name
-        const subjectSelect = document.getElementById('subjek');
-        const subjectIdInput = document.getElementById('subject_id');
+    // Enhanced subject ID lookup with fallback
+    function fetchSubjectIdWithFallback() {
+        return new Promise((resolve, reject) => {
+            const subjectIdInput = document.getElementById('subject_id');
+            const selectedSubjek = '{{ $selectedSubjek }}';
 
-        if (subjectSelect && subjectIdInput && '{{ $selectedSubjek }}') {
-            // Fetch subject ID via AJAX
-            fetch('/api/get-subject-id?nama_subjek={{ urlencode($selectedSubjek) }}')
-                .then(response => response.json())
+            if (!selectedSubjek) {
+                reject('No subject selected');
+                return;
+            }
+
+            // Try AJAX first
+            fetch('/api/get-subject-id?nama_subjek=' + encodeURIComponent('{{ $selectedSubjek }}'))
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success && data.subject_id) {
                         subjectIdInput.value = data.subject_id;
+                        console.log('Subject ID successfully retrieved via API:', data.subject_id);
+                        resolve(data.subject_id);
+                    } else {
+                        console.error('Subject ID lookup failed:', data.error || 'Unknown error');
+                        throw new Error(data.error || 'Subject not found');
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching subject ID:', error);
+                    console.error('Error fetching subject ID via primary API:', error);
+
+                    // Fallback 1: try to get from existing prestasi records
+                    @if($prestasi->isNotEmpty() && $prestasi->first()->subject_id)
+                        const fallbackId = '{{ $prestasi->first()->subject_id }}';
+                        subjectIdInput.value = fallbackId;
+                        console.log('Using fallback subject ID from prestasi records:', fallbackId);
+                        resolve(fallbackId);
+                    @elseif($prestasi->isNotEmpty() && $prestasi->first()->subjek_id)
+                        // Additional fallback for older records
+                        const fallbackId = '{{ $prestasi->first()->subjek_id }}';
+                        subjectIdInput.value = fallbackId;
+                        console.log('Using fallback subject ID from subjek_id:', fallbackId);
+                        resolve(fallbackId);
+                    @else
+                        // Fallback 2: try to find subject by name directly
+                        fetch('/api/subjects-by-name?nama_subjek=' + encodeURIComponent(selectedSubjek))
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success && data.subjects && data.subjects.length > 0) {
+                                    subjectIdInput.value = data.subjects[0].id;
+                                    console.log('Using fallback subject ID from subjects-by-name API:', data.subjects[0].id);
+                                    resolve(data.subjects[0].id);
+                                } else {
+                                    // Fallback 3: try to get subject ID from subjek table directly
+                                    console.error('All API fallbacks failed, attempting direct subject lookup');
+                                    reject('Could not determine subject ID after multiple attempts');
+                                }
+                            })
+                            .catch(fallbackError => {
+                                console.error('All subject ID lookup methods failed:', fallbackError);
+                                reject('Could not determine subject ID');
+                            });
+                    @endif
+                });
+        });
+    }
+
+    // Set subject ID when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        const subjectIdInput = document.getElementById('subject_id');
+        const selectedSubjek = '{{ $selectedSubjek }}';
+
+        if (subjectIdInput && selectedSubjek) {
+            fetchSubjectIdWithFallback()
+                .then(subjectId => {
+                    console.log('Subject ID successfully set to:', subjectId);
+                })
+                .catch(error => {
+                    console.error('Failed to set subject ID:', error);
+                    // Show warning to user
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-warning mt-3';
+                    alertDiv.innerHTML = `
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Amaran:</strong> Subject ID tidak dapat dijumpai untuk "${selectedSubjek}".
+                        Penilaian mungkin tidak dapat disimpan. Sila muat semula halaman atau pilih subjek semula.
+                    `;
+                    // Insert after the subject select
+                    const subjectSelect = document.getElementById('subjek');
+                    if (subjectSelect) {
+                        subjectSelect.parentNode.insertBefore(alertDiv, subjectSelect.nextSibling);
+                    }
                 });
         }
     });
@@ -594,15 +663,23 @@
                 const penggalInput = document.getElementById('penggalInput');
                 const penggalSelect = document.getElementById('penggal');
 
+                console.log('Form submission started');
+                console.log('Selected subject:', '{{ $selectedSubjek }}');
+                console.log('Subject ID input value:', subjectIdInput ? subjectIdInput.value : 'null');
+
                 // Ensure subject ID is set
                 if (!subjectIdInput.value) {
+                    console.log('Subject ID not set, trying to fetch...');
                     // Try to get subject ID if not set
                     if ('{{ $selectedSubjek }}') {
                         try {
+                            console.log('Fetching subject ID for:', '{{ $selectedSubjek }}');
                             const response = await fetch('/api/get-subject-id?nama_subjek={{ urlencode($selectedSubjek) }}');
                             const data = await response.json();
+                            console.log('Subject ID API response:', data);
                             if (data.success && data.subject_id) {
                                 subjectIdInput.value = data.subject_id;
+                                console.log('Subject ID set to:', subjectIdInput.value);
                             }
                         } catch (error) {
                             console.error('Error fetching subject ID:', error);
@@ -630,6 +707,8 @@
 
                 // Check if any assessments are selected
                 const assessments = form.querySelectorAll('input[name^="assessments"]:checked');
+                console.log('Number of assessments selected:', assessments.length);
+
                 if (assessments.length === 0) {
                     if (!confirm('Tiada penilaian dipilih. Adakah anda pasti ingin menyimpan penilaian kosong?')) {
                         return false;
@@ -638,8 +717,15 @@
 
                 // Collect form data
                 const formData = new FormData(form);
+                console.log('Form data collected');
+
+                // Log all form data for debugging
+                for (let [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
 
                 // Submit via AJAX
+                console.log('Submitting to:', form.action);
                 fetch(form.action, {
                     method: 'POST',
                     body: formData,
@@ -648,7 +734,10 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
                 .then(data => {
                     console.log('Response data:', data);
                     if (data.success) {

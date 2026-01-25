@@ -179,12 +179,28 @@ class GuruPageController extends Controller
     public function laporan()
     {
         try {
-            $laporan = Laporan::with('murid')->orderBy('tarikh', 'desc')->get();
+            // Get all prestasi records with relationships
+            $prestasi = Prestasi::with(['murid', 'subject', 'guru'])
+                ->orderBy('tarikhRekod', 'desc')
+                ->get();
+
+            // Group prestasi by student for better organization
+            $prestasiByStudent = $prestasi->groupBy('murid_id');
+
+            // Get summary statistics
+            $totalRecords = $prestasi->count();
+            $uniqueStudents = $prestasi->pluck('murid_id')->unique()->count();
+            $subjects = $prestasi->pluck('subjek')->unique();
+
         } catch (\Throwable $e) {
-            $laporan = collect();
+            $prestasi = collect();
+            $prestasiByStudent = collect();
+            $totalRecords = 0;
+            $uniqueStudents = 0;
+            $subjects = collect();
         }
 
-        return view('guru.laporan', compact('laporan'));
+        return view('guru.laporan', compact('prestasi', 'prestasiByStudent', 'totalRecords', 'uniqueStudents', 'subjects'));
     }
 
     public function bulkAction(Request $request)

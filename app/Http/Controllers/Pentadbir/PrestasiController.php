@@ -6,6 +6,7 @@ use App\Models\Prestasi;
 use App\Models\Murid;
 use App\Models\Subjek;
 use App\Models\Guru;
+use App\Models\Kehadiran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -99,6 +100,19 @@ class PrestasiController extends Controller
      */
     public function storeOrUpdate(Request $request)
     {
+        \Log::info('Pentadbir Prestasi storeOrUpdate called', [
+            'method' => $request->method(),
+            'url' => $request->fullUrl(),
+            'all_data' => $request->all(),
+            'is_ajax' => $request->ajax(),
+            'wants_json' => $request->wantsJson(),
+            'headers' => [
+                'accept' => $request->header('accept'),
+                'content_type' => $request->header('content-type'),
+                'x-requested-with' => $request->header('x-requested-with')
+            ]
+        ]);
+
         try {
             $validated = $request->validate([
                 'murid_id' => 'required|exists:murid,MyKidID',
@@ -208,6 +222,19 @@ class PrestasiController extends Controller
                 'total_attempted' => count($validated['assessments'])
             ]);
 
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Penilaian prestasi berjaya disimpan.',
+                    'data' => [
+                        'success_count' => $successCount,
+                        'skip_count' => $skipCount,
+                        'total_processed' => count($validated['assessments'])
+                    ]
+                ]);
+            }
+
             if ($successCount > 0) {
                 return redirect()->back()->with('success', 'Data berjaya masukkan');
             } else {
@@ -219,6 +246,15 @@ class PrestasiController extends Controller
                 'errors' => $e->errors(),
                 'input' => $request->all()
             ]);
+
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
 
             // Build more specific error message based on validation errors
             $errorMessages = $e->errors();
@@ -250,6 +286,14 @@ class PrestasiController extends Controller
                 'input' => $request->all()
             ]);
 
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Berlaku ralat ketika menyimpan penilaian.'
+                ], 500);
+            }
+
             // Provide more specific error messages for common issues
             $errorMessage = 'Berlaku ralat ketika menyimpan penilaian. ';
 
@@ -264,6 +308,82 @@ class PrestasiController extends Controller
                 ->with('error', $errorMessage)
                 ->withInput();
         }
+    }
+
+    /**
+     * Display individual student report with attendance and score comparison
+     */
+    public function laporanIndividu(Request $request)
+    {
+        try {
+            $classes = Murid::distinct()->pluck('kelas')->filter()->sort();
+        } catch (\Throwable $e) {
+            $classes = collect();
+        }
+
+        $selectedClass = $request->query('kelas');
+        $selectedStudent = null;
+        $students = collect();
+        $attendance = null;
+        $performanceData = collect();
+        $subjects = collect();
+
+        if ($selectedClass) {
+            try {
+                $students = Murid::where('kelas', $selectedClass)->orderBy('namaMurid')->get();
+            } catch (\Throwable $e) {
+                $students = collect();
+            }
+
+            $muridId = $request->query('murid');
+            if ($muridId) {
+                try {
+                    $selectedStudent = Murid::find($muridId);
+                } catch (\Throwable $e) {
+                    $selectedStudent = null;
+                }
+
+                if ($selectedStudent) {
+                    // Get latest attendance status
+                    $attendance = Kehadiran::where('MyKidID', $muridId)
+                        ->orderBy('tarikh', 'desc')
+                        ->first();
+
+                    // Get performance data grouped by subject and semester
+                    $performanceRecords = Prestasi::where('murid_id', $muridId)
+                        ->with('subject')
+                        ->get()
+                        ->groupBy(['subjek', 'penggal']);
+
+                    // Process data for chart
+                    $subjects = $performanceRecords->keys()->unique()->values();
+                    $performanceData = $performanceRecords->map(function ($subjectData, $subjectName) {
+                        $penggal1 = $subjectData->get(1, collect());
+                        $penggal2 = $subjectData->get(2, collect());
+
+                        $avgPenggal1 = $penggal1->avg('markah') ?: 0;
+                        $avgPenggal2 = $penggal2->avg('markah') ?: 0;
+
+                        return [
+                            'subject' => $subjectName,
+                            'penggal1' => round($avgPenggal1, 1),
+                            'penggal2' => round($avgPenggal2, 1),
+                            'details' => [
+                                'penggal1_count' => $penggal1->count(),
+                                'penggal2_count' => $penggal2->count(),
+                                'penggal1_records' => $penggal1,
+                                'penggal2_records' => $penggal2
+                            ]
+                        ];
+                    })->values();
+                }
+            }
+        }
+
+        return view('pentadbir.laporanIndividu', compact(
+            'classes', 'selectedClass', 'students', 'selectedStudent',
+            'attendance', 'performanceData', 'subjects'
+        ));
     }
 
     /**
