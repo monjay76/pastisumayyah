@@ -46,22 +46,28 @@ class LoginController extends Controller
             }
         }
 
-        if ($user && \Hash::check($password, $user->kataLaluan)) {
-            // Store user in session
-            session(['user' => $user, 'role' => $role]);
-
-            // Redirect based on role
-            switch ($role) {
-                case 'pentadbir':
-                    return redirect()->route('pentadbir.index');
-                case 'guru':
-                    return redirect()->route('guru.index');
-                case 'ibubapa':
-                    return redirect()->route('ibubapa.profilMurid');
-            }
+        // If user not found, username is incorrect
+        if (!$user) {
+            return back()->withErrors(['login' => 'Salah Username']);
         }
 
-        return back()->withErrors(['login' => 'Invalid credentials']);
+        // If user found but password is incorrect
+        if (!\Hash::check($password, $user->kataLaluan)) {
+            return back()->withErrors(['login' => 'Salah Password']);
+        }
+
+        // Credentials are correct, proceed with login
+        session(['user' => $user, 'role' => $role]);
+
+        // Redirect based on role
+        switch ($role) {
+            case 'pentadbir':
+                return redirect()->route('pentadbir.index');
+            case 'guru':
+                return redirect()->route('guru.index');
+            case 'ibubapa':
+                return redirect()->route('ibubapa.profilMurid');
+        }
     }
 
     public function logout(Request $request)

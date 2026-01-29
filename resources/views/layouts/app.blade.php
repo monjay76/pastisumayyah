@@ -94,7 +94,7 @@
                 @yield('content')
             </main>
 
-            <footer class="footer">Footer</footer>
+            <footer class="footer">Copyright © 2025 SMART PASTI Sumayyah System. All rights reserved.</footer>
         </div>
     </div>
 

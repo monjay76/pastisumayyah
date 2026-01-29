@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\IbuBapa;
 use App\Models\Laporan;
+use App\Models\Feedback;
 use Illuminate\Http\Request;
 
 class IbuBapaController extends Controller
