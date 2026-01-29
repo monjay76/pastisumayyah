@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Murid;
+use App\Models\IbuBapa;
 use App\Models\Kehadiran;
 use App\Models\Prestasi;
 use App\Models\Laporan;
@@ -283,7 +284,8 @@ class GuruPageController extends Controller
 
     public function addMurid()
     {
-        return view('guru.addMurid');
+        $listIbuBapa = IbuBapa::orderBy('namaParent')->get();
+        return view('guru.addMurid', compact('listIbuBapa'));
     }
 
     public function storeMurid(Request $request)
@@ -294,25 +296,24 @@ class GuruPageController extends Controller
             'kelas' => 'nullable|string|max:100',
             'tarikhLahir' => 'nullable|date',
             'alamat' => 'nullable|string',
-            'parent_ids' => 'nullable|array',
-            'parent_ids.*' => 'nullable|exists:ibubapa,ID_Parent',
+            'parent_id' => 'required|exists:ibubapa,ID_Parent',
         ]);
 
         // Create the student record
-        $murid = Murid::create($request->all());
+        $murid = Murid::create([
+            'MyKidID' => $request->MyKidID,
+            'namaMurid' => $request->namaMurid,
+            'kelas' => $request->kelas,
+            'tarikhLahir' => $request->tarikhLahir,
+            'alamat' => $request->alamat,
+        ]);
 
         // Attach parent relationships if any parents are selected
-        if ($request->has('parent_ids') && is_array($request->parent_ids)) {
-            $validParentIds = array_filter($request->parent_ids, function($id) {
-                return !empty($id);
-            });
-
-            if (!empty($validParentIds)) {
-                $murid->ibubapa()->attach($validParentIds);
-            }
+        if ($request->filled('parent_id')) {
+            $murid->ibubapa()->attach($request->parent_id);
         }
 
-        return redirect()->route('guru.senaraiMurid')->with('success', 'Murid berjaya ditambah.');
+        return redirect()->route('guru.senaraiMurid')->with('success', 'Murid dan penjaga berjaya didaftarkan.');
     }
 
     public function storeKehadiran(Request $request)

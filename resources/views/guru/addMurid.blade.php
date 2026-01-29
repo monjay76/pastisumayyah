@@ -53,21 +53,19 @@
                             @enderror
                         </div>
 
-                        <!-- Parent/Guardian Information Section -->
                         <div class="mb-4">
-                            <h6 class="fw-semibold mb-3">Maklumat Penjaga/Ibu Bapa</h6>
+                            <h6 class="fw-semibold mb-3">Maklumat Penjaga / Ibu Bapa</h6>
                             <div class="mb-3">
-                                <label for="parentSearch" class="form-label">Carian Ibu Bapa</label>
-                                <input type="text" class="form-control" id="parentSearch" placeholder="Cari berdasarkan nama atau ID ibu bapa...">
-                                <small class="text-muted">Mulakan taip untuk mencari ibu bapa yang berdaftar</small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="parentIds" class="form-label">Ibu Bapa Terpilih</label>
-                                <select name="parent_ids[]" id="parentIds" class="form-select" multiple>
-                                    <option value="" disabled>Tiada ibu bapa dipilih</option>
+                                <label for="parent_id" class="form-label">Pilih Ibu Bapa (Satu sahaja)</label>
+                                <select class="form-select select2-tailwind" id="parent_id" name="parent_id" required>
+                                    <option value="">-- Pilih Ibu Bapa --</option>
+                                    @foreach($listIbuBapa as $parent)
+                                        <option value="{{ $parent->ID_Parent }}">
+                                            {{ $parent->namaParent }} ({{ $parent->ID_Parent }})
+                                        </option>
+                                    @endforeach
                                 </select>
-                                <small class="text-muted">Pilih satu atau lebih ibu bapa untuk murid ini</small>
-                                @error('parent_ids')
+                                @error('parent_id')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -82,57 +80,36 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Custom Styling untuk Select2 supaya sepadan dengan Tailwind/Bootstrap 5 */
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #dee2e6 !important;
+        height: calc(3.5rem + 2px) !important; /* Menyamakan tinggi dengan input lain */
+        padding: 0.375rem 0.75rem !important;
+        border-radius: 0.375rem !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 2.5 !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 50px !important;
+    }
+</style>
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const parentSearch = document.getElementById('parentSearch');
-    const parentSelect = document.getElementById('parentIds');
-    let parentData = [];
-
-    // Fetch parent data when page loads
-    fetch('/api/search-parents?q=')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.parents) {
-                parentData = data.parents;
-            }
-        });
-
-    // Search functionality
-    parentSearch.addEventListener('input', function() {
-        const searchTerm = this.value.trim();
-
-        if (searchTerm.length >= 2) {
-            fetch(`/api/search-parents?q=${encodeURIComponent(searchTerm)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.parents) {
-                        showParentSuggestions(data.parents);
-                    } else {
-                        showParentSuggestions([]);
-                    }
-                });
-        } else {
-            showParentSuggestions([]);
-        }
+$(document).ready(function() {
+    $('.select2-tailwind').select2({
+        placeholder: "Cari nama atau ID ibu bapa...",
+        allowClear: true,
+        width: '100%'
     });
-
-    function showParentSuggestions(parents) {
-        // Clear previous suggestions
-        const existingOptions = parentSelect.querySelectorAll('option:not([disabled])');
-        existingOptions.forEach(option => option.remove());
-
-        if (parents.length > 0) {
-            parents.forEach(parent => {
-                const option = document.createElement('option');
-                option.value = parent.ID_Parent;
-                option.textContent = `${parent.namaParent} (${parent.ID_Parent}) - ${parent.emel}`;
-                parentSelect.appendChild(option);
-            });
-        }
-    }
 });
 </script>
 @endpush
