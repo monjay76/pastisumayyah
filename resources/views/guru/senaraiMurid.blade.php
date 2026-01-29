@@ -17,6 +17,27 @@
                         </a>
                     </div>
 
+                    <!-- Kelas Filter -->
+                    @if($kelasList->count() > 0)
+                    <div class="mb-3" style="max-width: 300px;">
+                        <form action="{{ route('guru.senaraiMurid') }}" method="GET" class="d-flex gap-2">
+                            <select class="form-select form-select-sm" name="kelas" onchange="this.form.submit();">
+                                <option value="">-- Semua Kelas --</option>
+                                @foreach($kelasList as $kls)
+                                    <option value="{{ $kls }}" {{ request()->input('kelas') == $kls ? 'selected' : '' }}>
+                                        {{ $kls }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if(request()->filled('kelas'))
+                                <a href="{{ route('guru.senaraiMurid') }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+                    @endif
+
                     <form method="POST" action="{{ route('guru.bulkAction') }}">
                         @csrf
                         @if($murid->count())

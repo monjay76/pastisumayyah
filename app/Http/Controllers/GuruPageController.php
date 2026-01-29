@@ -12,16 +12,25 @@ use Illuminate\Support\Facades\Storage;
 
 class GuruPageController extends Controller
 {
-    public function senaraiMurid()
+    public function senaraiMurid(Request $request)
     {
         // Attempt to load murid list; if DB not available, return empty collection
         try {
-            $murid = Murid::orderBy('namaMurid')->get();
+            $query = Murid::orderBy('namaMurid');
+
+            // Filter by kelas if provided
+            if ($request->filled('kelas')) {
+                $query->where('kelas', $request->input('kelas'));
+            }
+
+            $murid = $query->get();
+            $kelasList = Murid::distinct('kelas')->pluck('kelas')->sort();
         } catch (\Throwable $e) {
             $murid = collect();
+            $kelasList = collect();
         }
 
-        return view('guru.senaraiMurid', compact('murid'));
+        return view('guru.senaraiMurid', compact('murid', 'kelasList'));
     }
 
     /**

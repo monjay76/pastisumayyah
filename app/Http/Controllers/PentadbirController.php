@@ -124,10 +124,24 @@ class PentadbirController extends Controller
         return redirect()->route('pentadbir.createUser')->with('success', 'Akaun pengguna berjaya didaftarkan.');
     }
 
-    public function senaraiMurid()
+    public function senaraiMurid(Request $request)
     {
-        $murids = \App\Models\Murid::all();
-        return view('pentadbir.senaraiMurid', compact('murids'));
+        try {
+            $query = \App\Models\Murid::query();
+
+            // Filter by kelas if provided
+            if ($request->filled('kelas')) {
+                $query->where('kelas', $request->input('kelas'));
+            }
+
+            $murids = $query->get();
+            $kelasList = \App\Models\Murid::distinct('kelas')->pluck('kelas')->sort();
+        } catch (\Throwable $e) {
+            $murids = collect();
+            $kelasList = collect();
+        }
+
+        return view('pentadbir.senaraiMurid', compact('murids', 'kelasList'));
     }
 
     public function profilMurid(Request $request)

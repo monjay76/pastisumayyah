@@ -11,6 +11,27 @@
                     <i class="bi bi-people-fill me-2"></i> Senarai Murid
                 </div>
                 <div class="card-body">
+                    <!-- Kelas Filter -->
+                    @if($kelasList->count() > 0)
+                    <div class="mb-3" style="max-width: 300px;">
+                        <form action="{{ route('pentadbir.senaraiMurid') }}" method="GET" class="d-flex gap-2">
+                            <select class="form-select form-select-sm" name="kelas" onchange="this.form.submit();">
+                                <option value="">-- Semua Kelas --</option>
+                                @foreach($kelasList as $kls)
+                                    <option value="{{ $kls }}" {{ request()->input('kelas') == $kls ? 'selected' : '' }}>
+                                        {{ $kls }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if(request()->filled('kelas'))
+                                <a href="{{ route('pentadbir.senaraiMurid') }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+                    @endif
+
                     @if($murids->count())
                         <table class="table table-striped align-middle">
                             <thead>
