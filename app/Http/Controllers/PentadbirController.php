@@ -458,13 +458,56 @@ class PentadbirController extends Controller
         return $markahMap[$tahap] ?? 0;
     }
 
-    public function laporan()
+    public function laporan(Request $request)
     {
         try {
-            // Get all prestasi records with relationships
-            $prestasi = Prestasi::with(['murid', 'subject', 'guru'])
-                ->orderBy('tarikhRekod', 'desc')
-                ->get();
+            // Start building the query
+            $query = Prestasi::with(['murid', 'subject', 'guru']);
+
+            // Search filter by name or mykid id
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('murid', function ($subQuery) use ($search) {
+                        $subQuery->where('namaMurid', 'like', '%' . $search . '%')
+                                 ->orWhere('MyKidID', 'like', '%' . $search . '%');
+                    });
+                });
+            }
+
+            // Filter by kelas
+            if ($request->filled('kelas')) {
+                $query->whereHas('murid', function ($q) {
+                    $q->where('kelas', $request->input('kelas'));
+                });
+            }
+
+            // Filter by subjek
+            if ($request->filled('subjek')) {
+                $query->where('subjek', $request->input('subjek'));
+            }
+
+            // Filter by penggal
+            if ($request->filled('penggal')) {
+                $query->where('penggal', $request->input('penggal'));
+            }
+
+            // Filter by tarikh rekod (date range)
+            if ($request->filled('tarikh_dari')) {
+                $query->whereDate('tarikhRekod', '>=', $request->input('tarikh_dari'));
+            }
+            if ($request->filled('tarikh_hingga')) {
+                $query->whereDate('tarikhRekod', '<=', $request->input('tarikh_hingga'));
+            }
+
+            // Order by date
+            $prestasi = $query->orderBy('tarikhRekod', 'desc')->get();
+
+            // Get all unique values for dropdown filters
+            $allPrestasi = Prestasi::with(['murid', 'subject', 'guru'])->get();
+            $kelasList = Murid::distinct('kelas')->pluck('kelas')->sort();
+            $subjectList = Prestasi::distinct('subjek')->pluck('subjek')->sort();
+            $penggalList = Prestasi::distinct('penggal')->pluck('penggal')->sort();
 
             // Group prestasi by student for better organization
             $prestasiByStudent = $prestasi->groupBy('murid_id');
@@ -480,8 +523,11 @@ class PentadbirController extends Controller
             $totalRecords = 0;
             $uniqueStudents = 0;
             $subjects = collect();
+            $kelasList = collect();
+            $subjectList = collect();
+            $penggalList = collect();
         }
 
-        return view('pentadbir.laporan', compact('prestasi', 'prestasiByStudent', 'totalRecords', 'uniqueStudents', 'subjects'));
+        return view('pentadbir.laporan', compact('prestasi', 'prestasiByStudent', 'totalRecords', 'uniqueStudents', 'subjects', 'kelasList', 'subjectList', 'penggalList'));
     }
 }

@@ -63,6 +63,91 @@
                         </button>
                     </div>
 
+                    <!-- Search and Filter Section -->
+                    <div class="card border-0 bg-light mb-3" style="padding: 0.75rem;">
+                        <form action="{{ route('guru.laporan') }}" method="GET" id="filterForm">
+                            <div class="row g-2 align-items-end">
+                                <!-- Search by Name or MyKid ID -->
+                                <div class="col-md-4">
+                                    <label for="search" class="form-label mb-1 small">
+                                        <i class="bi bi-search"></i> Cari
+                                    </label>
+                                    <input type="text" class="form-control form-control-sm" id="search" name="search" 
+                                           placeholder="Nama atau MyKid ID" 
+                                           value="{{ request()->input('search') }}">
+                                </div>
+
+                                <!-- Filter Dropdowns -->
+                                <div class="col-md-2">
+                                    <label for="kelas" class="form-label mb-1 small">Kelas</label>
+                                    <select class="form-select form-select-sm" id="kelas" name="kelas">
+                                        <option value="">Semua</option>
+                                        @foreach($kelasList as $kls)
+                                            <option value="{{ $kls }}" 
+                                                {{ request()->input('kelas') == $kls ? 'selected' : '' }}>
+                                                {{ $kls }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="subjek" class="form-label mb-1 small">Subjek</label>
+                                    <select class="form-select form-select-sm" id="subjek" name="subjek">
+                                        <option value="">Semua</option>
+                                        @foreach($subjectList as $subj)
+                                            <option value="{{ $subj }}" 
+                                                {{ request()->input('subjek') == $subj ? 'selected' : '' }}>
+                                                {{ $subj }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="penggal" class="form-label mb-1 small">Penggal</label>
+                                    <select class="form-select form-select-sm" id="penggal" name="penggal">
+                                        <option value="">Semua</option>
+                                        @foreach($penggalList as $pgg)
+                                            <option value="{{ $pgg }}" 
+                                                {{ request()->input('penggal') == $pgg ? 'selected' : '' }}>
+                                                P{{ $pgg }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="bi bi-funnel"></i> Tapis
+                                    </button>
+                                </div>
+
+                                <!-- Date Range Filter -->
+                                <div class="col-md-2">
+                                    <label for="tarikh_dari" class="form-label mb-1 small">Dari</label>
+                                    <input type="date" class="form-control form-control-sm" id="tarikh_dari" name="tarikh_dari" 
+                                           value="{{ request()->input('tarikh_dari') }}">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="tarikh_hingga" class="form-label mb-1 small">Hingga</label>
+                                    <input type="date" class="form-control form-control-sm" id="tarikh_hingga" name="tarikh_hingga" 
+                                           value="{{ request()->input('tarikh_hingga') }}">
+                                </div>
+
+                                <!-- Reset Button -->
+                                @if(request()->filled('search') || request()->filled('kelas') || request()->filled('subjek') || request()->filled('penggal') || request()->filled('tarikh_dari') || request()->filled('tarikh_hingga'))
+                                <div class="col-md-2">
+                                    <a href="{{ route('guru.laporan') }}" class="btn btn-outline-secondary btn-sm w-100">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </a>
+                                </div>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+
                     <!-- Detailed Report Table -->
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover align-middle" id="prestasiTable">
