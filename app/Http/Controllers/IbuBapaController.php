@@ -40,22 +40,20 @@ class IbuBapaController extends Controller
 
     public function maklumBalas()
     {
-        $feedbacks = Feedback::all();
+        $feedbacks = Feedback::orderBy('tarikh', 'desc')->get();
         return view('ibubapa.maklumbalas', compact('feedbacks'));
     }
 
     public function storeMaklumBalas(Request $request)
     {
         $request->validate([
-            'subject' => 'required|string|max:255',
-            'category' => 'required|in:Guru,Aktiviti,Sekolah,Lain-lain',
+            'category' => 'required|in:Pujian,Cadangan,Pertanyaan Perkembangan Murid,Lain-lain',
             'message' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
         ]);
 
         Feedback::create([
             'kandungan' => json_encode([
-                'subject' => $request->subject,
                 'category' => $request->category,
                 'message' => $request->message,
                 'rating' => $request->rating,
@@ -63,7 +61,7 @@ class IbuBapaController extends Controller
             'tarikh' => now()->toDateString(),
         ]);
 
-        return redirect()->back()->with('success', 'Maklum balas berjaya dihantar.');
+        return redirect()->back()->with('success', 'Maklum balas anda telah dihantar. Terima kasih atas maklum balas berharga anda!');
     }
 
     public function aktivitiTahunan()
