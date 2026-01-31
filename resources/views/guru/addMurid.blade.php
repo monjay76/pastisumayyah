@@ -32,7 +32,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="kelas" class="form-label">Kelas</label>
-                                <input type="text" class="form-control" id="kelas" name="kelas">
+                                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Tanpa jarak">
                                 @error('kelas')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

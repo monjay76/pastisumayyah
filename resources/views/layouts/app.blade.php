@@ -79,7 +79,20 @@
                 <div style="display:flex; align-items:center; gap:18px">
                     <h5 style="margin:0">Sistem SMART Pasti Sumayyah</h5>
                 </div>
-                <div>
+                <div style="display:flex; align-items:center; gap:30px">
+                    @if(session('user') && session('role'))
+                        <span style="color: #2E7D32; font-weight: 500;">
+                            Selamat Datang <strong>
+                                @if(session('role') === 'pentadbir')
+                                    {{ session('user')->namaAdmin }}
+                                @elseif(session('role') === 'guru')
+                                    {{ session('user')->namaGuru }}
+                                @elseif(session('role') === 'ibubapa')
+                                    {{ session('user')->namaParent }}
+                                @endif
+                            </strong>
+                        </span>
+                    @endif
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
                         <button type="submit" class="logout-btn">
