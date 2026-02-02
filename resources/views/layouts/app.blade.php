@@ -45,7 +45,6 @@
                     <a href="{{ url('/pentadbir/profil-murid') }}">Profil Murid</a>
                     <a href="{{ url('/pentadbir/maklumat-ibubapa') }}">Maklumat Ibu Bapa</a>
                     <a href="{{ url('/pentadbir/maklumat-guru') }}">Maklumat Guru</a>
-                    <a href="{{ url('/pentadbir/prestasi-murid') }}">Prestasi Murid</a>
                     <a href="{{ url('/pentadbir/aktiviti-tahunan') }}">Aktiviti Tahunan</a>
                     <a href="{{ url('/pentadbir/laporan') }}">Laporan</a>
 

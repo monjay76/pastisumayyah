@@ -118,12 +118,6 @@ Route::get('/api/search-parents', function () {
     ]);
 });
 
-// Prestasi Murid (Pentadbir)
-Route::get('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'index'])->name('pentadbir.prestasiMurid');
-Route::get('/pentadbir/prestasi-murid/get-performance', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'getPerformance'])->name('pentadbir.getPerformance');
-Route::post('/pentadbir/prestasi-murid', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'storeOrUpdate'])->name('pentadbir.storePrestasi');
-Route::get('/pentadbir/laporan-individu', [\App\Http\Controllers\Pentadbir\PrestasiController::class, 'laporanIndividu'])->name('pentadbir.laporanIndividu');
-
 // Laporan Prestasi (Pentadbir)
 Route::get('/pentadbir/laporan', [PentadbirController::class, 'laporan'])->name('pentadbir.laporan');
 
