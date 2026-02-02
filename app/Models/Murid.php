@@ -28,7 +28,7 @@ class Murid extends Model
     // Hubungan: Murid boleh ada banyak rekod prestasi
     public function prestasi()
     {
-        return $this->hasMany(Prestasi::class, 'MyKidID', 'MyKidID');
+        return $this->hasMany(Prestasi::class, 'murid_id', 'MyKidID');
     }
 
     // Hubungan: Murid boleh ada banyak laporan

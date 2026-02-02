@@ -48,12 +48,12 @@ class PrestasiController extends Controller
                 $selectedSubjek = $request->query('subjek');
                 if ($selectedSubjek) {
                     try {
-                        $prestasi = Prestasi::where('MyKidID', $muridId)
-                            ->where('subjek', $selectedSubjek)
-                            ->get()
-                            ->keyBy(function ($item) {
-                                return $item->ayat . '_' . $item->penggal;
-                            });
+                        $prestasi = Prestasi::where('murid_id', $muridId)
+                                ->where('subjek', $selectedSubjek)
+                                ->get()
+                                ->keyBy(function ($item) {
+                                    return ($item->kriteria_nama ?? '') . '_' . $item->penggal;
+                                });
                     } catch (\Throwable $e) {
                         $prestasi = collect();
                     }
@@ -112,14 +112,14 @@ class PrestasiController extends Controller
         foreach ($request->assessments as $ayat => $tahapPencapaian) {
             Prestasi::updateOrCreate(
                 [
-                    'MyKidID' => $myKidID,
+                    'murid_id' => $myKidID,
                     'subjek' => $subjek,
-                    'ayat' => $ayat,
+                    'kriteria_nama' => $ayat,
                     'penggal' => $penggal,
                 ],
                 [
-                    'ID_Guru' => auth()->user()->ID_Guru ?? 1, // Assuming logged in guru
-                    'tahapPencapaian' => $tahapPencapaian,
+                    'guru_id' => auth()->user()->ID_Guru ?? 1,
+                    'tahap_pencapaian' => $tahapPencapaian,
                     'tarikhRekod' => now(),
                 ]
             );
