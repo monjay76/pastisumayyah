@@ -255,7 +255,7 @@
 													@foreach($kehadiran as $index => $record)
 													<tr>
 														<td class="text-center">{{ $index + 1 }}</td>
-														<td>{{ $record->tarikh ? \Carbon\Carbon::parse($record->tarikh)->format('d F Y') : 'N/A' }}</td>
+														<td>{{ $record->tarikh ? \Carbon\Carbon::parse($record->tarikh)->format('d/m/Y') : 'N/A' }}</td>
 														<td>
 															@if($record->status == 'hadir')
 																<span class="badge bg-success">Hadir</span>

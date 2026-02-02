@@ -107,7 +107,7 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">No. Tel</label>
-                                    <input type="text" name="noTel" class="form-control" value="{{ old('noTel') }}" placeholder="Contoh: 012-3456789" required>
+                                    <input type="text" name="noTel" class="form-control" value="{{ old('noTel') }}" placeholder="Contoh: 0123456789" required>
                                     @error('noTel')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
