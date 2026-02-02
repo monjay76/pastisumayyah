@@ -42,7 +42,7 @@
 								<div class="col-md-8">
 									<select id="childSelector" class="form-select">
 										@foreach($children as $index => $child)
-											<option value="{{ $index }}" data-child-id="{{ $child->MyKidID }}">
+											<option value="{{ $index }}" data-child-id="{{ $child->MyKidID }}" {{ $index === 0 ? 'selected' : '' }}>
 												{{ $child->namaMurid }} ({{ $child->MyKidID }})
 											</option>
 										@endforeach
@@ -54,7 +54,7 @@
 						<!-- Child Profile Section -->
 						<div id="childProfileSection">
 							@foreach($children as $index => $child)
-								<div class="child-profile" id="childProfile_{{ $index }}" style="{{ $index > 0 ? 'display:none;' : '' }}">
+								<div class="child-profile" id="childProfile_{{ $index }}" data-index="{{ $index }}" style="{{ $index === 0 ? 'display:block;' : 'display:none;' }}">
 									<!-- Profile Icon Section -->
 									<div class="text-center mb-4">
 										<div style="font-size: 80px; color: #333;">
@@ -107,27 +107,83 @@
 		</div>
 	</div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var childSelector = document.getElementById('childSelector');
+    if (!childSelector) {
+        console.log('Child selector not found');
+        return;
+    }
+
+    var allProfiles = document.querySelectorAll('.child-profile');
+    console.log('Found profiles:', allProfiles.length);
+    
+    if (allProfiles.length === 0) {
+        console.log('No profiles found');
+        return;
+    }
+    
+    function showProfile(index) {
+        console.log('Showing profile for index:', index);
+        // Hide all profiles
+        for (var i = 0; i < allProfiles.length; i++) {
+            allProfiles[i].style.display = 'none';
+        }
+
+        // Show the selected profile
+        var targetProfile = document.getElementById('childProfile_' + index);
+        if (targetProfile) {
+            targetProfile.style.display = 'block';
+            console.log('Profile shown:', targetProfile.id);
+        } else {
+            console.error('Profile not found for index:', index);
+        }
+    }
+
+    // Handle dropdown change
+    childSelector.addEventListener('change', function() {
+        var selectedIndex = this.value;
+        console.log('Dropdown changed to:', selectedIndex);
+        if (selectedIndex !== null && selectedIndex !== undefined && selectedIndex !== '') {
+            showProfile(selectedIndex);
+        }
+    });
+
+    // Initialize: show first profile on page load
+    var initialValue = childSelector.value;
+    console.log('Initial value:', initialValue);
+    if (initialValue !== null && initialValue !== undefined && initialValue !== '') {
+        showProfile(initialValue);
+    } else if (allProfiles.length > 0) {
+        // Fallback: show first profile
+        console.log('Using fallback - showing first profile');
+        showProfile('0');
+    }
+});
+</script>
 @endsection
 
 @push('scripts')
 <script>
+// Backup script in push section
 document.addEventListener('DOMContentLoaded', function() {
-    const childSelector = document.getElementById('childSelector');
+    var childSelector = document.getElementById('childSelector');
     if (childSelector) {
+        var allProfiles = document.querySelectorAll('.child-profile');
+        
         childSelector.addEventListener('change', function() {
-            const selectedIndex = this.value;
-            const allProfiles = document.querySelectorAll('.child-profile');
-
-            allProfiles.forEach(profile => {
-                profile.style.display = 'none';
-            });
-
-            const selectedProfile = document.getElementById('childProfile_' + selectedIndex);
-            if (selectedProfile) {
-                selectedProfile.style.display = 'block';
+            var selectedIndex = this.value;
+            for (var i = 0; i < allProfiles.length; i++) {
+                allProfiles[i].style.display = 'none';
+            }
+            var targetProfile = document.getElementById('childProfile_' + selectedIndex);
+            if (targetProfile) {
+                targetProfile.style.display = 'block';
             }
         });
     }
 });
 </script>
 @endpush
+
