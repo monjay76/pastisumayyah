@@ -172,9 +172,7 @@ Route::post('/ibubapa/maklumbalas', [App\Http\Controllers\IbuBapaController::cla
 Route::get('/ibubapa/aktiviti-tahunan', [App\Http\Controllers\IbuBapaController::class, 'aktivitiTahunan'])->name('ibubapa.aktivitiTahunan');
 Route::get('/ibubapa/aktiviti-tahunan/{month}', [App\Http\Controllers\IbuBapaController::class, 'aktivitiTahunanMonth'])->name('ibubapa.aktivitiTahunanMonth');
 
-Route::get('/ibubapa/laporan', function () {
-    return view('ibubapa.laporan');
-})->name('ibubapa.laporan');
+Route::get('/ibubapa/laporan', [App\Http\Controllers\IbuBapaController::class, 'laporan'])->name('ibubapa.laporan');
 
 // Murid CRUD for guru: edit / update / destroy / show
 use App\Http\Controllers\MuridController;
