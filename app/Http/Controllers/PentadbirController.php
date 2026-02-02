@@ -6,6 +6,7 @@ use App\Models\Murid;
 use App\Models\Subjek;
 use App\Models\Prestasi;
 use App\Models\Pentadbir;
+use App\Models\Kehadiran;
 use Illuminate\Http\Request;
 
 class PentadbirController extends Controller
@@ -531,6 +532,47 @@ class PentadbirController extends Controller
             $uniqueStudents = $prestasi->pluck('murid_id')->unique()->count();
             $subjects = $prestasi->pluck('subjek')->unique();
 
+            // Get list of student IDs from filtered prestasi
+            $studentIds = $prestasi->pluck('murid_id')->unique();
+
+            // Build query for Kehadiran data based on filtered students
+            $kehadiranQuery = Kehadiran::with(['murid', 'guru']);
+            
+            // Filter by student IDs from prestasi results
+            if ($studentIds->isNotEmpty()) {
+                $kehadiranQuery->whereIn('MyKidID', $studentIds);
+            } else {
+                // If no prestasi results, still allow filtering by search/kelas for kehadiran
+                if ($request->filled('search')) {
+                    $search = $request->input('search');
+                    $kehadiranQuery->whereHas('murid', function ($q) use ($search) {
+                        $q->where('namaMurid', 'like', '%' . $search . '%')
+                          ->orWhere('MyKidID', 'like', '%' . $search . '%');
+                    });
+                }
+                if ($request->filled('kelas')) {
+                    $kehadiranQuery->whereHas('murid', function ($q) use ($request) {
+                        $q->where('kelas', $request->input('kelas'));
+                    });
+                }
+            }
+
+            // Apply Kehadiran date filters
+            if ($request->filled('kehadiran_tarikh_dari')) {
+                $kehadiranQuery->whereDate('tarikh', '>=', $request->input('kehadiran_tarikh_dari'));
+            }
+            if ($request->filled('kehadiran_tarikh_hingga')) {
+                $kehadiranQuery->whereDate('tarikh', '<=', $request->input('kehadiran_tarikh_hingga'));
+            }
+
+            $kehadiran = $kehadiranQuery->orderBy('tarikh', 'desc')->get();
+
+            // Calculate Kehadiran statistics
+            $totalDays = $kehadiran->count();
+            $presentDays = $kehadiran->where('status', 'hadir')->count();
+            $absentDays = $kehadiran->where('status', 'tidak_hadir')->count();
+            $attendancePercentage = $totalDays > 0 ? round(($presentDays / $totalDays) * 100, 2) : 0;
+
         } catch (\Throwable $e) {
             $prestasi = collect();
             $prestasiByStudent = collect();
@@ -540,8 +582,13 @@ class PentadbirController extends Controller
             $kelasList = collect();
             $subjectList = collect();
             $penggalList = collect();
+            $kehadiran = collect();
+            $totalDays = 0;
+            $presentDays = 0;
+            $absentDays = 0;
+            $attendancePercentage = 0;
         }
 
-        return view('pentadbir.laporan', compact('prestasi', 'prestasiByStudent', 'totalRecords', 'uniqueStudents', 'subjects', 'kelasList', 'subjectList', 'penggalList'));
+        return view('pentadbir.laporan', compact('prestasi', 'prestasiByStudent', 'totalRecords', 'uniqueStudents', 'subjects', 'kelasList', 'subjectList', 'penggalList', 'kehadiran', 'totalDays', 'presentDays', 'absentDays', 'attendancePercentage'));
     }
 }

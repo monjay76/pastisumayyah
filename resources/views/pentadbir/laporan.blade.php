@@ -15,7 +15,8 @@
                 <div class="card-body">
                     <!-- Summary Statistics -->
                     <div class="row mb-4">
-                        <div class="col-md-3">
+                        <!-- Prestasi Statistics -->
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-info text-white h-100">
                                 <div class="card-body text-center">
                                     <i class="bi bi-file-earmark-text display-4"></i>
@@ -24,7 +25,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-success text-white h-100">
                                 <div class="card-body text-center">
                                     <i class="bi bi-people display-4"></i>
@@ -33,7 +34,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-warning text-white h-100">
                                 <div class="card-body text-center">
                                     <i class="bi bi-book display-4"></i>
@@ -42,12 +43,49 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card bg-danger text-white h-100">
                                 <div class="card-body text-center">
                                     <i class="bi bi-graph-up display-4"></i>
                                     <h4>{{ $prestasi->avg('markah') ? number_format($prestasi->avg('markah'), 1) : '0.0' }}</h4>
                                     <p class="mb-0">Purata Markah</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kehadiran Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-calendar-check display-4 text-primary"></i>
+                                    <h4 class="text-primary">{{ $attendancePercentage }}%</h4>
+                                    <p class="mb-0 text-muted">Peratusan Kehadiran</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light h-100">
+                                <div class="card-body text-center">
+                                    <h4 class="text-primary">{{ $totalDays }}</h4>
+                                    <p class="mb-0 text-muted">Jumlah Hari Direkod</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light h-100">
+                                <div class="card-body text-center">
+                                    <h4 class="text-success">{{ $presentDays }}</h4>
+                                    <p class="mb-0 text-muted">Hari Hadir</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light h-100">
+                                <div class="card-body text-center">
+                                    <h4 class="text-danger">{{ $absentDays }}</h4>
+                                    <p class="mb-0 text-muted">Hari Tidak Hadir</p>
                                 </div>
                             </div>
                         </div>
@@ -148,9 +186,26 @@
                         </form>
                     </div>
 
-                    <!-- Detailed Report Table -->
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle" id="prestasiTable">
+                    <!-- Tabs for Prestasi and Kehadiran -->
+                    <ul class="nav nav-tabs mb-3" id="reportTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="prestasi-tab" data-bs-toggle="tab" data-bs-target="#prestasi" type="button" role="tab">
+                                <i class="bi bi-bar-chart-line me-2"></i>Laporan Prestasi
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="kehadiran-tab" data-bs-toggle="tab" data-bs-target="#kehadiran" type="button" role="tab">
+                                <i class="bi bi-calendar-check me-2"></i>Laporan Kehadiran
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="reportTabsContent">
+                        <!-- Prestasi Tab -->
+                        <div class="tab-pane fade show active" id="prestasi" role="tabpanel">
+                            <!-- Detailed Report Table -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle" id="prestasiTable">
                             <thead class="table-dark">
                                 <tr>
                                     <th class="text-center" style="width: 5%;">No.</th>
@@ -207,7 +262,7 @@
                         </table>
                     </div>
 
-                    <!-- Student-wise Summary -->
+                            <!-- Student-wise Summary -->
                     @if($prestasiByStudent->isNotEmpty())
                     <div class="mt-5">
                         <h5 class="mb-3">Ringkasan Prestasi Mengikut Murid</h5>
@@ -250,6 +305,98 @@
                         </div>
                     </div>
                     @endif
+                        </div>
+
+                        <!-- Kehadiran Tab -->
+                        <div class="tab-pane fade" id="kehadiran" role="tabpanel">
+                            <!-- Kehadiran Filters -->
+                            <div class="card border-0 bg-light mb-3" style="padding: 0.75rem;">
+                                <form action="{{ route('pentadbir.laporan') }}" method="GET" id="kehadiranFilterForm">
+                                    <!-- Preserve existing filters -->
+                                    @if(request()->filled('search'))
+                                        <input type="hidden" name="search" value="{{ request()->input('search') }}">
+                                    @endif
+                                    @if(request()->filled('kelas'))
+                                        <input type="hidden" name="kelas" value="{{ request()->input('kelas') }}">
+                                    @endif
+                                    @if(request()->filled('subjek'))
+                                        <input type="hidden" name="subjek" value="{{ request()->input('subjek') }}">
+                                    @endif
+                                    @if(request()->filled('penggal'))
+                                        <input type="hidden" name="penggal" value="{{ request()->input('penggal') }}">
+                                    @endif
+                                    @if(request()->filled('tarikh_dari'))
+                                        <input type="hidden" name="tarikh_dari" value="{{ request()->input('tarikh_dari') }}">
+                                    @endif
+                                    @if(request()->filled('tarikh_hingga'))
+                                        <input type="hidden" name="tarikh_hingga" value="{{ request()->input('tarikh_hingga') }}">
+                                    @endif
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-4">
+                                            <label for="kehadiran_tarikh_dari" class="form-label mb-1 small">Dari</label>
+                                            <input type="date" class="form-control form-control-sm" id="kehadiran_tarikh_dari" name="kehadiran_tarikh_dari" value="{{ request()->input('kehadiran_tarikh_dari') }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="kehadiran_tarikh_hingga" class="form-label mb-1 small">Hingga</label>
+                                            <input type="date" class="form-control form-control-sm" id="kehadiran_tarikh_hingga" name="kehadiran_tarikh_hingga" value="{{ request()->input('kehadiran_tarikh_hingga') }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                <i class="bi bi-funnel"></i> Tapis
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Kehadiran Table -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle" id="kehadiranTable">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th class="text-center" style="width: 5%;">No.</th>
+                                            <th style="width: 20%;">Nama Murid</th>
+                                            <th style="width: 15%;">MyKid ID</th>
+                                            <th style="width: 15%;">Kelas</th>
+                                            <th style="width: 15%;">Tarikh</th>
+                                            <th style="width: 15%;">Status</th>
+                                            <th style="width: 15%;">Direkod Oleh</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if($kehadiran->isNotEmpty())
+                                            @foreach($kehadiran as $index => $record)
+                                            <tr>
+                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td>{{ $record->murid ? $record->murid->namaMurid : 'N/A' }}</td>
+                                                <td>{{ $record->MyKidID }}</td>
+                                                <td>{{ $record->murid ? $record->murid->kelas : 'N/A' }}</td>
+                                                <td>{{ $record->tarikh ? \Carbon\Carbon::parse($record->tarikh)->format('d/m/Y') : 'N/A' }}</td>
+                                                <td>
+                                                    @if($record->status == 'hadir')
+                                                        <span class="badge bg-success">Hadir</span>
+                                                    @elseif($record->status == 'tidak_hadir')
+                                                        <span class="badge bg-danger">Tidak Hadir</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">{{ $record->status }}</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $record->guru ? $record->guru->namaGuru : 'N/A' }}</td>
+                                            </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted py-4">
+                                                    <i class="bi bi-info-circle" style="font-size: 2rem;"></i>
+                                                    <p class="mt-2 mb-0">Tiada data kehadiran dijumpai.</p>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
