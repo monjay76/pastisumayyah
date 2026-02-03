@@ -7,6 +7,7 @@ use App\Models\Subjek;
 use App\Models\Prestasi;
 use App\Models\Pentadbir;
 use App\Models\Kehadiran;
+use App\Models\Feedback;
 use Illuminate\Http\Request;
 
 class PentadbirController extends Controller
@@ -181,12 +182,20 @@ class PentadbirController extends Controller
         $parents = \App\Models\IbuBapa::all();
         $selectedParent = null;
         $selectedParentId = $request->query('parent');
+        $feedbacks = collect();
 
         if ($selectedParentId) {
             $selectedParent = \App\Models\IbuBapa::with('murid')->find($selectedParentId);
+            
+            // Fetch feedbacks for the selected parent
+            if ($selectedParent) {
+                $feedbacks = Feedback::where('ID_Parent', $selectedParentId)
+                    ->orderBy('tarikh', 'desc')
+                    ->get();
+            }
         }
 
-        return view('pentadbir.maklumatIbuBapa', compact('parents', 'selectedParent'));
+        return view('pentadbir.maklumatIbuBapa', compact('parents', 'selectedParent', 'feedbacks'));
     }
 
     public function aktivitiTahunan()

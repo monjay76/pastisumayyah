@@ -12,10 +12,17 @@ class Feedback extends Model
     protected $fillable = [
         'kandungan',
         'tarikh',
+        'ID_Parent',
     ];
 
     protected $casts = [
         'kandungan' => 'array',
         'tarikh' => 'date',
     ];
+
+    // Hubungan: Feedback belongs to IbuBapa
+    public function ibubapa()
+    {
+        return $this->belongsTo(IbuBapa::class, 'ID_Parent', 'ID_Parent');
+    }
 }

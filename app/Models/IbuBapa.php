@@ -21,4 +21,10 @@ class IbuBapa extends Model
     {
         return $this->belongsToMany(Murid::class, 'parent_murid', 'ID_Parent', 'MyKidID');
     }
+
+    // Hubungan: Ibu bapa boleh ada banyak feedback
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'ID_Parent', 'ID_Parent');
+    }
 }

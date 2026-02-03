@@ -22,7 +22,6 @@
                                         <th>Nama</th>
                                         <th>Emel</th>
                                         <th>No. Tel</th>
-                                        <th>Maklum Balas</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -35,7 +34,6 @@
                                             </td>
                                             <td>{{ $parent->emel }}</td>
                                             <td>{{ $parent->noTel }}</td>
-                                            <td>{{ $parent->maklumBalas ?: '-' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -69,13 +67,67 @@
                                         <th>No. Tel:</th>
                                         <td>{{ $selectedParent->noTel }}</td>
                                     </tr>
-                                    <tr>
-                                        <th>Maklum Balas:</th>
-                                        <td>{{ $selectedParent->maklumBalas ?: '-' }}</td>
-                                    </tr>
                                 </table>
                             </div>
                         </div>
+                        
+                        <!-- Maklum Balas Section -->
+                        <h5 class="mt-4">Maklum Balas</h5>
+                        @if($feedbacks->isNotEmpty())
+                            @foreach($feedbacks as $feedback)
+                                @php
+                                    $content = is_array($feedback->kandungan) ? $feedback->kandungan : json_decode($feedback->kandungan, true);
+                                    $ratingLabels = [
+                                        1 => 'Sangat Tidak Puas',
+                                        2 => 'Tidak Puas',
+                                        3 => 'Sederhana',
+                                        4 => 'Puas',
+                                        5 => 'Sangat Puas'
+                                    ];
+                                    $categoryEmojis = [
+                                        'Pujian' => '⭐',
+                                        'Cadangan' => '💡',
+                                        'Pertanyaan Perkembangan Murid' => '❓',
+                                        'Lain-lain' => '📌'
+                                    ];
+                                @endphp
+                                <div class="card bg-light mb-3" style="border-left: 4px solid #2E7D32;">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="mb-1" style="color: #2E7D32; font-weight: 600;">
+                                                    {{ $categoryEmojis[$content['category'] ?? ''] ?? '' }} {{ $content['category'] ?? 'N/A' }}
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($feedback->tarikh)->format('d/m/Y') }}
+                                                </small>
+                                            </div>
+                                            <div class="text-warning" style="font-size: 1.1rem;">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= ($content['rating'] ?? 0))
+                                                        ★
+                                                    @else
+                                                        <span style="opacity: 0.3;">★</span>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <p class="card-text mb-0" style="color: #495057; line-height: 1.6; white-space: pre-wrap;">
+                                            {{ $content['message'] ?? 'N/A' }}
+                                        </p>
+                                        <small class="text-muted d-block mt-2">
+                                            {{ $ratingLabels[$content['rating'] ?? 0] ?? 'N/A' }}
+                                        </small>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Tiada maklum balas daripada ibu bapa ini.
+                            </div>
+                        @endif
+                        
                         <h5 class="mt-4">Senarai Anak</h5>
                         @if($selectedParent->murid->count())
                             <table class="table table-striped align-middle">

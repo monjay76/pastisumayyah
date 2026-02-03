@@ -42,7 +42,16 @@ class IbuBapaController extends Controller
 
     public function maklumBalas()
     {
-        $feedbacks = Feedback::orderBy('tarikh', 'desc')->get();
+        // Get the logged-in parent from session
+        $parent = session('user');
+        if (!$parent) {
+            return redirect()->route('login')->with('error', 'Sila log masuk terlebih dahulu.');
+        }
+
+        // Get feedbacks for the logged-in parent only
+        $feedbacks = Feedback::where('ID_Parent', $parent->ID_Parent)
+            ->orderBy('tarikh', 'desc')
+            ->get();
         return view('ibubapa.maklumbalas', compact('feedbacks'));
     }
 
@@ -54,6 +63,12 @@ class IbuBapaController extends Controller
             'rating' => 'required|integer|min:1|max:5',
         ]);
 
+        // Get the logged-in parent from session
+        $parent = session('user');
+        if (!$parent) {
+            return redirect()->route('login')->with('error', 'Sila log masuk terlebih dahulu.');
+        }
+
         Feedback::create([
             'kandungan' => json_encode([
                 'category' => $request->category,
@@ -61,6 +76,7 @@ class IbuBapaController extends Controller
                 'rating' => $request->rating,
             ]),
             'tarikh' => now()->toDateString(),
+            'ID_Parent' => $parent->ID_Parent,
         ]);
 
         return redirect()->back()->with('success', 'Maklum balas anda telah dihantar. Terima kasih atas maklum balas berharga anda!');
