@@ -12,35 +12,46 @@
                 </div>
                 <div class="card-body">
                     @if(!$selectedParent)
-                        <h5>Senarai Ibu Bapa</h5>
-                        @if($parents->count())
-                            <table class="table table-striped align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>ID Parent</th>
-                                        <th>Nama</th>
-                                        <th>Emel</th>
-                                        <th>No. Tel</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($parents as $index => $parent)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $parent->ID_Parent }}</td>
-                                            <td>
-                                                <a href="{{ route('pentadbir.maklumatIbuBapa', ['parent' => $parent->ID_Parent]) }}">{{ $parent->namaParent }}</a>
-                                            </td>
-                                            <td>{{ $parent->emel }}</td>
-                                            <td>{{ $parent->noTel }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @else
-                            <p class="text-muted mb-0">Tiada ibu bapa didaftarkan lagi.</p>
-                        @endif
+                            <h5>Senarai Ibu Bapa</h5>
+                            @if($parents->count())
+                                <form method="POST" action="{{ route('pentadbir.parentBulkAction') }}" onsubmit="return confirmParentBulkAction(event);">
+                                    @csrf
+                                    <table class="table table-striped align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>ID Parent</th>
+                                                <th>Nama</th>
+                                                <th>Emel</th>
+                                                <th>No. Tel</th>
+                                                <th>Maklum Balas</th>
+                                                <th>Pilih</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($parents as $index => $parent)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $parent->ID_Parent }}</td>
+                                                    <td>
+                                                        <a href="{{ route('pentadbir.maklumatIbuBapa', ['parent' => $parent->ID_Parent]) }}">{{ $parent->namaParent }}</a>
+                                                    </td>
+                                                    <td>{{ $parent->emel }}</td>
+                                                    <td>{{ $parent->noTel }}</td>
+                                                    <td>{{ $parent->maklumBalas ?: '-' }}</td>
+                                                    <td><input type="checkbox" name="selected_parent[]" value="{{ $parent->ID_Parent }}"></td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-3">
+                                        <button type="submit" name="action" value="edit" class="btn btn-warning">Edit</button>
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger">Padam</button>
+                                    </div>
+                                </form>
+                            @else
+                                <p class="text-muted mb-0">Tiada ibu bapa didaftarkan lagi.</p>
+                            @endif
                     @else
                         <div class="mb-3">
                             <a href="{{ route('pentadbir.maklumatIbuBapa') }}" class="btn btn-secondary">
@@ -164,3 +175,20 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function confirmParentBulkAction(e) {
+    const form = e.target;
+    const checked = form.querySelectorAll('input[name="selected_parent[]"]:checked');
+    if (checked.length === 0) {
+        alert('Sila pilih sekurang-kurangnya seorang ibu bapa.');
+        return false;
+    }
+    if (e.submitter && e.submitter.value === 'delete') {
+        return confirm('Adakah anda pasti mahu memadam rekod ibu bapa yang dipilih? Tindakan ini tidak boleh dibatalkan.');
+    }
+    return true;
+}
+</script>
+@endpush

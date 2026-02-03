@@ -177,6 +177,86 @@ class PentadbirController extends Controller
         return view('pentadbir.maklumatGuru', compact('gurus', 'selectedGuru'));
     }
 
+    // Bulk action for guru list (edit or delete)
+    public function guruBulkAction(Request $request)
+    {
+        $action = $request->input('action');
+        $selected = (array) $request->input('selected_guru', []);
+
+        if (empty($selected)) {
+            return redirect()->back()->with('error', 'Sila pilih sekurang-kurangnya seorang guru.');
+        }
+
+        if ($action === 'edit') {
+            // Redirect to edit the first selected guru
+            return redirect()->route('pentadbir.editGuru', ['id' => $selected[0]]);
+        }
+
+        if ($action === 'delete') {
+            // Delete all selected gurus
+            foreach ($selected as $id) {
+                $this->destroyGuru($id);
+            }
+            return redirect()->route('pentadbir.maklumatGuru')->with('success', 'Rekod guru dipadam.');
+        }
+
+        return redirect()->back();
+    }
+
+    public function editGuru($id)
+    {
+        $guru = \App\Models\Guru::findOrFail($id);
+        return view('pentadbir.editGuru', compact('guru'));
+    }
+
+    public function updateGuru(Request $request, $id)
+    {
+        $guru = \App\Models\Guru::findOrFail($id);
+
+        $request->validate([
+            'namaGuru' => 'required|string|max:255',
+            'emel' => 'required|email|max:255',
+            'noTel' => 'nullable|string|max:20',
+            'jawatan' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $oldEmail = $guru->emel;
+
+        $guru->namaGuru = $request->namaGuru;
+        $guru->emel = $request->emel;
+        $guru->noTel = $request->noTel;
+        $guru->jawatan = $request->jawatan;
+        if ($request->filled('password')) {
+            $guru->kataLaluan = bcrypt($request->password);
+        }
+        $guru->save();
+
+        // Update corresponding user record if exists
+        $user = \App\Models\User::where('email', $oldEmail)->where('role', 'guru')->first();
+        if ($user) {
+            $user->name = $guru->namaGuru;
+            $user->email = $guru->emel;
+            if ($request->filled('password')) {
+                $user->password = bcrypt($request->password);
+            }
+            $user->save();
+        }
+
+        return redirect()->route('pentadbir.maklumatGuru', ['guru' => $guru->ID_Guru])->with('success', 'Maklumat guru dikemaskini.');
+    }
+
+    public function destroyGuru($id)
+    {
+        $guru = \App\Models\Guru::find($id);
+        if (!$guru) return;
+
+        // delete user account if exists
+        \App\Models\User::where('email', $guru->emel)->where('role', 'guru')->delete();
+
+        $guru->delete();
+    }
+
     public function maklumatIbuBapa(Request $request)
     {
         $parents = \App\Models\IbuBapa::all();
@@ -198,6 +278,81 @@ class PentadbirController extends Controller
         return view('pentadbir.maklumatIbuBapa', compact('parents', 'selectedParent', 'feedbacks'));
     }
 
+    // Bulk action for parents (ibu bapa)
+    public function parentBulkAction(Request $request)
+    {
+        $action = $request->input('action');
+        $selected = (array) $request->input('selected_parent', []);
+
+        if (empty($selected)) {
+            return redirect()->back()->with('error', 'Sila pilih sekurang-kurangnya seorang ibu bapa.');
+        }
+
+        if ($action === 'edit') {
+            return redirect()->route('pentadbir.editIbuBapa', ['id' => $selected[0]]);
+        }
+
+        if ($action === 'delete') {
+            foreach ($selected as $id) {
+                $this->destroyIbuBapa($id);
+            }
+            return redirect()->route('pentadbir.maklumatIbuBapa')->with('success', 'Rekod ibu bapa dipadam.');
+        }
+
+        return redirect()->back();
+    }
+
+    public function editIbuBapa($id)
+    {
+        $parent = \App\Models\IbuBapa::findOrFail($id);
+        return view('pentadbir.editIbuBapa', compact('parent'));
+    }
+
+    public function updateIbuBapa(Request $request, $id)
+    {
+        $parent = \App\Models\IbuBapa::findOrFail($id);
+
+        $request->validate([
+            'namaParent' => 'required|string|max:255',
+            'emel' => 'required|email|max:255',
+            'noTel' => 'nullable|string|max:20',
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $oldEmail = $parent->emel;
+
+        $parent->namaParent = $request->namaParent;
+        $parent->emel = $request->emel;
+        $parent->noTel = $request->noTel;
+        if ($request->filled('password')) {
+            $parent->kataLaluan = bcrypt($request->password);
+        }
+        $parent->save();
+
+        // Update user record if exists
+        $user = \App\Models\User::where('email', $oldEmail)->where('role', 'ibubapa')->first();
+        if ($user) {
+            $user->name = $parent->namaParent;
+            $user->email = $parent->emel;
+            if ($request->filled('password')) {
+                $user->password = bcrypt($request->password);
+            }
+            $user->save();
+        }
+
+        return redirect()->route('pentadbir.maklumatIbuBapa', ['parent' => $parent->ID_Parent])->with('success', 'Maklumat ibu bapa dikemaskini.');
+    }
+
+    public function destroyIbuBapa($id)
+    {
+        $parent = \App\Models\IbuBapa::find($id);
+        if (!$parent) return;
+
+        // delete user account if exists
+        \App\Models\User::where('email', $parent->emel)->where('role', 'ibubapa')->delete();
+
+        $parent->delete();
+    }
     public function aktivitiTahunan()
     {
         return view('pentadbir.aktivitiTahunan');

@@ -14,34 +14,43 @@
                     @if(!$selectedGuru)
                         <h5>Senarai Guru</h5>
                         @if($gurus->count())
-                            <table class="table table-striped align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>ID Guru</th>
-                                        <th>Nama Guru</th>
-                                        <th>Emel</th>
-                                        <th>No. Tel</th>
-                                        <th>Jawatan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($gurus as $index => $guru)
+                            <form method="POST" action="{{ route('pentadbir.guruBulkAction') }}" onsubmit="return confirmBulkAction(event);">
+                                @csrf
+                                <table class="table table-striped align-middle">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $guru->ID_Guru }}</td>
-                                            <td>
-                                                <a href="{{ route('pentadbir.maklumatGuru', ['guru' => $guru->ID_Guru]) }}">
-                                                    {{ $guru->namaGuru }}
-                                                </a>
-                                            </td>
-                                            <td>{{ $guru->emel }}</td>
-                                            <td>{{ $guru->noTel }}</td>
-                                            <td>{{ $guru->jawatan }}</td>
+                                            <th>#</th>
+                                            <th>ID Guru</th>
+                                            <th>Nama Guru</th>
+                                            <th>Emel</th>
+                                            <th>No. Tel</th>
+                                            <th>Jawatan</th>
+                                            <th>Pilih</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($gurus as $index => $guru)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $guru->ID_Guru }}</td>
+                                                <td>
+                                                    <a href="{{ route('pentadbir.maklumatGuru', ['guru' => $guru->ID_Guru]) }}">
+                                                        {{ $guru->namaGuru }}
+                                                    </a>
+                                                </td>
+                                                <td>{{ $guru->emel }}</td>
+                                                <td>{{ $guru->noTel }}</td>
+                                                <td>{{ $guru->jawatan }}</td>
+                                                <td><input type="checkbox" name="selected_guru[]" value="{{ $guru->ID_Guru }}"></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <div class="mt-3">
+                                    <button type="submit" name="action" value="edit" class="btn btn-warning">Edit</button>
+                                    <button type="submit" name="action" value="delete" class="btn btn-danger">Padam</button>
+                                </div>
+                            </form>
                         @else
                             <p class="text-muted mb-0">Tiada guru didaftarkan lagi.</p>
                         @endif
@@ -85,3 +94,22 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function confirmBulkAction(e) {
+    const form = e.target;
+    const action = Array.from(form.querySelectorAll('button[type=submit]')).find(b => b.dataset.clicked === 'true')?.value || form.querySelector('button[name="action"]').value;
+    const checked = form.querySelectorAll('input[name="selected_guru[]"]:checked');
+    if (checked.length === 0) {
+        alert('Sila pilih sekurang-kurangnya seorang guru.');
+        return false;
+    }
+    // If action is delete, show confirmation
+    if (e.submitter && e.submitter.value === 'delete') {
+        return confirm('Adakah anda pasti mahu memadam rekod guru yang dipilih? Tindakan ini tidak boleh dibatalkan.');
+    }
+    return true;
+}
+</script>
+@endpush

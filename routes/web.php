@@ -32,9 +32,19 @@ Route::get('/pentadbir/profil-murid', [PentadbirController::class, 'profilMurid'
 
 // Maklumat Guru (must be before {id} route)
 Route::get('/pentadbir/maklumat-guru', [PentadbirController::class, 'maklumatGuru'])->name('pentadbir.maklumatGuru');
+// Pentadbir - Guru edit/delete routes
+Route::post('/pentadbir/guru/bulk-action', [PentadbirController::class, 'guruBulkAction'])->name('pentadbir.guruBulkAction');
+Route::get('/pentadbir/guru/{id}/edit', [PentadbirController::class, 'editGuru'])->name('pentadbir.editGuru');
+Route::put('/pentadbir/guru/{id}', [PentadbirController::class, 'updateGuru'])->name('pentadbir.updateGuru');
+Route::delete('/pentadbir/guru/{id}', [PentadbirController::class, 'destroyGuru'])->name('pentadbir.destroyGuru');
 
 // Maklumat Ibu Bapa (must be before {id} route)
 Route::get('/pentadbir/maklumat-ibubapa', [PentadbirController::class, 'maklumatIbuBapa'])->name('pentadbir.maklumatIbuBapa');
+// Pentadbir - Ibu Bapa edit/delete routes
+Route::post('/pentadbir/ibubapa/bulk-action', [PentadbirController::class, 'parentBulkAction'])->name('pentadbir.parentBulkAction');
+Route::get('/pentadbir/ibubapa/{id}/edit', [PentadbirController::class, 'editIbuBapa'])->name('pentadbir.editIbuBapa');
+Route::put('/pentadbir/ibubapa/{id}', [PentadbirController::class, 'updateIbuBapa'])->name('pentadbir.updateIbuBapa');
+Route::delete('/pentadbir/ibubapa/{id}', [PentadbirController::class, 'destroyIbuBapa'])->name('pentadbir.destroyIbuBapa');
 
 // Aktiviti Tahunan (Pentadbir)
 Route::get('/pentadbir/aktiviti-tahunan', [PentadbirController::class, 'aktivitiTahunan'])->name('pentadbir.aktivitiTahunan');
