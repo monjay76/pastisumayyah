@@ -102,6 +102,15 @@
                                             <th>Alamat:</th>
                                             <td>{{ $selectedStudent->alamat }}</td>
                                         </tr>
+                                        <tr>
+                                            <th>No. Telefon Ibu Bapa:</th>
+                                            <td>
+                                                @php
+                                                    $phones = $selectedStudent->ibubapa->pluck('noTel')->filter()->unique()->toArray();
+                                                @endphp
+                                                {{ count($phones) ? implode(', ', $phones) : '-' }}
+                                            </td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
