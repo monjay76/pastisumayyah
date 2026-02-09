@@ -3,76 +3,106 @@
 @section('title', 'Tambah Murid')
 
 @section('content')
-<div class="container-fluid px-4">
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-header bg-primary text-white fw-semibold">
-                    <i class="bi bi-person-plus-fill me-2"></i> Tambah Murid Baru
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-header py-3" style="background-color: var(--pasti-header); border: none;">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-20 p-2 rounded-3 me-3">
+                            <i class="bi bi-person-plus-fill text-white fs-4"></i>
+                        </div>
+                        <h5 class="card-title mb-0 text-white fw-bold">Borang Pendaftaran Murid Baru</h5>
+                    </div>
                 </div>
-                <div class="card-body">
+
+                <div class="card-body p-4 p-md-5" style="background-color: #ffffff;">
                     <form method="POST" action="{{ route('guru.storeMurid') }}">
                         @csrf
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="MyKidID" class="form-label">MyKid ID</label>
-                                <input type="text" class="form-control" id="MyKidID" name="MyKidID" required>
-                                @error('MyKidID')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                        
+                        <div class="mb-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="badge rounded-pill me-2" style="background-color: var(--pasti-green); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">1</span>
+                                <h6 class="fw-bold mb-0" style="color: var(--pasti-dark);">Maklumat Peribadi Murid</h6>
+                                <hr class="flex-grow-1 ms-3 opacity-10">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="namaMurid" class="form-label">Nama Murid</label>
-                                <input type="text" class="form-control" id="namaMurid" name="namaMurid" required>
-                                @error('namaMurid')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label for="MyKidID" class="form-label fw-semibold small text-muted text-uppercase">MyKid ID</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-card-text text-success"></i></span>
+                                        <input type="text" class="form-control bg-light border-start-0 ps-0" id="MyKidID" name="MyKidID" placeholder="Contoh: 180101011234" required value="{{ old('MyKidID') }}">
+                                    </div>
+                                    @error('MyKidID')
+                                        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="namaMurid" class="form-label fw-semibold small text-muted text-uppercase">Nama Penuh Murid</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-success"></i></span>
+                                        <input type="text" class="form-control bg-light border-start-0 ps-0" id="namaMurid" name="namaMurid" placeholder="Nama penuh mengikut MyKid" required value="{{ old('namaMurid') }}">
+                                    </div>
+                                    @error('namaMurid')
+                                        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="kelas" class="form-label fw-semibold small text-muted text-uppercase">Kelas</label>
+                                    <input type="text" class="form-control bg-light" id="kelas" name="kelas" placeholder="Contoh: 5 Adnin" value="{{ old('kelas') }}">
+                                    @error('kelas')
+                                        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="tarikhLahir" class="form-label fw-semibold small text-muted text-uppercase">Tarikh Lahir</label>
+                                    <input type="date" class="form-control bg-light" id="tarikhLahir" name="tarikhLahir" value="{{ old('tarikhLahir') }}">
+                                    @error('tarikhLahir')
+                                        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-12">
+                                    <label for="alamat" class="form-label fw-semibold small text-muted text-uppercase">Alamat Rumah</label>
+                                    <textarea class="form-control bg-light" id="alamat" name="alamat" rows="3" placeholder="Alamat surat-menyurat lengkap">{{ old('alamat') }}</textarea>
+                                    @error('alamat')
+                                        <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="kelas" class="form-label">Kelas</label>
-                                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Tanpa jarak">
-                                @error('kelas')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="tarikhLahir" class="form-label">Tarikh Lahir</label>
-                                <input type="date" class="form-control" id="tarikhLahir" name="tarikhLahir">
-                                @error('tarikhLahir')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="alamat" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="alamat" name="alamat" rows="3"></textarea>
-                            @error('alamat')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
                         </div>
 
-                        <div class="mb-4">
-                            <h6 class="fw-semibold mb-3">Maklumat Penjaga / Ibu Bapa</h6>
+                        <div class="mb-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="badge rounded-pill me-2" style="background-color: var(--pasti-green); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">2</span>
+                                <h6 class="fw-bold mb-0" style="color: var(--pasti-dark);">Maklumat Penjaga / Ibu Bapa</h6>
+                                <hr class="flex-grow-1 ms-3 opacity-10">
+                            </div>
+
                             <div class="mb-3">
-                                <label for="parent_id" class="form-label">Pilih Ibu Bapa (Satu sahaja)</label>
+                                <label for="parent_id" class="form-label fw-semibold small text-muted text-uppercase">Cari & Pilih Ibu Bapa</label>
                                 <select class="form-select select2-tailwind" id="parent_id" name="parent_id" required>
-                                    <option value="">-- Pilih Ibu Bapa --</option>
+                                    <option value="">-- Sila taip nama atau ID --</option>
                                     @foreach($listIbuBapa as $parent)
-                                        <option value="{{ $parent->ID_Parent }}">
+                                        <option value="{{ $parent->ID_Parent }}" {{ old('parent_id') == $parent->ID_Parent ? 'selected' : '' }}>
                                             {{ $parent->namaParent }} ({{ $parent->ID_Parent }})
                                         </option>
                                     @endforeach
                                 </select>
+                                <div class="form-text small mt-2"><i class="bi bi-info-circle me-1"></i> Pastikan maklumat ibu bapa telah didaftarkan terlebih dahulu dalam sistem.</div>
                                 @error('parent_id')
-                                    <div class="text-danger">{{ $message }}</div>
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('guru.senaraiMurid') }}" class="btn btn-secondary">Kembali</a>
-                            <button type="submit" class="btn btn-primary">Tambah Murid</button>
+
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 border-top">
+                            <a href="{{ route('guru.senaraiMurid') }}" class="btn btn-link text-muted text-decoration-none mb-3 mb-md-0">
+                                <i class="bi bi-arrow-left me-2"></i>Kembali ke Senarai
+                            </a>
+                            <button type="submit" class="btn px-5 py-2 fw-bold text-white rounded-3 shadow-sm" style="background-color: var(--pasti-green);">
+                                <i class="bi bi-check-circle me-2"></i>Simpan Maklumat Murid
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -82,18 +112,40 @@
 </div>
 
 <style>
-    /* Custom Styling untuk Select2 supaya sepadan dengan Tailwind/Bootstrap 5 */
+    /* Custom Styling untuk Input & Select2 */
+    .form-control, .form-select, .input-group-text {
+        border: 1px solid #e2e8f0 !important;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--pasti-green) !important;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1) !important;
+        background-color: #fff !important;
+    }
+
+    /* Styling Khas Select2 Hijau */
     .select2-container--default .select2-selection--single {
-        border: 1px solid #dee2e6 !important;
-        height: calc(3.5rem + 2px) !important; /* Menyamakan tinggi dengan input lain */
-        padding: 0.375rem 0.75rem !important;
-        border-radius: 0.375rem !important;
+        border: 1px solid #e2e8f0 !important;
+        height: 52px !important;
+        border-radius: 10px !important;
+        background-color: #f8fafc !important;
+        display: flex;
+        align-items: center;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 2.5 !important;
+        color: #475569 !important;
+        padding-left: 15px !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 50px !important;
+        right: 10px !important;
+    }
+    .select2-dropdown {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important;
     }
 </style>
 @endsection
@@ -106,7 +158,7 @@
 <script>
 $(document).ready(function() {
     $('.select2-tailwind').select2({
-        placeholder: "Cari nama atau ID ibu bapa...",
+        placeholder: "Taip nama atau No. Kad Pengenalan...",
         allowClear: true,
         width: '100%'
     });

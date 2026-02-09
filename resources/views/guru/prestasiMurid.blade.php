@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Prestasi Murid - Guru')
+@section('title', 'Prestasi Murid')
 
 @section('content')
 <div class="container-fluid px-4">
@@ -8,10 +8,10 @@
         <div class="col-12">
             <!-- Navigation Tabs - Guru version (only Penilaian Prestasi) -->
             <div class="card shadow-sm border-0 rounded-4 mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header" style="background: linear-gradient(135deg, #005a2a 0%, #00843D 100%);">
                     <ul class="nav nav-tabs card-header-tabs" id="mainTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active text-white" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button" role="tab" aria-controls="assessment" aria-selected="true">
+                            <button class="nav-link active" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button" role="tab" aria-controls="assessment" aria-selected="true" style="color: white; font-weight: 600;">
                                 <i class="bi bi-pencil-square me-2"></i>Penilaian Prestasi
                             </button>
                         </li>
@@ -23,16 +23,16 @@
                         <div class="tab-pane fade show active" id="assessment" role="tabpanel" aria-labelledby="assessment-tab">
                             <!-- Selection Section -->
                             <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                <div class="card-header bg-info text-white fw-semibold">
-                                    <i class="bi bi-filter me-2"></i> Pilih Kelas, Murid & Subjek
+                                <div class="card-header" style="background: linear-gradient(135deg, #46b46e 0%, #005a2a 100%); color: white;">
+                                    <i class="bi bi-funnel me-2"></i> Pilih Kelas, Murid & Subjek
                                 </div>
                                 <div class="card-body">
                                     <form method="GET" action="{{ route('guru.prestasiMurid') }}" id="filterForm">
                                         <div class="row g-3">
                                             <!-- Select Class -->
                                             <div class="col-md-4">
-                                                <label for="kelas" class="form-label fw-semibold">Pilih Kelas</label>
-                                                <select name="kelas" id="kelas" class="form-select" required onchange="this.form.submit()">
+                                                <label for="kelas" class="form-label fw-semibold" style="color: #005a2a;">Pilih Kelas</label>
+                                                <select name="kelas" id="kelas" class="form-select border-0 shadow-sm" style="background-color: #f1f8f3;" required onchange="this.form.submit()">
                                                     <option value="">-- Pilih Kelas --</option>
                                     @if(is_array($classes) || $classes instanceof \Illuminate\Support\Collection)
                                         @foreach($classes as $kelas)
@@ -46,8 +46,8 @@
 
                                             <!-- Select Student -->
                                             <div class="col-md-4">
-                                                <label for="murid" class="form-label fw-semibold">Pilih Murid</label>
-                                                <select name="murid" id="murid" class="form-select" {{ !$selectedClass ? 'disabled' : '' }} onchange="this.form.submit()">
+                                                <label for="murid" class="form-label fw-semibold" style="color: #005a2a;">Pilih Murid</label>
+                                                <select name="murid" id="murid" class="form-select border-0 shadow-sm" style="background-color: #f1f8f3;" {{ !$selectedClass ? 'disabled' : '' }} onchange="this.form.submit()">
                                                     <option value="">-- Pilih Murid --</option>
                                                     @if(is_array($students) || $students instanceof \Illuminate\Support\Collection)
                                                         @foreach($students as $student)
@@ -61,8 +61,8 @@
 
                                             <!-- Select Subject -->
                                             <div class="col-md-4">
-                                                <label for="subjek" class="form-label fw-semibold">Pilih Subjek</label>
-                                                <select name="subjek" id="subjek" class="form-select" {{ !$selectedStudent ? 'disabled' : '' }} onchange="this.form.submit()">
+                                                <label for="subjek" class="form-label fw-semibold" style="color: #005a2a;">Pilih Subjek</label>
+                                                <select name="subjek" id="subjek" class="form-select border-0 shadow-sm" style="background-color: #f1f8f3;" {{ !$selectedStudent ? 'disabled' : '' }} onchange="this.form.submit()">
                                                     <option value="">-- Pilih Subjek --</option>
                                                     @if(is_array($subjekList) || $subjekList instanceof \Illuminate\Support\Collection)
                                                         @foreach($subjekList as $subjek)
@@ -77,9 +77,9 @@
                                     </form>
 
                                     @if($selectedClass && $selectedStudent && $selectedSubjek)
-                                        <div class="alert alert-info mt-3 mb-0">
-                                            <i class="bi bi-info-circle me-2"></i>
-                                            <strong>Dipilih:</strong> Kelas {{ $selectedClass }} | {{ $selectedStudent->namaMurid }} | {{ $selectedSubjek }}
+                                        <div class="alert alert-success mt-3 mb-0 border-0 shadow-sm" style="background-color: rgba(70, 180, 110, 0.1); color: #005a2a;">
+                                            <i class="bi bi-check-circle me-2"></i>
+                                            <strong>✓ Dipilih:</strong> Kelas <strong>{{ $selectedClass }}</strong> | <strong>{{ $selectedStudent->namaMurid }}</strong> | <strong>{{ $selectedSubjek }}</strong>
                                         </div>
                                     @endif
                                 </div>
@@ -96,21 +96,21 @@
                                     ]);
                                 @endphp
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-header bg-success text-white fw-semibold">
+                                    <div class="card-header" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; font-weight: 600;">
                                         <i class="bi bi-pencil-square me-2"></i>
                                         {{ $isPratahfiz ? 'Penilaian Prestasi - Pratahfiz' : ($isNurulQuran ? 'Penilaian Prestasi - Nurul Quran' : 'Penilaian Prestasi - ' . $selectedSubjek) }}
                                     </div>
                                     <div class="card-body">
                                         @if(session('success'))
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                                            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert" style="background-color: rgba(70, 180, 110, 0.15); color: #005a2a; border-left: 4px solid #00843D;">
+                                                <i class="bi bi-check-circle me-2"></i><strong>Berjaya!</strong> {{ session('success') }}
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                             </div>
                                         @endif
 
                                         @if(session('error'))
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                                            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert" style="background-color: rgba(220, 53, 69, 0.15); color: #721c24; border-left: 4px solid #dc3545;">
+                                                <i class="bi bi-exclamation-triangle me-2"></i><strong>Ralat!</strong> {{ session('error') }}
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                             </div>
                                         @endif
@@ -123,8 +123,8 @@
 
                                             <!-- Select Penggal -->
                                             <div class="mb-4">
-                                                <label for="penggal" class="form-label fw-bold">Pilih Penggal</label>
-                                                <select name="penggal_display" id="penggal" class="form-select w-auto" required onchange="updatePenggalValue()">
+                                                <label for="penggal" class="form-label fw-bold" style="color: #005a2a;">Pilih Penggal</label>
+                                                <select name="penggal_display" id="penggal" class="form-select w-auto border-0 shadow-sm" style="background-color: #f1f8f3; color: #005a2a;" required onchange="updatePenggalValue()">
                                                     <option value="">-- Pilih Penggal --</option>
                                                     <option value="1">Penggal 1</option>
                                                     <option value="2">Penggal 2</option>
@@ -134,7 +134,7 @@
                                             <!-- Assessment Table -->
                                             <div class="table-responsive">
                                                 <table class="table table-bordered table-hover align-middle">
-                                                    <thead class="table-primary">
+                                                    <thead style="background-color: #f1f8f3; color: #005a2a; font-weight: 600; border-bottom: 3px solid #00843D;">
                                                         <tr>
                                                             <th class="text-center" style="width: 10%;">No.</th>
                                                             <th class="text-center" style="width: 25%;">
@@ -407,7 +407,7 @@
 
                                             <!-- Submit Button -->
                                             <div class="d-flex justify-content-end mt-4">
-                                                <button type="submit" class="btn btn-primary btn-lg">
+                                                <button type="submit" class="btn btn-lg fw-semibold shadow-sm" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; border: none; padding: 0.75rem 2.5rem;">
                                                     <i class="bi bi-save me-2"></i>Simpan Penilaian
                                                 </button>
                                             </div>
@@ -417,8 +417,8 @@
                             @elseif($selectedClass && $selectedStudent && $selectedSubjek)
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
                                     <div class="card-body text-center text-muted py-5">
-                                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
-                                        <p class="mt-3">Tiada senarai ayat untuk subjek ini.</p>
+                                        <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #46b46e;"></i>
+                                        <p class="mt-3 fw-semibold">Tiada senarai ayat untuk subjek ini.</p>
                                     </div>
                                 </div>
                             @endif
@@ -426,9 +426,9 @@
                             <!-- Information Box -->
                             @if(!$selectedClass)
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-body text-center text-muted py-5">
-                                        <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
-                                        <p class="mt-3">Sila pilih kelas, murid dan subjek untuk mula menilai prestasi.</p>
+                                    <div class="card-body text-center py-5" style="background: linear-gradient(135deg, rgba(70, 180, 110, 0.1) 0%, rgba(0, 88, 42, 0.05) 100%);">
+                                        <i class="bi bi-info-circle" style="font-size: 3rem; color: #00843D;"></i>
+                                        <p class="mt-3 fw-semibold" style="color: #005a2a;">Sila pilih kelas, murid dan subjek untuk mula menilai prestasi.</p>
                                     </div>
                                 </div>
                             @endif
@@ -637,19 +637,19 @@
 <!-- Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; border: none;">
                 <h5 class="modal-title" id="successModalLabel">
                     <i class="bi bi-check-circle me-2"></i>Berjaya!
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
-                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                <p class="mt-3 mb-0" id="successMessage">Penilaian prestasi berjaya disimpan.</p>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-check-circle-fill" style="font-size: 3rem; color: #46b46e;"></i>
+                <p class="mt-3 mb-0 fw-semibold" id="successMessage" style="color: #005a2a;">Penilaian prestasi berjaya disimpan.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn fw-semibold" style="background-color: #00843D; color: white;" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
@@ -666,32 +666,77 @@
 </script>
 <style>
     .form-check-input:checked {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
+        background-color: #00843D;
+        border-color: #00843D;
+    }
+
+    .form-check-input:focus {
+        border-color: #46b46e;
+        box-shadow: 0 0 0 0.25rem rgba(70, 180, 110, 0.25);
     }
 
     .table th {
-        background-color: #e7f1ff;
+        background-color: #f1f8f3;
+        color: #005a2a;
+        font-weight: 600;
+    }
+
+    .table td {
+        border-color: #e0e8e4;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(70, 180, 110, 0.05);
     }
 
     .badge {
         font-size: 0.8rem;
-        padding: 0.3rem 0.6rem;
+        padding: 0.4rem 0.7rem;
+        font-weight: 600;
     }
 
     /* Fix tab text readability */
-    .nav-tabs .nav-link.active {
-        color: #000 !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border-color: #dee2e6 #dee2e6 #fff !important;
-    }
-
     .nav-tabs .nav-link {
-        color: #fff !important;
+        color: white !important;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        transition: all 0.3s;
     }
 
     .nav-tabs .nav-link:hover {
         color: rgba(255, 255, 255, 0.8) !important;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tabs .nav-link.active {
+        color: white !important;
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border-color: transparent !important;
+        font-weight: 600;
+    }
+
+    /* Form select styling */
+    .form-select {
+        border-radius: 0.5rem;
+    }
+
+    .form-select:focus {
+        border-color: #46b46e;
+        box-shadow: 0 0 0 0.25rem rgba(70, 180, 110, 0.25);
+    }
+
+    .form-label {
+        color: #005a2a;
+        font-weight: 600;
+    }
+
+    /* Card styling */
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 132, 61, 0.1) !important;
     }
 </style>
 @endsection

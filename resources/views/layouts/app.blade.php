@@ -5,98 +5,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Sistem SMART Pasti Sumayyah')</title>
-    <!-- Bootstrap CSS -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Vite Assets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Minimal inline fallback so layout looks like wireframe even without building assets */
-        body { margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
-        .dashboard { display:flex; min-height:100vh; }
-        .sidebar { width:260px; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); padding:30px 20px; box-sizing:border-box; box-shadow: 2px 0 10px rgba(0,0,0,0.1); position: relative; display:flex; flex-direction:column; align-items:left; }
-        .sidebar::after { content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%; background: linear-gradient(180deg, #2E7D32 0%, #4CAF50 100%); border-radius: 0 20px 20px 0; z-index: -1; }
-        .sidebar .logo { width:70px; height:70px; background: rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; margin-bottom:30px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .sidebar nav a { display:block; color:#fff; padding:15px 20px; text-decoration:none; margin-bottom:10px; border-radius:12px; transition: all 0.3s ease; font-weight:500; }
-        .sidebar nav a:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .sidebar nav a.active { background: rgba(255,255,255,0.3); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .main { flex:1; display:flex; flex-direction:column; }
-        .topbar { display:flex; align-items:center; justify-content:space-between; background: rgba(255,255,255,0.9); padding:20px 30px; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .content { flex:1; padding:40px 60px; background: #f8f9fa; }
-        .placeholder { width:80%; height:320px; border:10px solid #e9e9e9; display:flex; align-items:center; justify-content:center; margin:30px auto; background:#f7f7f7; border-radius:15px; }
-        .footer { background: #4CAF50; color: #fff; padding:15px 30px; text-align:center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);}
-        .logout-btn { background: rgba(76, 175, 80, 0.1); color:#2E7D32; padding:8px 16px; text-decoration:none; border-radius:20px; transition: all 0.3s ease; border: 2px solid transparent; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
-        .logout-btn:hover { background: rgba(76, 175, 80, 0.2); border-color: #4CAF50; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2); }
-        .logout-btn i { font-size: 1.1em; }
-        @media (max-width:768px){ .sidebar{display:none} .placeholder{width:100%} }
+        :root {
+            /* KOD WARNA HIJAU PASTI RASMI */
+            --pasti-dark: #005a2a;      /* Hijau Gelap PASTI */
+            --pasti-green: #00843D;     /* Hijau Utama PASTI */
+            --pasti-light: #46b46e;     /* Hijau Terang PASTI */
+            --bg-body: #f1f8f3;         /* Warna latar lembut kehijauan */
+            --sidebar-width: 270px;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-body);
+            color: #1e293b;
+        }
+
+        .dashboard { display: flex; min-height: 100vh; }
+
+        /* SIDEBAR STYLING - Hijau PASTI */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: linear-gradient(180deg, var(--pasti-dark) 0%, var(--pasti-green) 100%);
+            padding: 30px 18px; 
+            display: flex; 
+            flex-direction: column; 
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .sidebar .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+        }
+
+        .sidebar .logo-area img {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            padding: 3px;
+        }
+
+        .sidebar .brand-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
+
+        .sidebar nav a { 
+            display: flex; align-items: center; gap: 12px;
+            color: rgba(255,255,255,0.75); 
+            padding: 14px 18px; 
+            text-decoration: none; 
+            margin-bottom: 6px; 
+            border-radius: 12px; 
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sidebar nav a:hover { 
+            background: rgba(255,255,255,0.1); 
+            color: white; 
+        }
+
+        /* Menu Aktif: Putih dengan teks Hijau PASTI */
+        .sidebar nav a.active, .sidebar nav a[href="{{ request()->url() }}"] { 
+            background: white; 
+            color: var(--pasti-green); 
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .main { 
+            flex: 1; 
+            margin-left: var(--sidebar-width);
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* TOPBAR - Hijau Padu PASTI */
+        .topbar { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            background: var(--pasti-green); 
+            padding: 20px 40px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .breadcrumb-area { color: white; }
+
+        .breadcrumb-area h5 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breadcrumb-area .separator {
+            opacity: 0.6;
+            font-weight: 300;
+        }
+
+        .breadcrumb-area .page-title {
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .logout-btn { 
+            background: rgba(255, 255, 255, 0.15);
+            color: white; 
+            padding: 10px 22px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover { 
+            background: #d90429; /* Merah untuk Logout */
+            border-color: #d90429;
+            color: white;
+            box-shadow: 0 4px 12px rgba(217, 4, 41, 0.3);
+        }
+
+        .content { padding: 40px; flex: 1; }
+
+        /* FOOTER - Tulisan Hijau PASTI */
+        .footer { 
+            padding: 20px; 
+            text-align: center; 
+            font-size: 0.8rem; 
+            color: var(--pasti-green); 
+            font-weight: 600;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 0; padding: 0; overflow: hidden; }
+            .main { margin-left: 0; }
+        }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <aside class="sidebar">
-            <div class="logo">
-                <img src="{{ asset('logo_pasti_sumayyah.jpg') }}" alt="Logo Pasti Sumayyah" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            <div class="logo-area">
+                <img src="{{ asset('logo_pasti_sumayyah.jpg') }}" alt="Logo">
+                <div class="brand-text">SMART PASTI<br><span style="font-size: 0.75rem; opacity: 0.9; font-weight: 400;">SUMAYYAH</span></div>
             </div>
+            
             <nav>
-                @if(request()->is('pentadbir*') || request()->is('pentadbir'))
-                    <!-- Sidebar for Pentadbir pages (use URL paths to avoid missing route names) -->
-                    <a href="{{ url('/pentadbir/daftar-akaun') }}">Pendaftaran Akaun</a>
-                    <a href="{{ url('/pentadbir/senarai-murid') }}">Senarai Murid</a>
-                    <a href="{{ url('/pentadbir/profil-murid') }}">Profil Murid</a>
-                    <a href="{{ url('/pentadbir/maklumat-ibubapa') }}">Maklumat Ibu Bapa</a>
-                    <a href="{{ url('/pentadbir/maklumat-guru') }}">Maklumat Guru</a>
-                    <a href="{{ url('/pentadbir/aktiviti-tahunan') }}">Aktiviti Tahunan</a>
-                    <a href="{{ url('/pentadbir/laporan') }}">Laporan</a>
-
-                @elseif(request()->is('guru*') || request()->is('guru'))
-                    <!-- Sidebar for Guru pages (use named routes where available) -->
-                    <a href="{{ route('guru.senaraiMurid') }}">Senarai Murid</a>
-                    <a href="{{ route('guru.profilMurid') }}">Profil Murid</a>
-                    <a href="{{ route('guru.senaraiKehadiran') }}">Senarai Kehadiran</a>
-                    <a href="{{ route('guru.aktivitiTahunan') }}">Aktiviti Tahunan</a>
-                    <a href="{{ route('guru.prestasiMurid') }}">Prestasi Murid</a>
-                    <a href="{{ route('guru.laporan') }}">Laporan</a>
-
-                @elseif(request()->is('ibubapa*') || request()->is('ibubapa'))
-                    <!-- Sidebar for Ibu Bapa pages -->
-                    <a href="{{ url('/ibubapa/profil-murid') }}">Profil Murid</a>
-                    <a href="{{ url('/ibubapa/maklumbalas') }}">Maklum Balas</a>
-                    <a href="{{ url('/ibubapa/aktiviti-tahunan') }}">Aktiviti Tahunan</a>
-                    <a href="{{ url('/ibubapa/laporan') }}">Laporan</a>
-
-                @else
-                    <!-- Default / fallback sidebar (link to root) -->
-                    <a href="{{ url('/') }}">Utama</a>
-                    <a href="{{ route('guru.senaraiMurid') }}">Senarai Murid (Guru)</a>
-                    <a href="{{ url('/pentadbir/daftar-akaun') }}">Pendaftaran (Pentadbir)</a>
+                @php $role = session('role'); @endphp
+                @if($role === 'guru')
+                    <a href="{{ route('guru.senaraiMurid') }}"><i class="bi bi-people"></i> <span>Senarai Murid</span></a>
+                    <a href="{{ route('guru.profilMurid') }}"><i class="bi bi-person-badge"></i> <span>Profil Murid</span></a>
+                    <a href="{{ route('guru.prestasiMurid') }}"><i class="bi bi-award"></i> <span>Prestasi Murid</span></a>
+                    <a href="{{ route('guru.senaraiKehadiran') }}"><i class="bi bi-calendar-check"></i> <span>Kehadiran</span></a>
+                    <a href="{{ route('guru.aktivitiTahunan') }}"><i class="bi bi-images"></i> <span>Aktiviti Tahunan</span></a>
+                    <a href="{{ route('guru.laporan') }}"><i class="bi bi-file-earmark-text"></i> <span>Laporan</span></a>
+                @elseif($role === 'pentadbir')
+                    <a href="{{ url('/pentadbir/senarai-murid') }}"><i class="bi bi-people"></i> <span>Senarai Murid</span></a>
+                    <a href="{{ url('/pentadbir/aktiviti-tahunan') }}"><i class="bi bi-calendar-event"></i> <span>Aktiviti</span></a>
                 @endif
             </nav>
         </aside>
 
         <div class="main">
             <header class="topbar">
-                <div style="display:flex; align-items:center; gap:18px">
-                    <h5 style="margin:0">Sistem SMART Pasti Sumayyah</h5>
+                <div class="breadcrumb-area">
+                    <h5>
+                        <span>SMART PASTI SUMAYYAH</span>
+                        <span class="separator">/</span>
+                        <span class="page-title">@yield('title')</span>
+                    </h5>
                 </div>
-                <div style="display:flex; align-items:center; gap:30px">
-                    @if(session('user') && session('role'))
-                        <span style="color: #2E7D32; font-weight: 500;">
-                            Selamat Datang <strong>
-                                @if(session('role') === 'pentadbir')
-                                    {{ session('user')->namaAdmin }}
-                                @elseif(session('role') === 'guru')
-                                    {{ session('user')->namaGuru }}
-                                @elseif(session('role') === 'ibubapa')
-                                    {{ session('user')->namaParent }}
+                
+                <div class="d-flex align-items-center gap-4">
+                    @if(session('user'))
+                        <div class="text-end d-none d-md-block text-white">
+                            <div class="fw-bold small" style="letter-spacing: 0.3px;">
+                                @if($role === 'guru') {{ session('user')->namaGuru }}
+                                @elseif($role === 'pentadbir') {{ session('user')->namaAdmin }}
                                 @endif
-                            </strong>
-                        </span>
+                            </div>
+                            <div style="font-size: 0.65rem; opacity: 0.8; font-weight: 700; text-transform: uppercase;">{{ $role }}</div>
+                        </div>
                     @endif
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
                         @csrf
-                        <button type="submit" class="logout-btn">
+                        <button type="submit" class="logout-btn border-1">
                             <i class="bi bi-box-arrow-right"></i>
-                            Log Keluar
+                            <span>LOG KELUAR</span>
                         </button>
                     </form>
                 </div>
@@ -106,14 +232,13 @@
                 @yield('content')
             </main>
 
-            <footer class="footer">Copyright © 2025 SMART PASTI Sumayyah System. All rights reserved.</footer>
+            <footer class="footer">
+                &copy; {{ date('Y') }} SMART PASTI SUMAYYAH SYSTEM | Membina Generasi Al-Quran
+            </footer>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Stack for page-specific scripts -->
     @stack('scripts')
 </body>
 </html>
