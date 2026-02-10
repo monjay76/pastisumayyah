@@ -19,30 +19,30 @@
             </style>
         @endif
     </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
+    <body class="bg-gradient-to-br from-[#f0fdf4] via-[#ffffff] to-[#f0fdf4] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
                     @auth
                         <a
                             href="{{ url('/dashboard') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
+                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#00843D] hover:border-[#005a2a] border text-[#00843D] dark:border-[#46b46e] dark:hover:border-[#46b46e] rounded-sm text-sm leading-normal font-medium transition-all duration-300"
                         >
                             Dashboard
                         </a>
                     @else
                         <a
                             href="{{ route('login') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
+                            class="inline-block px-5 py-1.5 dark:text-[#46b46e] text-[#00843D] border border-transparent hover:border-[#00843D] dark:hover:border-[#46b46e] rounded-sm text-sm leading-normal font-medium transition-all duration-300"
                         >
-                            Log in
+                            Log Masuk
                         </a>
 
                         @if (Route::has('register'))
                             <a
                                 href="{{ route('register') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
+                                class="inline-block px-5 py-1.5 dark:text-[#46b46e] border-[#00843D] hover:border-[#005a2a] border text-[#00843D] dark:border-[#46b46e] dark:hover:border-[#46b46e] rounded-sm text-sm leading-normal font-medium transition-all duration-300">
+                                Daftar
                             </a>
                         @endif
                     @endauth
@@ -51,53 +51,89 @@
         </header>
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
-                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
-                    <h1 class="mb-1 font-medium">Let's get started</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">Laravel has an incredibly rich ecosystem. <br>We suggest starting with the following.</p>
-                    <ul class="flex flex-col mb-4 lg:mb-6">
-                        <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:top-1/2 before:bottom-0 before:left-[0.4rem] before:absolute">
-                            <span class="relative py-1 bg-white dark:bg-[#161615]">
-                                <span class="flex items-center justify-center rounded-full bg-[#FDFDFC] dark:bg-[#161615] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] w-3.5 h-3.5 border dark:border-[#3E3E3A] border-[#e3e3e0]">
-                                    <span class="rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A] w-1.5 h-1.5"></span>
-                                </span>
+                <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-[#e6f7e6] dark:border-[#005a2a] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
+                    <div class="mb-6 pb-6 border-b-2 border-[#e6f7e6] dark:border-[#005a2a]">
+                        <h1 class="mb-1 font-medium text-[#00843D] dark:text-[#46b46e] text-lg">Selamat Datang ke Sistem SMART PASTI</h1>
+                        <p class="text-[#706f6c] dark:text-[#A1A09A]">Platform terpadu untuk pengurusan pendidikan dan pembelajaran.</p>
+                    </div>
+                    <ul class="flex flex-col mb-4 lg:mb-6 space-y-4">
+                        <li class="flex items-center gap-4 py-3 px-3 rounded-lg bg-[#f0fdf4] dark:bg-[#005a2a] dark:bg-opacity-20 hover:bg-[#e6f7e6] transition-colors duration-300">
+                            <span class="flex items-center justify-center rounded-full bg-[#00843D] w-8 h-8 flex-shrink-0">
+                                <span class="rounded-full bg-[#46b46e] w-3 h-3"></span>
                             </span>
-                            <span>
-                                Read the
-                                <a href="https://laravel.com/docs" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Documentation</span>
-                                    <svg
-                                        width="10"
-                                        height="11"
-                                        viewBox="0 0 10 11"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="w-2.5 h-2.5"
-                                    >
-                                        <path
-                                            d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001"
-                                            stroke="currentColor"
-                                            stroke-linecap="square"
-                                        />
-                                    </svg>
-                                </a>
+                            <span class="text-[#1b1b18] dark:text-[#EDEDEC]">
+                                Kelola profil guru, ibu bapa dan murid dengan mudah
                             </span>
                         </li>
-                        <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:bottom-1/2 before:top-0 before:left-[0.4rem] before:absolute">
-                            <span class="relative py-1 bg-white dark:bg-[#161615]">
-                                <span class="flex items-center justify-center rounded-full bg-[#FDFDFC] dark:bg-[#161615] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] w-3.5 h-3.5 border dark:border-[#3E3E3A] border-[#e3e3e0]">
-                                    <span class="rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A] w-1.5 h-1.5"></span>
-                                </span>
+                        <li class="flex items-center gap-4 py-3 px-3 rounded-lg bg-[#f0fdf4] dark:bg-[#005a2a] dark:bg-opacity-20 hover:bg-[#e6f7e6] transition-colors duration-300">
+                            <span class="flex items-center justify-center rounded-full bg-[#00843D] w-8 h-8 flex-shrink-0">
+                                <span class="rounded-full bg-[#46b46e] w-3 h-3"></span>
                             </span>
-                            <span>
-                                Watch video tutorials at
-                                <a href="https://laracasts.com" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ml-1">
-                                    <span>Laracasts</span>
-                                    <svg
-                                        width="10"
-                                        height="11"
-                                        viewBox="0 0 10 11"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
+                            <span class="text-[#1b1b18] dark:text-[#EDEDEC]">
+                                Pantau pencapaian dan prestasi pelajar secara real-time
+                            </span>
+                        </li>
+                        <li class="flex items-center gap-4 py-3 px-3 rounded-lg bg-[#f0fdf4] dark:bg-[#005a2a] dark:bg-opacity-20 hover:bg-[#e6f7e6] transition-colors duration-300">
+                            <span class="flex items-center justify-center rounded-full bg-[#00843D] w-8 h-8 flex-shrink-0">
+                                <span class="rounded-full bg-[#46b46e] w-3 h-3"></span>
+                            </span>
+                            <span class="text-[#1b1b18] dark:text-[#EDEDEC]">
+                                Laporkan aktiviti tahunan dan feedback secara lengkap
+                            </span>
+                        </li>
+                        <li class="flex items-center gap-4 py-3 px-3 rounded-lg bg-[#f0fdf4] dark:bg-[#005a2a] dark:bg-opacity-20 hover:bg-[#e6f7e6] transition-colors duration-300">
+                            <span class="flex items-center justify-center rounded-full bg-[#00843D] w-8 h-8 flex-shrink-0">
+                                <span class="rounded-full bg-[#46b46e] w-3 h-3"></span>
+                            </span>
+                            <span class="text-[#1b1b18] dark:text-[#EDEDEC]">
+                                Cetak kehadiran dan laporan secara terperinci
+                            </span>
+                        </li>
+                    </ul>
+                    <div class="pt-6 border-t-2 border-[#e6f7e6] dark:border-[#005a2a]">
+                        <p class="text-[#706f6c] dark:text-[#A1A09A] text-xs leading-relaxed mb-4">
+                            <strong class="text-[#00843D] dark:text-[#46b46e]">Sistem SMART PASTI Sumayyah</strong> dirancang untuk mempererat hubungan antara guru, ibu bapa dan pentadbir demi kecemerlangan pendidikan anak-anak.
+                        </p>
+                        <div class="flex gap-3">
+                            @if (Route::has('login'))
+                                <a
+                                    href="{{ route('login') }}"
+                                    class="inline-block px-4 py-2 bg-gradient-to-r from-[#00843D] to-[#005a2a] hover:from-[#005a2a] hover:to-[#003d1a] text-white rounded-lg text-xs font-medium transition-all duration-300 hover:shadow-lg"
+                                >
+                                    Masuk Sekarang →
+                                </a>
+                            @endif
+                            @if (Route::has('register'))
+                                <a
+                                    href="{{ route('register') }}"
+                                    class="inline-block px-4 py-2 border-2 border-[#00843D] hover:border-[#005a2a] text-[#00843D] hover:text-[#005a2a] dark:border-[#46b46e] dark:text-[#46b46e] dark:hover:text-white dark:hover:border-white rounded-lg text-xs font-medium transition-all duration-300"
+                                >
+                                    Buat Akaun
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="relative w-full lg:w-[438px] flex items-center justify-center mb-6 lg:mb-0">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#00843D] via-[#005a2a] to-[#46b46e] rounded-tl-lg rounded-tr-lg lg:rounded-tr-none lg:rounded-br-lg"></div>
+                    <div class="relative p-8 lg:p-10">
+                        <div class="mb-8 h-24 aspect-video flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full shadow-lg mb-3">
+                                    <i class="bi bi-shield-check text-[#00843D] text-2xl"></i>
+                                </div>
+                                <p class="text-white font-bold text-sm">PASTI SUMAYYAH</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        @if (Route::has('login'))
+            <div class="h-14.5 hidden lg:block"></div>
+        @endif
+    </body>
                                         class="w-2.5 h-2.5"
                                     >
                                         <path

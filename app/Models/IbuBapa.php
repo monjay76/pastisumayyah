@@ -8,6 +8,8 @@ class IbuBapa extends Model
 {
     protected $table = 'ibubapa';
     protected $primaryKey = 'ID_Parent';
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = ['ID_Parent', 'namaParent', 'emel', 'noTel', 'kataLaluan', 'diciptaOleh'];
 
     // Hubungan: Ibu bapa dicipta oleh pentadbir

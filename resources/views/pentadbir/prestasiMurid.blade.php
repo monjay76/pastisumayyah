@@ -8,10 +8,10 @@
         <div class="col-12">
             <!-- Navigation Tabs - Pentadbir version (only Penilaian Prestasi) -->
             <div class="card shadow-sm border-0 rounded-4 mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%);">
                     <ul class="nav nav-tabs card-header-tabs" id="mainTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active text-white" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button" role="tab" aria-controls="assessment" aria-selected="true">
+                            <button class="nav-link active text-white fw-semibold" id="assessment-tab" data-bs-toggle="tab" data-bs-target="#assessment" type="button" role="tab" aria-controls="assessment" aria-selected="true">
                                 <i class="bi bi-pencil-square me-2"></i>Penilaian Prestasi
                             </button>
                         </li>
@@ -23,16 +23,16 @@
                         <div class="tab-pane fade show active" id="assessment" role="tabpanel" aria-labelledby="assessment-tab">
                             <!-- Selection Section -->
                             <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                <div class="card-header bg-info text-white fw-semibold">
+                                <div class="card-header" style="background: linear-gradient(135deg, #46b46e 0%, #00843D 100%); color: white; font-weight: 600;">
                                     <i class="bi bi-filter me-2"></i> Pilih Kelas, Murid & Subjek
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body p-4">
                                     <form method="GET" action="{{ route('pentadbir.prestasiMurid') }}" id="filterForm">
                                         <div class="row g-3">
                                             <!-- Select Class -->
                                             <div class="col-md-4">
-                                                <label for="kelas" class="form-label fw-semibold">Pilih Kelas</label>
-                                                <select name="kelas" id="kelas" class="form-select" required onchange="this.form.submit()">
+                                                <label for="kelas" class="form-label fw-semibold text-dark">Pilih Kelas</label>
+                                                <select name="kelas" id="kelas" class="form-select border-success" style="border-width: 2px;" required onchange="this.form.submit()">
                                                     <option value="">-- Pilih Kelas --</option>
                                     @if(is_array($classes) || $classes instanceof \Illuminate\Support\Collection)
                                         @foreach($classes as $kelas)
@@ -46,8 +46,8 @@
 
                                             <!-- Select Student -->
                                             <div class="col-md-4">
-                                                <label for="murid" class="form-label fw-semibold">Pilih Murid</label>
-                                                <select name="murid" id="murid" class="form-select" {{ !$selectedClass ? 'disabled' : '' }} onchange="this.form.submit()">
+                                                <label for="murid" class="form-label fw-semibold text-dark">Pilih Murid</label>
+                                                <select name="murid" id="murid" class="form-select border-success" style="border-width: 2px;" {{ !$selectedClass ? 'disabled' : '' }} onchange="this.form.submit()">
                                                     <option value="">-- Pilih Murid --</option>
                                                     @if(is_array($students) || $students instanceof \Illuminate\Support\Collection)
                                                         @foreach($students as $student)
@@ -61,8 +61,8 @@
 
                                             <!-- Select Subject -->
                                             <div class="col-md-4">
-                                                <label for="subjek" class="form-label fw-semibold">Pilih Subjek</label>
-                                                <select name="subjek" id="subjek" class="form-select" {{ !$selectedStudent ? 'disabled' : '' }} onchange="this.form.submit()">
+                                                <label for="subjek" class="form-label fw-semibold text-dark">Pilih Subjek</label>
+                                                <select name="subjek" id="subjek" class="form-select border-success" style="border-width: 2px;" {{ !$selectedStudent ? 'disabled' : '' }} onchange="this.form.submit()">
                                                     <option value="">-- Pilih Subjek --</option>
                                                     @if(is_array($subjekList) || $subjekList instanceof \Illuminate\Support\Collection)
                                                         @foreach($subjekList as $subjek)
@@ -77,8 +77,8 @@
                                     </form>
 
                                     @if($selectedClass && $selectedStudent && $selectedSubjek)
-                                        <div class="alert alert-info mt-3 mb-0">
-                                            <i class="bi bi-info-circle me-2"></i>
+                                        <div class="alert mt-3 mb-0" style="background-color: #f0fdf4; border: 2px solid #00843D; border-radius: 10px; color: #005a2a;">
+                                            <i class="bi bi-check-circle me-2"></i>
                                             <strong>Dipilih:</strong> Kelas {{ $selectedClass }} | {{ $selectedStudent->namaMurid }} | {{ $selectedSubjek }}
                                         </div>
                                     @endif
@@ -96,20 +96,20 @@
                                     ]);
                                 @endphp
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-header bg-success text-white fw-semibold">
+                                    <div class="card-header" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; font-weight: 600;">
                                         <i class="bi bi-pencil-square me-2"></i> 
                                         {{ $isPratahfiz ? 'Penilaian Prestasi - Pratahfiz' : ($isNurulQuran ? 'Penilaian Prestasi - Nurul Quran' : 'Penilaian Prestasi - ' . $selectedSubjek) }}
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body p-4">
                                         @if(session('success'))
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <div class="alert alert-dismissible fade show rounded-3" role="alert" style="background-color: #f0fdf4; border: 2px solid #22c55e; color: #005a2a;">
                                                 <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                             </div>
                                         @endif
 
                                         @if(session('error'))
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <div class="alert alert-dismissible fade show rounded-3" role="alert" style="background-color: #fef2f2; border: 2px solid #ef4444; color: #991b1b;">
                                                 <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                             </div>
@@ -123,8 +123,8 @@
 
                                             <!-- Select Penggal -->
                                             <div class="mb-4">
-                                                <label for="penggal" class="form-label fw-bold">Pilih Penggal</label>
-                                                <select name="penggal_display" id="penggal" class="form-select w-auto" required onchange="updatePenggalValue()">
+                                                <label for="penggal" class="form-label fw-bold text-dark">Pilih Penggal</label>
+                                                <select name="penggal_display" id="penggal" class="form-select w-auto border-success" style="border-width: 2px;" required onchange="updatePenggalValue()">
                                                     <option value="">-- Pilih Penggal --</option>
                                                     <option value="1">Penggal 1</option>
                                                     <option value="2">Penggal 2</option>
@@ -132,9 +132,9 @@
                                             </div>
 
                                             <!-- Assessment Table -->
-                                            <div class="table-responsive">
+                                            <div class="table-responsive rounded-3">
                                                 <table class="table table-bordered table-hover align-middle">
-                                                    <thead class="table-primary">
+                                                    <thead style="background-color: #e6f7e6; border-bottom: 3px solid #00843D;">
                                                         <tr>
                                                             <th class="text-center" style="width: 10%;">No.</th>
                                                             <th class="text-center" style="width: 25%;">
@@ -400,8 +400,8 @@
                                             </div>
 
                                             <!-- Submit Button -->
-                                            <div class="d-flex justify-content-end mt-4">
-                                                <button type="submit" class="btn btn-primary btn-lg">
+                                            <div class="d-flex justify-content-end mt-4 pt-3" style="border-top: 2px solid #e5e7eb;">
+                                                <button type="submit" class="btn btn-lg fw-bold rounded-3 shadow" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; padding: 12px 40px;">
                                                     <i class="bi bi-save me-2"></i>Simpan Penilaian
                                                 </button>
                                             </div>
@@ -410,9 +410,9 @@
                                 </div>
                             @elseif($selectedClass && $selectedStudent && $selectedSubjek)
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-body text-center text-muted py-5">
-                                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
-                                        <p class="mt-3">Tiada senarai ayat untuk subjek ini.</p>
+                                    <div class="card-body text-center py-5" style="background-color: #f9fafb;">
+                                        <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #f97316;"></i>
+                                        <p class="mt-3 fw-semibold" style="color: #7c2d12;">Tiada senarai ayat untuk subjek ini.</p>
                                     </div>
                                 </div>
                             @endif
@@ -420,9 +420,9 @@
                             <!-- Information Box -->
                             @if(!$selectedClass)
                                 <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-body text-center text-muted py-5">
-                                        <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
-                                        <p class="mt-3">Sila pilih kelas, murid dan subjek untuk mula menilai prestasi.</p>
+                                    <div class="card-body text-center py-5" style="background-color: #f0fdf4; border: 2px solid #86efac;">
+                                        <i class="bi bi-info-circle" style="font-size: 3rem; color: #00843D;"></i>
+                                        <p class="mt-3 fw-semibold" style="color: #005a2a;">Sila pilih kelas, murid dan subjek untuk mula menilai prestasi.</p>
                                     </div>
                                 </div>
                             @endif
@@ -431,14 +431,14 @@
                         <!-- Subjects Tab -->
                         <div class="tab-pane fade" id="subjects" role="tabpanel" aria-labelledby="subjects-tab">
                             @if(session('success'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <div class="alert alert-dismissible fade show rounded-3" role="alert" style="background-color: #f0fdf4; border: 2px solid #22c55e; color: #005a2a;">
                                     <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
                             @endif
 
                             @if(session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <div class="alert alert-dismissible fade show rounded-3" role="alert" style="background-color: #fef2f2; border: 2px solid #ef4444; color: #991b1b;">
                                     <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
@@ -446,17 +446,17 @@
 
                             <!-- Add New Subject Form -->
                             <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                <div class="card-header bg-success text-white fw-semibold">
+                                <div class="card-header" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; font-weight: 600;">
                                     <i class="bi bi-plus-circle me-2"></i>Tambah Subjek Baru
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body p-4">
                                     <form method="POST" action="{{ route('pentadbir.storeSubjek') }}" class="row g-3">
                                         @csrf
                                         <div class="col-md-8">
-                                            <input type="text" name="nama_subjek" class="form-control" placeholder="Masukkan nama subjek" required>
+                                            <input type="text" name="nama_subjek" class="form-control border-success" style="border-width: 2px;" placeholder="Masukkan nama subjek" required>
                                         </div>
                                         <div class="col-md-4">
-                                            <button type="submit" class="btn btn-success w-100">
+                                            <button type="submit" class="btn w-100 fw-bold rounded-3 shadow" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white;">
                                                 <i class="bi bi-plus-circle me-2"></i>Tambah Subjek
                                             </button>
                                         </div>
@@ -466,13 +466,13 @@
 
                             <!-- Subjects List -->
                             <div class="card shadow-sm border-0 rounded-4">
-                                <div class="card-header bg-info text-white fw-semibold">
+                                <div class="card-header" style="background: linear-gradient(135deg, #46b46e 0%, #00843D 100%); color: white; font-weight: 600;">
                                     <i class="bi bi-list-ul me-2"></i>Senarai Subjek
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
+                                <div class="card-body p-4">
+                                    <div class="table-responsive rounded-3">
                                         <table class="table table-bordered table-hover align-middle">
-                                            <thead class="table-primary">
+                                            <thead style="background-color: #e6f7e6; border-bottom: 3px solid #00843D;">
                                                 <tr>
                                                     <th class="text-center" style="width: 10%;">No.</th>
                                                     <th style="width: 60%;">Nama Subjek</th>
@@ -489,14 +489,14 @@
                                                         </td>
                                                         <td class="text-center">
                                                             <!-- Edit Button -->
-                                                            <button type="button" class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
+                                                            <button type="button" class="btn btn-sm fw-bold me-2 rounded-2" style="background-color: #fbbf24; color: #78350f;" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
                                                                 <i class="bi bi-pencil-square"></i> Edit
                                                             </button>
                                                             <!-- Delete Button -->
                                                             <form method="POST" action="{{ route('pentadbir.destroySubjek', $item->id) }}" class="d-inline" onsubmit="return confirm('Adakah anda pasti mahu memadam subjek ini?')">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                                <button type="submit" class="btn btn-sm fw-bold rounded-2" style="background-color: #ef4444; color: white;">
                                                                     <i class="bi bi-trash"></i> Padam
                                                                 </button>
                                                             </form>
@@ -505,24 +505,24 @@
 
                                                     <!-- Edit Modal -->
                                                     <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="editModalLabel{{ $item->id }}">Edit Subjek</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content rounded-4 border-0 shadow-lg">
+                                                                <div class="modal-header" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white; border: none;">
+                                                                    <h5 class="modal-title fw-bold" id="editModalLabel{{ $item->id }}"><i class="bi bi-pencil-square me-2"></i>Edit Subjek</h5>
+                                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
                                                                 <form method="POST" action="{{ route('pentadbir.updateSubjek', $item->id) }}">
                                                                     @csrf
                                                                     @method('PUT')
-                                                                    <div class="modal-body">
+                                                                    <div class="modal-body p-4">
                                                                         <div class="mb-3">
-                                                                            <label for="nama_subjek{{ $item->id }}" class="form-label">Nama Subjek</label>
-                                                                            <input type="text" name="nama_subjek" id="nama_subjek{{ $item->id }}" class="form-control" value="{{ $item->nama_subjek }}" required>
+                                                                            <label for="nama_subjek{{ $item->id }}" class="form-label fw-semibold text-dark">Nama Subjek</label>
+                                                                            <input type="text" name="nama_subjek" id="nama_subjek{{ $item->id }}" class="form-control border-success" style="border-width: 2px;" value="{{ $item->nama_subjek }}" required>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                                    <div class="modal-footer border-top pt-3">
+                                                                        <button type="button" class="btn btn-outline-secondary rounded-3 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                                                                        <button type="submit" class="btn fw-bold rounded-3 shadow" style="background: linear-gradient(135deg, #00843D 0%, #005a2a 100%); color: white;">Simpan Perubahan</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -792,32 +792,68 @@
 
 <style>
     .form-check-input:checked {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
+        background-color: #00843D;
+        border-color: #00843D;
+    }
+
+    .form-check-input {
+        border: 2px solid #ccc;
     }
 
     .table th {
-        background-color: #e7f1ff;
+        background-color: #e6f7e6;
+        color: #005a2a;
+        font-weight: 600;
+        border-bottom: 3px solid #00843D;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f0fdf4;
     }
 
     .badge {
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
+        font-weight: 600;
     }
 
     /* Fix tab text readability */
     .nav-tabs .nav-link.active {
-        color: #000 !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border-color: #dee2e6 #dee2e6 #fff !important;
+        color: #fff !important;
+        background-color: transparent !important;
+        border-color: transparent !important;
+        border-bottom: 3px solid #fff !important;
+        font-weight: 600;
     }
 
     .nav-tabs .nav-link {
-        color: #fff !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-weight: 500;
     }
 
     .nav-tabs .nav-link:hover {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: #fff !important;
+        border-bottom-color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    /* Form select styling */
+    .form-select.border-success {
+        color: #005a2a;
+    }
+
+    .form-select.border-success:focus {
+        border-color: #00843D;
+        box-shadow: 0 0 0 0.2rem rgba(0, 132, 61, 0.25);
+    }
+
+    /* Input styling */
+    .form-control.border-success {
+        color: #005a2a;
+    }
+
+    .form-control.border-success:focus {
+        border-color: #00843D;
+        box-shadow: 0 0 0 0.2rem rgba(0, 132, 61, 0.25);
     }
 </style>
 @endsection

@@ -190,8 +190,18 @@
                     <a href="{{ route('guru.aktivitiTahunan') }}"><i class="bi bi-images"></i> <span>Aktiviti Tahunan</span></a>
                     <a href="{{ route('guru.laporan') }}"><i class="bi bi-file-earmark-text"></i> <span>Laporan</span></a>
                 @elseif($role === 'pentadbir')
-                    <a href="{{ url('/pentadbir/senarai-murid') }}"><i class="bi bi-people"></i> <span>Senarai Murid</span></a>
-                    <a href="{{ url('/pentadbir/aktiviti-tahunan') }}"><i class="bi bi-calendar-event"></i> <span>Aktiviti</span></a>
+                    <a href="{{ route('pentadbir.index') }}"><i class="bi bi-person-plus"></i> <span>Pendaftaran Akaun</span></a>
+                    <a href="{{ route('pentadbir.senaraiMurid') }}"><i class="bi bi-people"></i> <span>Senarai Murid</span></a>
+                    <a href="{{ route('pentadbir.profilMurid') }}"><i class="bi bi-person-badge"></i> <span>Profil Murid</span></a>
+                    <a href="{{ route('pentadbir.maklumatGuru') }}"><i class="bi bi-person-workspace"></i> <span>Maklumat Guru</span></a>
+                    <a href="{{ route('pentadbir.maklumatIbuBapa') }}"><i class="bi bi-house-heart"></i> <span>Maklumat Ibu Bapa</span></a>
+                    <a href="{{ route('pentadbir.aktivitiTahunan') }}"><i class="bi bi-calendar-event"></i> <span>Aktiviti Tahunan</span></a>
+                    <a href="{{ route('pentadbir.laporan') }}"><i class="bi bi-file-earmark-text"></i> <span>Laporan</span></a>
+                @elseif($role === 'ibubapa')
+                    <a href="{{ route('ibubapa.profilMurid') }}"><i class="bi bi-person-badge"></i> <span>Profil Murid</span></a>
+                    <a href="{{ route('ibubapa.aktivitiTahunan') }}"><i class="bi bi-calendar-event"></i> <span>Aktiviti Tahunan</span></a>
+                    <a href="{{ route('ibubapa.laporan') }}"><i class="bi bi-file-earmark-text"></i> <span>Laporan</span></a>
+                    <a href="{{ route('ibubapa.maklumbalas') }}"><i class="bi bi-chat-left-text"></i> <span>Maklumbalas</span></a>
                 @endif
             </nav>
         </aside>

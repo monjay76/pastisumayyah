@@ -3,211 +3,217 @@
 @section('title', 'Laporan Individu Murid - Pentadbir')
 
 @section('content')
-<div class="container-fluid px-4">
-    <div class="row mt-4">
+<style>
+    /* Custom Styles untuk impak visual lebih premium */
+    .main-card { border-radius: 15px; overflow: hidden; }
+    .filter-section { background: #f8f9fa; border-left: 5px solid #0dcaf0; }
+    .info-section { border-left: 5px solid #198754; }
+    .chart-section { border-left: 5px solid #0d6efd; }
+    
+    .profile-img-container {
+        position: relative;
+        display: inline-block;
+    }
+    .profile-img-container::after {
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 15px;
+        height: 15px;
+        background: #198754;
+        border: 2px solid white;
+        border-radius: 50%;
+    }
+
+    .table thead th {
+        background-color: #212529;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        border: none;
+    }
+    
+    .stat-badge {
+        font-weight: 600;
+        padding: 0.5em 1em;
+        border-radius: 8px;
+    }
+
+    .card { transition: all 0.3s ease; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+</style>
+
+<div class="container-fluid px-4 pb-5">
+    <div class="d-flex align-items-center justify-content-between mt-4 mb-4">
+        <h3 class="fw-bold text-dark mb-0">
+            <i class="bi bi-person-badge-fill me-2 text-primary"></i>Laporan Individu Murid
+        </h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="#">Pentadbir</a></li>
+                <li class="breadcrumb-item active">Laporan</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-person-lines-fill me-2"></i>Laporan Individu Murid
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- Selection Section -->
-                    <div class="card shadow-sm border-0 rounded-4 mb-4">
-                        <div class="card-header bg-info text-white fw-semibold">
-                            <i class="bi bi-filter me-2"></i> Pilih Kelas dan Murid
-                        </div>
+            <div class="card shadow-sm border-0 main-card">
+                <div class="card-body p-4">
+                    
+                    <div class="card border-0 shadow-none filter-section mb-4">
                         <div class="card-body">
+                            <h6 class="fw-bold mb-3 text-info"><i class="bi bi-filter-right me-2"></i>TAPISAN DATA</h6>
                             <form method="GET" action="{{ route('pentadbir.laporanIndividu') }}" id="filterForm">
                                 <div class="row g-3">
-                                    <!-- Select Class -->
                                     <div class="col-md-6">
-                                        <label for="kelas" class="form-label fw-semibold">Pilih Kelas</label>
-                                        <select name="kelas" id="kelas" class="form-select" required onchange="this.form.submit()">
-                                            <option value="">-- Pilih Kelas --</option>
-                                            @if(is_array($classes) || $classes instanceof \Illuminate\Support\Collection)
-                                                @foreach($classes as $kelas)
-                                                    <option value="{{ $kelas }}" {{ $selectedClass == $kelas ? 'selected' : '' }}>
-                                                        {{ $kelas }}
-                                                    </option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                        <label for="kelas" class="form-label small fw-bold text-uppercase">Pilih Kelas</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-door-closed"></i></span>
+                                            <select name="kelas" id="kelas" class="form-select border-start-0" required onchange="this.form.submit()">
+                                                <option value="">-- Semua Kelas --</option>
+                                                @if(is_array($classes) || $classes instanceof \Illuminate\Support\Collection)
+                                                    @foreach($classes as $kelas)
+                                                        <option value="{{ $kelas }}" {{ $selectedClass == $kelas ? 'selected' : '' }}>
+                                                            {{ $kelas }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    <!-- Select Student -->
                                     <div class="col-md-6">
-                                        <label for="murid" class="form-label fw-semibold">Pilih Murid</label>
-                                        <select name="murid" id="murid" class="form-select" {{ !$selectedClass ? 'disabled' : '' }} onchange="this.form.submit()">
-                                            <option value="">-- Pilih Murid --</option>
-                                            @if(is_array($students) || $students instanceof \Illuminate\Support\Collection)
-                                                @foreach($students as $student)
-                                                    <option value="{{ $student->MyKidID }}" {{ $selectedStudent && $selectedStudent->MyKidID == $student->MyKidID ? 'selected' : '' }}>
-                                                        {{ $student->namaMurid }}
-                                                    </option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                        <label for="murid" class="form-label small fw-bold text-uppercase">Pilih Murid</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                            <select name="murid" id="murid" class="form-select border-start-0" {{ !$selectedClass ? 'disabled' : '' }} onchange="this.form.submit()">
+                                                <option value="">-- Cari Nama Murid --</option>
+                                                @if(is_array($students) || $students instanceof \Illuminate\Support\Collection)
+                                                    @foreach($students as $student)
+                                                        <option value="{{ $student->MyKidID }}" {{ $selectedStudent && $selectedStudent->MyKidID == $student->MyKidID ? 'selected' : '' }}>
+                                                            {{ $student->namaMurid }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
-
-                            @if($selectedClass && $selectedStudent)
-                                <div class="alert alert-info mt-3 mb-0">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    <strong>Dipilih:</strong> Kelas {{ $selectedClass }} | {{ $selectedStudent->namaMurid }}
-                                </div>
-                            @endif
                         </div>
                     </div>
 
                     @if($selectedClass && $selectedStudent)
-                        <!-- Student Report Section -->
-                        <div class="row">
-                            <!-- Student Info and Attendance -->
-                            <div class="col-md-4">
-                                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-header bg-success text-white fw-semibold">
-                                        <i class="bi bi-person-circle me-2"></i>Maklumat Murid
-                                    </div>
-                                    <div class="card-body text-center">
-                                        @if($selectedStudent->gambar_profil)
-                                            <img src="{{ asset('storage/' . $selectedStudent->gambar_profil) }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-                                        @else
-                                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
-                                                <i class="bi bi-person-fill text-secondary" style="font-size: 2rem;"></i>
+                        <div class="row g-4">
+                            <div class="col-xl-4 col-lg-5">
+                                <div class="card h-100 shadow-sm border-0 info-section">
+                                    <div class="card-body p-4">
+                                        <div class="text-center mb-4">
+                                            <div class="profile-img-container mb-3">
+                                                @if($selectedStudent->gambar_profil)
+                                                    <img src="{{ asset('storage/' . $selectedStudent->gambar_profil) }}" class="rounded-circle border p-1" style="width: 120px; height: 120px; object-fit: cover;">
+                                                @else
+                                                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center border" style="width: 120px; height: 120px;">
+                                                        <i class="bi bi-person-fill text-secondary" style="font-size: 3.5rem;"></i>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        @endif
-                                        <h5 class="mb-1">{{ $selectedStudent->namaMurid }}</h5>
-                                        <p class="text-muted mb-1">MyKid ID: {{ $selectedStudent->MyKidID }}</p>
-                                        <p class="text-muted mb-3">Kelas: {{ $selectedStudent->kelas }}</p>
-
-                                        <!-- Attendance Status -->
-                                        <div class="border rounded p-3 mb-0">
-                                            <h6 class="mb-2">
-                                                <i class="bi bi-calendar-check me-2"></i>Status Kehadiran Terkini
-                                            </h6>
-                                            @if($attendance)
-                                                <div class="d-flex align-items-center justify-content-center mb-2">
-                                                    @if(strtolower($attendance->status) == 'hadir')
-                                                        <span class="badge bg-success fs-6 px-3 py-2">
-                                                            <i class="bi bi-check-circle-fill me-1"></i>Hadir
-                                                        </span>
-                                                    @elseif(strtolower($attendance->status) == 'tidak hadir')
-                                                        <span class="badge bg-danger fs-6 px-3 py-2">
-                                                            <i class="bi bi-x-circle-fill me-1"></i>Tidak Hadir
-                                                        </span>
-                                                    @elseif(strtolower($attendance->status) == 'cuti')
-                                                        <span class="badge bg-warning fs-6 px-3 py-2">
-                                                            <i class="bi bi-calendar-x me-1"></i>Cuti
-                                                        </span>
-                                                    @else
-                                                        <span class="badge bg-secondary fs-6 px-3 py-2">
-                                                            {{ $attendance->status }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                                <small class="text-muted">
-                                                    Tarikh: {{ $attendance->tarikh ? \Carbon\Carbon::parse($attendance->tarikh)->format('d/m/Y') : 'N/A' }}
-                                                </small>
-                                            @else
-                                                <div class="text-muted">
-                                                    <i class="bi bi-dash-circle me-1"></i>Tiada rekod kehadiran
-                                                </div>
-                                            @endif
+                                            <h5 class="fw-bold mb-1">{{ $selectedStudent->namaMurid }}</h5>
+                                            <span class="badge bg-light text-dark border mb-3">ID: {{ $selectedStudent->MyKidID }}</span>
                                         </div>
+
+                                        <div class="list-group list-group-flush mb-4">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                                                <span class="text-muted small text-uppercase">Kelas</span>
+                                                <span class="fw-bold text-primary">{{ $selectedStudent->kelas }}</span>
+                                            </div>
+                                            <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 border-0">
+                                                <span class="text-muted small text-uppercase">Status Kehadiran</span>
+                                                @if($attendance)
+                                                    @php
+                                                        $statusClass = strtolower($attendance->status) == 'hadir' ? 'success' : (strtolower($attendance->status) == 'tidak hadir' ? 'danger' : 'warning');
+                                                    @endphp
+                                                    <span class="stat-badge bg-{{ $statusClass }} text-white small">
+                                                        {{ strtoupper($attendance->status) }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-muted italic">Tiada Rekod</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        @if($attendance)
+                                        <div class="alert alert-light border-0 mb-0 text-center">
+                                            <small class="text-muted fw-bold">KEMASKINI TERAKHIR</small><br>
+                                            <span class="text-dark">{{ \Carbon\Carbon::parse($attendance->tarikh)->format('d F Y') }}</span>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Performance Chart -->
-                            <div class="col-md-8">
-                                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                                    <div class="card-header bg-primary text-white fw-semibold">
-                                        <i class="bi bi-bar-chart me-2"></i>Perbandingan Markah Penggal 1 vs Penggal 2
+                            <div class="col-xl-8 col-lg-7">
+                                <div class="card shadow-sm border-0 chart-section mb-4">
+                                    <div class="card-header bg-white py-3 border-0">
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-box bg-primary-subtle text-primary rounded me-3 p-2">
+                                                <i class="bi bi-graph-up-arrow fs-5"></i>
+                                            </div>
+                                            <h6 class="mb-0 fw-bold">Analisis Prestasi Penggal</h6>
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         @if($performanceData->isNotEmpty())
-                                            <canvas id="performanceChart" width="400" height="200"></canvas>
-                                            <div class="mt-3">
-                                                <small class="text-muted">
-                                                    <i class="bi bi-info-circle me-1"></i>
-                                                    Graf menunjukkan purata markah bagi setiap subjek
-                                                </small>
+                                            <div style="height: 300px;">
+                                                <canvas id="performanceChart"></canvas>
                                             </div>
                                         @else
-                                            <div class="text-center text-muted py-5">
-                                                <i class="bi bi-graph-up" style="font-size: 3rem;"></i>
-                                                <p class="mt-3">Tiada data prestasi dijumpai untuk murid ini.</p>
+                                            <div class="text-center py-5">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 80px; opacity: 0.5;">
+                                                <p class="mt-3 text-muted italic">Tiada data prestasi untuk dipaparkan.</p>
                                             </div>
                                         @endif
                                     </div>
                                 </div>
 
-                                <!-- Detailed Performance Table -->
                                 @if($performanceData->isNotEmpty())
-                                <div class="card shadow-sm border-0 rounded-4">
-                                    <div class="card-header bg-secondary text-white fw-semibold">
-                                        <i class="bi bi-table me-2"></i>Butiran Prestasi
-                                    </div>
-                                    <div class="card-body">
+                                <div class="card shadow-sm border-0 border-top border-secondary border-4">
+                                    <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-bordered table-hover align-middle">
-                                                <thead class="table-dark">
-                                                    <tr>
-                                                        <th class="text-center" style="width: 5%;">No.</th>
-                                                        <th style="width: 40%;">Subjek</th>
-                                                        <th class="text-center" style="width: 15%;">Penggal 1</th>
-                                                        <th class="text-center" style="width: 15%;">Penggal 2</th>
-                                                        <th class="text-center" style="width: 15%;">Perbezaan</th>
-                                                        <th class="text-center" style="width: 10%;">Trend</th>
+                                            <table class="table table-hover align-middle mb-0">
+                                                <thead>
+                                                    <tr class="text-white">
+                                                        <th class="text-center px-3" style="width: 80px;">#</th>
+                                                        <th>Subjek</th>
+                                                        <th class="text-center">P1</th>
+                                                        <th class="text-center">P2</th>
+                                                        <th class="text-center">Prestasi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($performanceData as $index => $data)
                                                     <tr>
-                                                        <td class="text-center">{{ $index + 1 }}</td>
-                                                        <td class="fw-semibold">{{ $data['subject'] }}</td>
-                                                        <td class="text-center">
-                                                            @if($data['details']['penggal1_count'] > 0)
-                                                                <span class="badge bg-primary">{{ $data['penggal1'] }}</span>
-                                                                <br><small class="text-muted">({{ $data['details']['penggal1_count'] }} rekod)</small>
-                                                            @else
-                                                                <span class="text-muted">-</span>
-                                                            @endif
+                                                        <td class="text-center text-muted">{{ $index + 1 }}</td>
+                                                        <td>
+                                                            <div class="fw-bold text-dark">{{ $data['subject'] }}</div>
+                                                            <small class="text-muted text-uppercase" style="font-size: 0.65rem;">Rekod: {{ $data['details']['penggal1_count'] + $data['details']['penggal2_count'] }} sesi</small>
                                                         </td>
                                                         <td class="text-center">
-                                                            @if($data['details']['penggal2_count'] > 0)
-                                                                <span class="badge bg-info">{{ $data['penggal2'] }}</span>
-                                                                <br><small class="text-muted">({{ $data['details']['penggal2_count'] }} rekod)</small>
-                                                            @else
-                                                                <span class="text-muted">-</span>
-                                                            @endif
+                                                            <span class="badge bg-primary-subtle text-primary rounded-pill px-3">{{ $data['penggal1'] }}</span>
                                                         </td>
                                                         <td class="text-center">
-                                                            @php
-                                                                $diff = $data['penggal2'] - $data['penggal1'];
-                                                            @endphp
-                                                            @if($data['details']['penggal1_count'] > 0 && $data['details']['penggal2_count'] > 0)
-                                                                <span class="badge {{ $diff > 0 ? 'bg-success' : ($diff < 0 ? 'bg-danger' : 'bg-secondary') }}">
-                                                                    {{ $diff > 0 ? '+' : '' }}{{ number_format($diff, 1) }}
-                                                                </span>
-                                                            @else
-                                                                <span class="text-muted">-</span>
-                                                            @endif
+                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3">{{ $data['penggal2'] }}</span>
                                                         </td>
                                                         <td class="text-center">
-                                                            @if($data['details']['penggal1_count'] > 0 && $data['details']['penggal2_count'] > 0)
-                                                                @if($diff > 0)
-                                                                    <i class="bi bi-arrow-up-circle-fill text-success" title="Meningkat"></i>
-                                                                @elseif($diff < 0)
-                                                                    <i class="bi bi-arrow-down-circle-fill text-danger" title="Menurun"></i>
-                                                                @else
-                                                                    <i class="bi bi-dash-circle-fill text-secondary" title="Tidak berubah"></i>
-                                                                @endif
+                                                            @php $diff = $data['penggal2'] - $data['penggal1']; @endphp
+                                                            @if($diff > 0)
+                                                                <span class="text-success"><i class="bi bi-caret-up-fill"></i> +{{ number_format($diff, 1) }}</span>
+                                                            @elseif($diff < 0)
+                                                                <span class="text-danger"><i class="bi bi-caret-down-fill"></i> {{ number_format($diff, 1) }}</span>
                                                             @else
-                                                                <span class="text-muted">-</span>
+                                                                <span class="text-muted"><i class="bi bi-dash-lg"></i> 0</span>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -221,12 +227,12 @@
                             </div>
                         </div>
                     @else
-                        <!-- Information Box -->
-                        <div class="card shadow-sm border-0 rounded-4 mb-4">
-                            <div class="card-body text-center text-muted py-5">
-                                <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
-                                <p class="mt-3">Sila pilih kelas dan murid untuk melihat laporan individu.</p>
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="bi bi-clipboard2-data text-light" style="font-size: 5rem;"></i>
                             </div>
+                            <h5 class="text-muted">Sila pilih Kelas dan Murid untuk menjana laporan.</h5>
+                            <p class="text-muted small">Data akan dipaparkan secara automatik selepas pilihan dibuat.</p>
                         </div>
                     @endif
                 </div>
@@ -240,10 +246,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('performanceChart').getContext('2d');
-
     const performanceData = @json($performanceData);
 
-    const labels = performanceData.map(item => item.subject.length > 15 ? item.subject.substring(0, 15) + '...' : item.subject);
+    const labels = performanceData.map(item => item.subject.length > 12 ? item.subject.substring(0, 12) + '...' : item.subject);
     const penggal1Data = performanceData.map(item => parseFloat(item.penggal1));
     const penggal2Data = performanceData.map(item => parseFloat(item.penggal2));
 
@@ -254,79 +259,41 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Penggal 1',
                 data: penggal1Data,
-                backgroundColor: 'rgba(13, 110, 253, 0.7)',
-                borderColor: 'rgba(13, 110, 253, 1)',
-                borderWidth: 1
+                backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                borderRadius: 5,
+                barThickness: 20
             }, {
                 label: 'Penggal 2',
                 data: penggal2Data,
-                backgroundColor: 'rgba(25, 135, 84, 0.7)',
-                borderColor: 'rgba(25, 135, 84, 1)',
-                borderWidth: 1
+                backgroundColor: 'rgba(25, 135, 84, 0.8)',
+                borderRadius: 5,
+                barThickness: 20
             }]
         },
         options: {
+            maintainAspectRatio: false,
             responsive: true,
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
                     max: 3,
+                    grid: { drawBorder: false },
                     ticks: {
-                        stepSize: 0.5,
-                        callback: function(value) {
-                            if (value === 1) return 'Ansur Maju (1)';
-                            if (value === 2) return 'Maju (2)';
-                            if (value === 3) return 'Sangat Maju (3)';
-                            return value;
+                        stepSize: 1,
+                        callback: function(v) {
+                            const labels = {1: 'Ansur Maju', 2: 'Maju', 3: 'Sangat Maju'};
+                            return labels[v] || v;
                         }
                     }
-                }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            label += context.parsed.y;
-                            if (context.parsed.y === 1) label += ' (Ansur Maju)';
-                            else if (context.parsed.y === 2) label += ' (Maju)';
-                            else if (context.parsed.y === 3) label += ' (Sangat Maju)';
-                            return label;
-                        }
-                    }
-                }
+                },
+                x: { grid: { display: false } }
             }
         }
     });
 });
 </script>
 @endif
-
-<style>
-.table th {
-    background-color: #343a40;
-    color: white;
-    font-weight: 600;
-}
-
-.table-hover tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.badge {
-    font-size: 0.8rem;
-}
-
-.card {
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-</style>
 @endsection
