@@ -7,7 +7,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-header" style="background: linear-gradient(135deg, #005a2a 0%, #00843D 100%); color: white; font-weight: 600;">
+                <div class="card-header" style="background: #00843D; color: white; font-weight: 600;">
                     <i class="bi bi-person-bounding-box me-2"></i> Maklumat Profil Murid
                 </div>
                 <div class="card-body p-4">
@@ -61,7 +61,7 @@
                                                         <td class="text-uppercase fw-bold">{{ $student->namaMurid }}</td>
                                                         <td><span class="badge" style="background-color:#e7f8ef; color:#005a2a; font-weight:600; padding:0.35rem 0.6rem">{{ $student->kelas }}</span></td>
                                                         <td class="text-center">
-                                                            <a href="{{ route('guru.profilMurid', ['kelas' => $selectedClass, 'murid' => $student->MyKidID]) }}" class="btn btn-sm" style="background: linear-gradient(135deg,#00843D 0%,#005a2a 100%); color:white; border-radius:999px; padding:0.4rem 0.9rem;">
+                                                            <a href="{{ route('guru.profilMurid', ['kelas' => $selectedClass, 'murid' => $student->MyKidID]) }}" class="btn btn-sm" style="background: #00843D; color:white; border-radius:999px; padding:0.4rem 0.9rem;">
                                                                 Lihat Profil <i class="bi bi-chevron-right ms-1"></i>
                                                             </a>
                                                         </td>

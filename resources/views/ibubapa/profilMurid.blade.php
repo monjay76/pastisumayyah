@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Anak')
+@section('title', 'Profil Tanggungan')
 
 @section('content')
 <div class="container-fluid px-4 py-5" style="background: #f8f9fa; min-height: 100vh;">

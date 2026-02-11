@@ -18,7 +18,7 @@
         body {
             margin: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #1b5e20 0%, #43a047 100%);
+            background:  #207a26;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -148,7 +148,7 @@
         }
 
         .btn-login {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: #00843D;
             border: none;
             border-radius: 15px;
             padding: 1rem;
@@ -190,10 +190,7 @@
         <div class="container-fluid p-0">
             <div class="row g-0">
                 <div class="col-lg-6 welcome-section">
-                    <div class="mb-4">
-                        <i class="bi bi-shield-check" style="font-size: 4rem; opacity: 0.5;"></i>
-                    </div>
-                    <div class="welcome-text">Selamat Datang ke Sistem SMART</div>
+                    <div class="welcome-text">Selamat Datang ke Sistem SMART PASTI Sumayyah</div>
                     <div class="welcome-subtitle">
                         Memperkasakan hubungan antara guru dan ibu bapa demi kecemerlangan anak-anak di Pasti Sumayyah.
                     </div>
@@ -206,14 +203,14 @@
                                 <img src="{{ asset('logo_pasti_sumayyah.jpg') }}" alt="Logo Pasti Sumayyah">
                             </div>
                             <h4 class="fw-bold mb-1" style="color: var(--primary-color);">Log Masuk Portal</h4>
-                            <p class="text-muted small">Sila masukkan kredensial anda</p>
+                            <p class="text-muted small">Sila masukkan id dan kata laluan anda</p>
                         </div>
 
                         @if($errors->any())
                             <div class="alert alert-danger shadow-sm mb-4" role="alert">
                                 <div class="d-flex align-items-center mb-1">
                                     <i class="bi bi-exclamation-octagon-fill me-2"></i>
-                                    <strong>Akses Dinafikan</strong>
+                                    <strong>Gagal log masuk</strong>
                                 </div>
                                 <ul class="mb-0 ps-3">
                                     @foreach($errors->all() as $error)
@@ -241,16 +238,8 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-center mb-4 px-1">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember">
-                                    <label class="form-check-label small text-muted" for="remember">Ingat Saya</label>
-                                </div>
-                                <a href="#" class="small text-success text-decoration-none fw-600">Lupa Kata Laluan?</a>
-                            </div>
-
                             <button type="submit" class="btn btn-login mb-3">
-                                Seterusnya <i class="bi bi-arrow-right-short ms-1"></i>
+                                Log masuk <i class="bi bi-arrow-right-short ms-1"></i>
                             </button>
                         </form>
                         

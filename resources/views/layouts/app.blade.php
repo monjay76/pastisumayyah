@@ -243,7 +243,7 @@
             </main>
 
             <footer class="footer">
-                &copy; {{ date('Y') }} SMART PASTI SUMAYYAH SYSTEM | Membina Generasi Al-Quran
+                &copy; {{ date('Y') }} Sistem SMART PASTI Sumayyah 
             </footer>
         </div>
     </div>

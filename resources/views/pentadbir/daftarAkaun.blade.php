@@ -163,7 +163,7 @@
                                     <label class="form-label fw-semibold">Kata Laluan</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
-                                        <input type="password" name="password" class="form-control border-start-0" placeholder="Minimum 8 aksara" required>
+                                        <input type="password" name="password" class="form-control border-start-0" placeholder="Minimum 8 karakter" required>
                                     </div>
                                 </div>
                             </div>

@@ -197,7 +197,6 @@ class PrestasiController extends Controller
                 }
             }
 
-            // Log summary
             \Log::info('Prestasi assessment completed', [
                 'success_count' => $successCount,
                 'skip_count' => $skipCount,
@@ -207,7 +206,8 @@ class PrestasiController extends Controller
             if ($successCount > 0) {
                 return redirect()->back()->with('success', 'Data berjaya masukkan');
             } else {
-                return redirect()->back()->with('warning', 'Tiada penilaian yang disimpan. Semua medan penilaian kosong.');
+                return redirect()->back()->with('warning', 'Tiada penilaian yang disimpan. 
+                Semua medan penilaian kosong.');
             }
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -216,14 +216,14 @@ class PrestasiController extends Controller
                 'input' => $request->all()
             ]);
 
-            // Build more specific error message based on validation errors
             $errorMessages = $e->errors();
             $customMessage = 'Gagal menyimpan penilaian: ';
 
             if (isset($errorMessages['subject_id'])) {
                 $customMessage .= 'ID Subjek tidak sah. ';
                 if (strpos($errorMessages['subject_id'][0], 'exists') !== false) {
-                    $customMessage .= 'Subjek yang dipilih mungkin tidak wujud dalam sistem atau ID subjek tidak dapat dijumpai. ';
+                    $customMessage .= 'Subjek yang dipilih mungkin tidak wujud dalam sistem atau ID subjek 
+                    tidak dapat dijumpai. ';
                     $customMessage .= 'Sila muat semula halaman atau pilih subjek semula.';
                 }
             } elseif (isset($errorMessages['murid_id'])) {
@@ -246,7 +246,6 @@ class PrestasiController extends Controller
                 'input' => $request->all()
             ]);
 
-            // Provide more specific error messages for common issues
             $errorMessage = 'Berlaku ralat ketika menyimpan penilaian. ';
 
             if (strpos($e->getMessage(), 'subject_id') !== false ||

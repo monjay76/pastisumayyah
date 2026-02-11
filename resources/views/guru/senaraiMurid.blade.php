@@ -12,7 +12,7 @@
                     <li class="breadcrumb-item active fw-bold" style="color: var(--pasti-green);">Senarai Murid</li>
                 </ol>
             </nav>
-            <h3 class="fw-bold mb-0" style="color: var(--pasti-dark);">Data Murid SMART PASTI</h3>
+            <h3 class="fw-bold mb-0" style="color: var(--pasti-dark);">Data Murid PASTI Sumayyah</h3>
         </div>
         <div>
             <a href="{{ route('guru.addMurid') }}" class="btn text-white rounded-3 px-4 shadow-sm transition-btn" 
@@ -109,10 +109,10 @@
                         <div class="d-flex align-items-center gap-2">
                             <span class="small text-muted me-2 fw-bold text-uppercase">Tindakan</span>
                             <button type="submit" name="action" value="edit" class="btn btn-warning btn-sm rounded-3 px-4 fw-bold shadow-sm">
-                                <i class="bi bi-pencil-square me-2"></i>Kemaskini Terpilih
+                                <i class="bi bi-pencil-square me-2"></i>Kemaskini 
                             </button>
                             <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm rounded-3 px-4 fw-bold shadow-sm" onclick="return confirm('Adakah anda pasti mahu memadam data murid yang dipilih?')">
-                                <i class="bi bi-trash3 me-2"></i>Padam Terpilih
+                                <i class="bi bi-trash3 me-2"></i>Padam 
                             </button>
                         </div>
                     </div>

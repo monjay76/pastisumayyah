@@ -70,7 +70,7 @@
                     <div class="filter-section mb-4">
                         <div class="row align-items-center">
                             <div class="col-md-auto mb-2 mb-md-0">
-                                <span class="small fw-bold text-muted text-uppercase"><i class="bi bi-funnel-fill me-1"></i> Tapis mengikut kelas:</span>
+                                <span class="small fw-bold text-muted text-uppercase"><i class="bi bi-funnel-fill me-1"></i> Cari mengikut kelas:</span>
                             </div>
                             <div class="col-md-4">
                                 <form action="{{ route('pentadbir.senaraiMurid') }}" method="GET" class="d-flex gap-2">
