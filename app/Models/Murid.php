@@ -36,5 +36,11 @@ class Murid extends Model
     {
         return $this->hasMany(Laporan::class, 'MyKidID', 'MyKidID');
     }
+
+    // Fetch parent's phone number
+    public function getParentPhoneNumbers()
+    {
+        return $this->ibubapa->pluck('noTel')->toArray();
+    }
 }
 

@@ -9,7 +9,7 @@
             <i class="bi bi-people-fill text-white fs-4"></i>
         </div>
         <div>
-            <h3 class="fw-bold mb-0 text-dark">Profil Keluarga</h3>
+            <h3 class="fw-bold mb-0 text-dark">Profil Murid</h3>
             <p class="text-muted mb-0 small">Lihat maklumat peribadi ibu bapa dan butiran pendidikan anak-anak.</p>
         </div>
     </div>
@@ -40,6 +40,10 @@
                             <label class="small text-muted d-block">Alamat Emel</label>
                             <span class="fw-semibold text-dark">{{ $parent->emel ?? '—' }}</span>
                         </div>
+                        <div class="list-group-item bg-transparent border-0 px-0 mb-2">
+                            <label class="small text-muted d-block">Nombor Telefon</label>
+                            <span class="fw-semibold text-dark">{{ $parent->noTel ?? '—' }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,7 +53,7 @@
             <div class="card shadow-sm border-0 rounded-4 h-100">
                 <div class="card-header border-0 py-3 d-flex align-items-center justify-content-between" style="background: #ffffff;">
                     <h6 class="fw-bold mb-0 text-primary uppercase small tracking-wider">
-                        <i class="bi bi-mortarboard me-2"></i>Maklumat Anak
+                        <i class="bi bi-mortarboard me-2"></i>Maklumat Murid
                     </h6>
                     @if($children->isNotEmpty())
                         <div style="width: 250px;">

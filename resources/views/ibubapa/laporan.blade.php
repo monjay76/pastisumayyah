@@ -42,7 +42,7 @@
                                 <div class="col-md-6 col-xl-3">
                                     <div class="card border-0 shadow-sm bg-gradient" style="background: linear-gradient(45deg, #4e73df, #224abe); color: white;">
                                         <div class="card-body p-4 text-center">
-                                            <div class="text-white-50 small fw-bold text-uppercase mb-1">Rekod Prestasi</div>
+                                            <div class="text-white-50 small fw-bold text-uppercase mb-1">Jumlah Rekod</div>
                                             <div class="h2 mb-0 fw-bold">{{ $totalRecords }}</div>
                                             <i class="bi bi-journal-text mt-2 opacity-50 fs-1"></i>
                                         </div>

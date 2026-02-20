@@ -125,6 +125,20 @@
                                                 <div class="col-sm-4 fw-bold text-muted">Alamat Kediaman</div>
                                                 <div class="col-sm-8 text-secondary">{{ $selectedStudent->alamat ?? 'Tiada maklumat alamat' }}</div>
                                             </div>
+                                            <div class="row mb-3 border-bottom pb-2">
+                                                <div class="col-sm-4 fw-bold text-muted">Nombor Telefon Ibu Bapa</div>
+                                                    <div class="col-sm-8">
+                                                        @if($selectedStudent->getParentPhoneNumbers())
+                                                            <ul class="list-unstyled mb-0">
+                                                                @foreach($selectedStudent->getParentPhoneNumbers() as $phoneNumber)
+                                                                    <li>{{ $phoneNumber }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @else
+                                                            <span class="text-secondary">Tiada maklumat nombor telefon</span>
+                                                        @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
